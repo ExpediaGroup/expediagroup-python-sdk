@@ -1,0 +1,10 @@
+{{#each models}}
+{{#with model}}
+{{#if isEnum}}{{>model_templates/classes/enum_class}}
+{{/if}}
+{{#unless isEnum}}{{>model_templates/classes/model_dataclass}}
+{{/unless}}
+
+{{/with}}
+{{/each}}
+

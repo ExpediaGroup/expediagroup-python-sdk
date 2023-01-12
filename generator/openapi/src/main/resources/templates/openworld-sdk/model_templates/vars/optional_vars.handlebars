@@ -1,0 +1,20 @@
+{{#if composedSchemas}}
+{{#with composedSchemas}}
+{{#each allOf}}
+{{#unless complexType}}
+{{#each vars}}
+{{^required}}
+    {{{name}}}: {{>model_templates/vars/vars_datatype}} = field(default={{#if defaultValue}}{{{defaultValue}}}{{/if}}{{#unless defaultValue}}None{{/unless}}, metadata=config(exclude=lambda f: f is None))
+{{/required}}
+{{/each}}
+{{/unless}}
+{{/each}}
+{{/with}}
+{{/if}}
+{{#unless composedSchemas}}
+{{#each vars}}
+{{^required}}
+    {{{name}}}: {{>model_templates/vars/vars_datatype}} = field(default={{#if defaultValue}}{{{defaultValue}}}{{/if}}{{#unless defaultValue}}None{{/unless}}, metadata=config(exclude=lambda f: f is None))
+{{/required}}
+{{/each}}
+{{/unless}}

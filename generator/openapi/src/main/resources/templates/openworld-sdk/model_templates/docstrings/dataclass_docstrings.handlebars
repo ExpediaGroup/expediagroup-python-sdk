@@ -1,0 +1,22 @@
+{{#if composedSchemas}}
+{{#with composedSchemas}}
+{{#each allOf}}
+{{#unless complexType}}
+    """@dataclass {{classname}}{{{description}}}
+
+    Attributes:{{#each vars}}
+        {{{name}}}({{{datatype}}}):{{{description}}}
+    {{/each}}
+    """
+{{/unless}}
+{{/each}}
+{{/with}}
+{{/if}}
+{{#unless composedSchemas}}
+    """@dataclass {{classname}} {{{description}}}
+
+    Attributes:{{#each vars}}
+        {{{name}}}({{{datatype}}}):{{{description}}}
+    {{/each}}
+    """
+{{/unless}}

@@ -1,0 +1,45 @@
+{{#each imports}}{{import}}
+{{/each}}
+
+import platform
+from openworld.sdk.core.client.api import ApiClient
+from openworld.sdk.core.configuration.client_config import ClientConfig
+from furl import furl
+from uuid import UUID, uuid4
+
+
+class {{{classname}}}:
+    def __init__(self, client_config: ClientConfig):
+        python_version = platform.python_version()
+        os = platform.platform().split('-')
+        os_name = os[0]
+        os_version = os[1]
+        sdk_metadata = f'open-world-sdk-python-{{namespace}}/{{version}}'
+
+        self.__api_client = ApiClient(client_config)
+        self.__user_agent = f'{sdk_metadata} (Python {python_version}; {os_name} {os_version})'
+
+{{#with operations}}
+{{#each operation}}
+    def {{{operationId}}}(self, {{#each requiredParams}}{{#unless (eq paramName "content_type")}}{{paramName}}: {{dataType}},
+            {{/unless}}{{/each}}transaction_id: UUID = uuid4()) -> {{#if returnType}} {{{returnType}}}{{/if}}{{#unless returnType}}None{{/unless}}:
+        """{{{description}}}
+
+        Args:{{#each requiredParams}}{{#unless (eq paramName "content_type")}}
+            {{paramName}}({{dataType}}): {{{description}}}{{/unless}}
+        {{/each}}
+        """
+        request_url = furl(self.__api_client.endpoint)
+        request_url /= '{{path}}'
+        request_url.path.normalize()
+
+        return self.__api_client.call(
+            request_headers={{>api_templates/request/headers}},
+            method='{{httpMethod}}',
+            obj={{>api_templates/request/body}},
+            response_model={{#if returnType}}{{{returnType}}}{{/if}}{{#unless returnType}}None{{/unless}},
+            url=request_url
+        )
+        
+{{/each}}
+{{/with}}

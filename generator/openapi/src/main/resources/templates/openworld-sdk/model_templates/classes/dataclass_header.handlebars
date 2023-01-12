@@ -1,0 +1,16 @@
+{{#if composedSchemas}}
+{{#with composedSchemas}}
+{{#each allOf}}
+{{#if complexType}}
+@dataclass_json
+@dataclass
+class {{{classname}}}({{{complexType}}}):
+{{/if}}
+{{/each}}
+{{/with}}
+{{/if}}
+{{#unless composedSchemas}}
+@dataclass_json
+@dataclass
+class {{{classname}}}:
+{{/unless}}

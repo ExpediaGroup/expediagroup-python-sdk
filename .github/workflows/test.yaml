@@ -1,0 +1,32 @@
+# Copyright 2022 Expedia, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Test Coverage Validation
+on: push
+jobs:
+  validate-coverage:
+    runs-on: eg-default
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+      - name: Coverage Run
+        run: coverage run --omit=$(cat test/exclude) --branch -m unittest
+      - name: Coverage Report
+        run: coverage json
+      - name: Coverage Validation
+        run: python validate_test_coverage.py

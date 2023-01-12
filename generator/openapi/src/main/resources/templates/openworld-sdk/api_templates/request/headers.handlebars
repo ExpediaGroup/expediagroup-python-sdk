@@ -1,0 +1,1 @@
+{ {{#each headerParams}}{{#unless (eq paramName "content_type")}}'{{paramName}}': {{paramName}},{{/unless}}{{/each}} header.TRANSACTION_ID: str(transaction_id), header.USER_AGENT: header.OPENWORLD_SDK_PYTHON + str(self.__user_agent)}
