@@ -16,9 +16,9 @@ import dataclasses
 import datetime
 import enum
 import json
+from http import HTTPStatus
 
 import dataclasses_json
-from http import HTTPStatus
 import requests
 from dataclasses_json.mm import _IsoField
 

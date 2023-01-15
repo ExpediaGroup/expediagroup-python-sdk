@@ -13,9 +13,9 @@
 # limitations under the License.
 
 import json
+from http import HTTPStatus
 import requests
 
-from http import HTTPStatus
 from openworld.sdk.core.model.authentication import Credentials
 
 VALID_KEY: str = 'valid_key'
