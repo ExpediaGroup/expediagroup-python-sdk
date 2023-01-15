@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from typing import Dict
+
 from openworld.sdk.core.constant import header
 
 TOKEN_REQUEST: Dict = {header.GRANT_TYPE: header.CLIENT_CREDENTIALS}

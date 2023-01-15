@@ -12,18 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import requests
 import datetime
 import logging
-from openworld.sdk.core.constant import log
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
-from typing import Dict, Optional
 from multiprocessing import Lock
+from typing import Dict, Optional
 
+import requests
+from dataclasses_json import dataclass_json
 from requests.auth import AuthBase
 
-from openworld.sdk.core.constant import header
+from openworld.sdk.core.constant import header, log
 from openworld.sdk.core.constant.constant import REFRESH_TOKEN_TIME_GAP_IN_SECONDS
 
 LOG = logging.getLogger(__name__)

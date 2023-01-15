@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from openworld.sdk.core.constant import message
-from openworld.sdk.core.model.authentication import Credentials
-from openworld.sdk.core.constant.constant import EMPTY_STRING
-from openworld.sdk.core.constant.url import AUTH_ENDPOINT
 from dataclasses import dataclass
 
+from openworld.sdk.core.constant import message
+from openworld.sdk.core.constant.constant import EMPTY_STRING
+from openworld.sdk.core.constant.url import AUTH_ENDPOINT
+from openworld.sdk.core.model.authentication import Credentials
 from openworld.sdk.core.model.exception import client as client_exception
 
 DEFAULT_CREDENTIALS = Credentials(key=EMPTY_STRING, secret=EMPTY_STRING)

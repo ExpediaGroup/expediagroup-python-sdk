@@ -13,21 +13,19 @@
 # limitations under the License.
 
 import logging
-
 from http import HTTPStatus
 
 from requests import Response, post
 from requests.auth import HTTPBasicAuth
 
-from openworld.sdk.core.constant import (body as body_constant,
-                                         url as url_constant,
-                                         log as log_constant)
-from openworld.sdk.core.util import log as log_util
+from openworld.sdk.core.constant import body as body_constant
+from openworld.sdk.core.constant import log as log_constant
+from openworld.sdk.core.constant import url as url_constant
 from openworld.sdk.core.constant.constant import OK_STATUS_CODES_RANGE
 from openworld.sdk.core.constant.message import UNABLE_TO_AUTHENTICATE
-from openworld.sdk.core.model.authentication import Credentials
-from openworld.sdk.core.model.authentication import Token
+from openworld.sdk.core.model.authentication import Credentials, Token
 from openworld.sdk.core.model.exception import service as service_exception
+from openworld.sdk.core.util import log as log_util
 
 LOG = logging.getLogger(__name__)
 
