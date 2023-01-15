@@ -79,7 +79,6 @@ class _AuthClient:
         :return: the new token.
         :rtype: requests.Response
         """
-
         if not self.__token.is_about_expired():
             return
 

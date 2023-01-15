@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import requests
-
-from openworld.sdk.core.constant import constant
 
 TOKEN_RENEWAL_IN_PROCESS: str = "Renewing token"
 
@@ -29,11 +26,11 @@ UNSUCCESSFUL_RESPONSE_MESSAGE_TEMPLATE: str = 'Unsuccessful response [{0}]'
 NEW_TOKEN_EXPIRATION_TEMPLATE: str = 'New token expires in {0} seconds'
 
 HTTP_HEADERS_LOG_MESSAGE_TEMPLATE: str = '\tHeaders: \n' \
-                                '\t--- BEGIN ---\n' \
-                                '{0}' \
-                                '\t--- END ---\n'
+                                         '\t--- BEGIN ---\n' \
+                                         '{0}' \
+                                         '\t--- END ---\n'
 
 HTTP_BODY_LOG_MESSAGE_TEMPLATE: str = '\n\tBody: \n' \
-                             '\t--- BEGIN ---\n' \
-                             '{0}' \
-                             '\t--- END ---\n'
+                                      '\t--- BEGIN ---\n' \
+                                      '{0}' \
+                                      '\t--- END ---\n'

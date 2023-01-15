@@ -37,7 +37,6 @@ class ClientConfig:
         :param endpoint: An optional API endpoint to use for requests.
         :param auth_endpoint: An optional API endpoint to use for authentication.
         """
-
         self.__auth_config = AuthConfig(Credentials(key, secret), auth_endpoint)
         self.__endpoint = endpoint
 
@@ -45,8 +44,7 @@ class ClientConfig:
 
     def __post_init__(self):
         if not self.__endpoint:
-            raise client_exception.OpenWorldConfigurationException(
-                message.NONE_VALUE_NOT_ALLOWED_FOR_MESSAGE_TEMPLATE.format(self.__endpoint))
+            raise client_exception.OpenWorldConfigurationException(message.NONE_VALUE_NOT_ALLOWED_FOR_MESSAGE_TEMPLATE.format(self.__endpoint))
 
     @property
     def auth_config(self) -> AuthConfig:

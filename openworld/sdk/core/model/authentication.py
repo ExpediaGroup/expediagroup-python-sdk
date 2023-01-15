@@ -32,6 +32,7 @@ LOG = logging.getLogger(__name__)
 @dataclass
 class Credentials:
     """A pair of client key and secret."""
+
     key: str
     secret: str
 
@@ -40,6 +41,7 @@ class Credentials:
 @dataclass
 class _TokenResponse:
     """A model of an API response."""
+
     access_token: str
     expires_in: int
     scope: str
@@ -59,8 +61,7 @@ class Token:
         self.lock = Lock()
         self.__expiration_time = datetime.datetime.now() + datetime.timedelta(seconds=self.__token.expires_in)
 
-        LOG.info(log.OPENWORLD_LOG_MESSAGE_TEMPLATE.format(
-            log.NEW_TOKEN_EXPIRATION_TEMPLATE.format(str(self.__token.expires_in))))
+        LOG.info(log.OPENWORLD_LOG_MESSAGE_TEMPLATE.format(log.NEW_TOKEN_EXPIRATION_TEMPLATE.format(str(self.__token.expires_in))))
 
     @property
     def refresh_token(self) -> str:
@@ -78,8 +79,7 @@ class Token:
         return datetime.datetime.now() >= self.__expiration_time
 
     def is_about_expired(self):
-        return datetime.datetime.now() + datetime.timedelta(
-            seconds=REFRESH_TOKEN_TIME_GAP_IN_SECONDS) >= self.__expiration_time
+        return datetime.datetime.now() + datetime.timedelta(seconds=REFRESH_TOKEN_TIME_GAP_IN_SECONDS) >= self.__expiration_time
 
     def update(self, data: Dict):
         self.__token = _TokenResponse.from_dict(data)
@@ -89,6 +89,7 @@ class Token:
 @dataclass
 class HttpBearerAuth(AuthBase):
     r"""Holds Bearer access token."""
+
     __access_token: str
 
     def __init__(self, access_token):

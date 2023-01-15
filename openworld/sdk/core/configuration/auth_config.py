@@ -20,11 +20,13 @@ from dataclasses import dataclass
 
 from openworld.sdk.core.model.exception import client as client_exception
 
+DEFAULT_CREDENTIALS = Credentials(key=EMPTY_STRING, secret=EMPTY_STRING)
+
 
 @dataclass
 class AuthConfig:
     def __init__(self,
-                 credentials: Credentials = Credentials(key=EMPTY_STRING, secret=EMPTY_STRING),
+                 credentials: Credentials = DEFAULT_CREDENTIALS,
                  auth_endpoint: str = AUTH_ENDPOINT):
         r"""Holds authentication config data.
 
@@ -40,7 +42,7 @@ class AuthConfig:
     def __post_init__(self):
         missing = list()
 
-        for attribute in [('Key',self.__credentials.key),
+        for attribute in [('Key', self.__credentials.key),
                           ('Secret', self.__credentials.secret),
                           ('Auth_Endpoint', self.__auth_endpoint)]:
 
