@@ -64,8 +64,7 @@ class AuthClientTest(unittest.TestCase):
 
     @mock.patch('openworld.sdk.core.client.auth_client.post', unauthorized_auth_request_mock)
     def test_auth_client_invalid_credentials(self):
-        with self.assertRaises(expected_exception=service_exception.OpenWorldAuthException) \
-                as invalid_credentials_test:
+        with self.assertRaises(expected_exception=service_exception.OpenWorldAuthException) as invalid_credentials_test:
             auth_client = _AuthClient(auth_constant.INVALID_CREDENTIALS)
 
     @mock.patch('openworld.sdk.core.client.auth_client.post', eleven_seconds_expiration_token_mock)

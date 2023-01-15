@@ -16,14 +16,13 @@ import unittest
 from unittest import mock
 from unittest.mock import Mock
 
-from test.core.constant import authentication as auth_constant
-from test.core.constant import api as api_constant
-
 from openworld.sdk.core.client.api import ApiClient
 from openworld.sdk.core.client.auth_client import _AuthClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from openworld.sdk.core.constant import header as header_constant
 from openworld.sdk.core.model.exception import service as service_exception
+from test.core.constant import api as api_constant
+from test.core.constant import authentication as auth_constant
 
 
 class ApiClientTest(unittest.TestCase):

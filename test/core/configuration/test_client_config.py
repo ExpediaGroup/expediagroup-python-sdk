@@ -14,11 +14,10 @@
 
 import unittest
 
-from test.core.constant import authentication as auth_constant
-from test.core.constant import api as api_constant
-
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from openworld.sdk.core.constant import url
+from test.core.constant import api as api_constant
+from test.core.constant import authentication as auth_constant
 
 
 class ClientConfigTest(unittest.TestCase):
