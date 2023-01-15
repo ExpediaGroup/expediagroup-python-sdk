@@ -16,7 +16,7 @@ import datetime
 import logging
 from dataclasses import dataclass
 from multiprocessing import Lock
-from typing import Dict, Optional
+from typing import Optional
 
 import requests
 from dataclasses_json import dataclass_json
@@ -51,7 +51,7 @@ class _TokenResponse:
 
 @dataclass
 class Token:
-    def __init__(self, data: Dict):
+    def __init__(self, data: dict):
         r"""Represents a token model.
 
         :param data: token data
@@ -80,7 +80,7 @@ class Token:
     def is_about_expired(self):
         return datetime.datetime.now() + datetime.timedelta(seconds=REFRESH_TOKEN_TIME_GAP_IN_SECONDS) >= self.__expiration_time
 
-    def update(self, data: Dict):
+    def update(self, data: dict):
         self.__token = _TokenResponse.from_dict(data)
         self.__expiration_time = datetime.datetime.now() + datetime.timedelta(seconds=self.__token.expires_in)
 

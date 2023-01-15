@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict
-
 BEARER: str = "Bearer "
 
 AUTHORIZATION: str = "Authorization"
@@ -34,4 +32,4 @@ USER_AGENT: str = "User-agent"
 
 OPENWORLD_SDK_PYTHON: str = "open-world-sdk-python/"
 
-API_REQUEST: Dict = {CONTENT_TYPE: JSON_CONTENT_TYPE, ACCEPT: JSON_CONTENT_TYPE}
+API_REQUEST: dict = {CONTENT_TYPE: JSON_CONTENT_TYPE, ACCEPT: JSON_CONTENT_TYPE}
