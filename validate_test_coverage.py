@@ -17,10 +17,10 @@ import math
 
 MINIMUM_REQUIRED_COVERAGE_PERCENTAGE: int = 90
 FAILURE_MESSAGE_TEMPLATE: str = 'Coverage Validation Failed!\n' \
-                       'Minimum Required Coverage Percentage: {0}%\n' \
-                       'Current Coverage Percentage: {1}%'
+                                'Minimum Required Coverage Percentage: {0}%\n' \
+                                'Current Coverage Percentage: {1}%'
 SUCCESS_MESSAGE_TEMPLATE: str = 'Coverage Validation Succeed!\n' \
-                       'Current Coverage Percentage: {0}%'
+                                'Current Coverage Percentage: {0}%'
 
 
 def validate_test_coverage(report: dict):

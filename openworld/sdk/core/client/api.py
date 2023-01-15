@@ -18,7 +18,7 @@ import requests
 from typing import Any, Dict, Optional
 from datetime import datetime
 
-from openworld.sdk.core.constant import header as header_constant, body, constant
+from openworld.sdk.core.constant import header as header_constant
 from openworld.sdk.core.util import log as log_util
 from openworld.sdk.core.constant import log as log_constant
 from http import HTTPStatus
@@ -71,7 +71,6 @@ class ApiClient:
         :return: response as object
         :rtype: Any
         """
-
         self.__auth_client.refresh_token()
 
         request_headers = ApiClient.__fill_request_headers(request_headers)

@@ -15,9 +15,7 @@
 # limitations under the License.
 
 
-"""
-Add imports to all generated models.
-"""
+"""Add imports to all generated models."""
 
 import pathlib
 import ast

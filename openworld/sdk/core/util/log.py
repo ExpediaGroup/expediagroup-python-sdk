@@ -27,7 +27,7 @@ def response_log(response: requests.Response):
     if not headers_log.endswith('\n'):
         headers_log += '\n'
 
-    result: str = f'\nResponse:\n' + \
+    result: str = '\nResponse:\n' + \
                   log.HTTP_HEADERS_LOG_MESSAGE_TEMPLATE.format(headers_log) + \
                   log.HTTP_BODY_LOG_MESSAGE_TEMPLATE.format('\t\t' + response.text + '\n')
 
