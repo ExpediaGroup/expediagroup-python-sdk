@@ -3,7 +3,7 @@ extend-exclude = venv*,*lib,*test
 
 max-line-length = 160
 max-doc-length = 160
-indent-size = 2
+indent-size = 4
 show_source = True
 statistics = True
 count = True
