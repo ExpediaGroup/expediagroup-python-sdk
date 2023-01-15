@@ -17,8 +17,8 @@
 
 """Add imports to all generated models."""
 
-import pathlib
 import ast
+import pathlib
 import sys
 
 
