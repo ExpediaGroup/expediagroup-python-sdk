@@ -13,11 +13,19 @@
 # limitations under the License.
 
 from setuptools import setup
+import configparser
+
+
+def parse_version():
+    config_parser = configparser.ConfigParser()
+    config_parser.read("./core.config")
+    return config_parser["sdk-properties"]["version"]
+
 
 setup(
     name="openworld-sdk-python-core",
-    # TODO: Version should be received from another party (say GitHub actions)
-    version="0.0.1-alpha.1",
+    version=f"{parse_version()}",
+    package_data={'config_files': ['core.config']},
     packages=[
         "openworld.sdk.core",
         "openworld.sdk.core.configuration",
@@ -31,5 +39,5 @@ setup(
     license="Apache License, Version 2.0",
     author="Expedia Group",
     install_requires=["dataclasses_json", "uri", "requests", "python-dateutil"],
-    description="The Open World SDK for Python allows Expedia Group partners to easily build Python applications that leverage the Open World (TM) platform.",
+    description="The Open World SDK for Python allows Expedia Group partners to easily build Python applications that leverage the Open World (TM) platform."
 )
