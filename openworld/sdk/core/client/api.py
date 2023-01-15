@@ -16,7 +16,7 @@ import logging
 from datetime import datetime
 from enum import Enum
 from http import HTTPStatus
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import requests
 
@@ -64,7 +64,7 @@ class ApiClient:
         method: str,
         url: str,
         obj: Any = None,
-        request_headers: Optional[Dict] = None,
+        request_headers: Optional[dict] = None,
         response_model: Optional[Any] = None,
     ) -> Any:
         r"""Sends HTTP request to API.

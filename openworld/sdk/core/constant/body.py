@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict
-
 from openworld.sdk.core.constant import header
 
-TOKEN_REQUEST: Dict = {header.GRANT_TYPE: header.CLIENT_CREDENTIALS}
+TOKEN_REQUEST: dict = {header.GRANT_TYPE: header.CLIENT_CREDENTIALS}

@@ -7,6 +7,7 @@ indent-size = 4
 show_source = True
 statistics = True
 count = True
+pep585-activation = always
 
 ignore =
     D10
@@ -20,3 +21,4 @@ require-plugins =
     flake8-black
     flake8-bugbear
     flake8-isort
+    flake8-pep585
