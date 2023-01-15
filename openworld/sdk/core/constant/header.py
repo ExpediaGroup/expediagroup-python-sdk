@@ -14,27 +14,24 @@
 
 from typing import Dict
 
-BEARER: str = 'Bearer '
+BEARER: str = "Bearer "
 
-AUTHORIZATION: str = 'Authorization'
+AUTHORIZATION: str = "Authorization"
 
-GRANT_TYPE: str = 'grant_type'
+GRANT_TYPE: str = "grant_type"
 
 CLIENT_CREDENTIALS: str = "client_credentials"
 
-CONTENT_TYPE: str = 'Content-type'
+CONTENT_TYPE: str = "Content-type"
 
-JSON_CONTENT_TYPE: str = 'application/json'
+JSON_CONTENT_TYPE: str = "application/json"
 
-ACCEPT: str = 'Accept'
+ACCEPT: str = "Accept"
 
-TRANSACTION_ID: str = 'transaction-id'
+TRANSACTION_ID: str = "transaction-id"
 
-USER_AGENT: str = 'User-agent'
+USER_AGENT: str = "User-agent"
 
-OPENWORLD_SDK_PYTHON: str = 'open-world-sdk-python/'
+OPENWORLD_SDK_PYTHON: str = "open-world-sdk-python/"
 
-API_REQUEST: Dict = {
-    CONTENT_TYPE: JSON_CONTENT_TYPE,
-    ACCEPT: JSON_CONTENT_TYPE
-}
+API_REQUEST: Dict = {CONTENT_TYPE: JSON_CONTENT_TYPE, ACCEPT: JSON_CONTENT_TYPE}

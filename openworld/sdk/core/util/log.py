@@ -22,14 +22,14 @@ def response_log(response: requests.Response):
     headers_log: str = constant.EMPTY_STRING
 
     for key, value in headers.items():
-        headers_log += f'\t\t{key}: {value}\n'
+        headers_log += f"\t\t{key}: {value}\n"
 
-    if not headers_log.endswith('\n'):
-        headers_log += '\n'
+    if not headers_log.endswith("\n"):
+        headers_log += "\n"
 
-    result: str = '\nResponse:\n' + \
-                  log.HTTP_HEADERS_LOG_MESSAGE_TEMPLATE.format(headers_log) + \
-                  log.HTTP_BODY_LOG_MESSAGE_TEMPLATE.format('\t\t' + response.text + '\n')
+    result: str = (
+        "\nResponse:\n" + log.HTTP_HEADERS_LOG_MESSAGE_TEMPLATE.format(headers_log) + log.HTTP_BODY_LOG_MESSAGE_TEMPLATE.format("\t\t" + response.text + "\n")
+    )
 
     return result
 
@@ -38,27 +38,25 @@ def request_log(headers: dict, body: str, endpoint: str, method: str, response: 
     headers_log: str = constant.EMPTY_STRING
 
     for key, value in headers.items():
-        headers_log += f'\t\t{key}: {value}\n'
+        headers_log += f"\t\t{key}: {value}\n"
 
-    if not headers_log.endswith('\n'):
-        headers_log += '\n'
+    if not headers_log.endswith("\n"):
+        headers_log += "\n"
 
-    result = f'\nRequest: {endpoint}\n' \
-             f'Method: {method.upper()}\n' \
-             + log.HTTP_HEADERS_LOG_MESSAGE_TEMPLATE.format(headers_log) \
-             + log.HTTP_BODY_LOG_MESSAGE_TEMPLATE.format('\t\t' + body + '\n') \
-             + response_log(response)
+    result = f"\nRequest: {endpoint}\n" f"Method: {method.upper()}\n" + log.HTTP_HEADERS_LOG_MESSAGE_TEMPLATE.format(
+        headers_log
+    ) + log.HTTP_BODY_LOG_MESSAGE_TEMPLATE.format("\t\t" + body + "\n") + response_log(response)
 
     return result
 
 
 def filter_credentials(data: dict):
     new_data = dict()
-    filter_keys = ['key', 'secret', 'username', 'password']
+    filter_keys = ["key", "secret", "username", "password"]
     for key, value in data.items():
         for word in filter_keys:
             if word.lower() in key.lower():
-                new_data[key] = '<-- omitted -->'
+                new_data[key] = "<-- omitted -->"
                 break
             new_data[key] = value
     return new_data

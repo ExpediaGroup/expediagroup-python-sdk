@@ -25,9 +25,11 @@ DEFAULT_CREDENTIALS = Credentials(key=EMPTY_STRING, secret=EMPTY_STRING)
 
 @dataclass
 class AuthConfig:
-    def __init__(self,
-                 credentials: Credentials = DEFAULT_CREDENTIALS,
-                 auth_endpoint: str = AUTH_ENDPOINT):
+    def __init__(
+        self,
+        credentials: Credentials = DEFAULT_CREDENTIALS,
+        auth_endpoint: str = AUTH_ENDPOINT,
+    ):
         r"""Holds authentication config data.
 
         :param credentials: Client's credentials.
@@ -42,16 +44,17 @@ class AuthConfig:
     def __post_init__(self):
         missing = list()
 
-        for attribute in [('Key', self.__credentials.key),
-                          ('Secret', self.__credentials.secret),
-                          ('Auth_Endpoint', self.__auth_endpoint)]:
+        for attribute in [
+            ("Key", self.__credentials.key),
+            ("Secret", self.__credentials.secret),
+            ("Auth_Endpoint", self.__auth_endpoint),
+        ]:
 
             if not attribute[1]:
                 missing.append(attribute[0])
 
         if len(missing):
-            raise client_exception.OpenWorldConfigurationException(
-                message=message.NONE_VALUE_NOT_ALLOWED_FOR_MESSAGE_TEMPLATE.format(f'{missing}'))
+            raise client_exception.OpenWorldConfigurationException(message=message.NONE_VALUE_NOT_ALLOWED_FOR_MESSAGE_TEMPLATE.format(f"{missing}"))
 
     @property
     def credentials(self) -> Credentials:

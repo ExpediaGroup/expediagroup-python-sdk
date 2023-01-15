@@ -41,7 +41,7 @@ class ApiClient:
         """
         self.__auth_client: _AuthClient = _AuthClient(
             credentials=config.auth_config.credentials,
-            auth_endpoint=config.auth_config.auth_endpoint
+            auth_endpoint=config.auth_config.auth_endpoint,
         )
 
         self.endpoint = config.endpoint
@@ -51,7 +51,7 @@ class ApiClient:
         if response.status_code not in OK_STATUS_CODES_RANGE:
             raise service_exception.OpenWorldServiceException.of(
                 error=Error.from_json(response.json()),
-                error_code=HTTPStatus(response.status_code)
+                error_code=HTTPStatus(response.status_code),
             )
 
         if response_model is None:
@@ -59,8 +59,14 @@ class ApiClient:
 
         return response_model.from_dict(response.json())
 
-    def call(self, method: str, url: str, obj: Any = None, request_headers: Optional[Dict] = None,
-             response_model: Optional[Any] = None) -> Any:
+    def call(
+        self,
+        method: str,
+        url: str,
+        obj: Any = None,
+        request_headers: Optional[Dict] = None,
+        response_model: Optional[Any] = None,
+    ) -> Any:
         r"""Sends HTTP request to API.
 
         :param method: Http request method
@@ -84,7 +90,7 @@ class ApiClient:
                 method=method.upper(),
                 url=url,
                 headers=request_headers,
-                auth=auth_bearer
+                auth=auth_bearer,
             )
         else:
             request_body = obj.to_json(default=ApiClient.__serialization_helper)
@@ -93,7 +99,7 @@ class ApiClient:
                 url=url,
                 headers=request_headers,
                 data=request_body,
-                auth=auth_bearer
+                auth=auth_bearer,
             )
 
         request_log_message = log_util.request_log(
@@ -101,7 +107,7 @@ class ApiClient:
             body=str(request_body),
             endpoint=url,
             method=method,
-            response=response
+            response=response,
         )
 
         LOG.info(log_constant.OPENWORLD_LOG_MESSAGE_TEMPLATE.format(request_log_message))

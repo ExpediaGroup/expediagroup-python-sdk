@@ -45,27 +45,22 @@ class _AuthClient:
     def __retrieve_token(self, auth_endpoint: str = url_constant.AUTH_ENDPOINT) -> Response:
         LOG.info(log_constant.OPENWORLD_LOG_MESSAGE_TEMPLATE.format(log_constant.TOKEN_RENEWAL_IN_PROCESS))
 
-        auth_method = HTTPBasicAuth(
-            username=self.__credentials.key,
-            password=self.__credentials.secret
-        )
+        auth_method = HTTPBasicAuth(username=self.__credentials.key, password=self.__credentials.secret)
 
-        response = post(
-            url=auth_endpoint,
-            auth=auth_method,
-            data=body_constant.TOKEN_REQUEST
-        )
+        response = post(url=auth_endpoint, auth=auth_method, data=body_constant.TOKEN_REQUEST)
 
         if response.status_code not in OK_STATUS_CODES_RANGE:
-            raise service_exception.OpenWorldAuthException(message=UNABLE_TO_AUTHENTICATE,
-                                                           error_code=HTTPStatus(response.status_code))
+            raise service_exception.OpenWorldAuthException(
+                message=UNABLE_TO_AUTHENTICATE,
+                error_code=HTTPStatus(response.status_code),
+            )
 
         request_log_message = log_util.request_log(
             headers=log_util.filter_credentials(auth_method.__dict__),
             body=str(body_constant.TOKEN_REQUEST),
             endpoint=auth_endpoint,
-            method='post',
-            response=response
+            method="post",
+            response=response,
         )
 
         LOG.info(log_constant.OPENWORLD_LOG_MESSAGE_TEMPLATE.format(request_log_message))

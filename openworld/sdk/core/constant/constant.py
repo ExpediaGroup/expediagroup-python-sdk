@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-EMPTY_STRING: str = ''
+EMPTY_STRING: str = ""
 
 REFRESH_TOKEN_TIME_GAP_IN_SECONDS: int = 10
 

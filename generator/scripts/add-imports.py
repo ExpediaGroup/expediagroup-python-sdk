@@ -30,20 +30,17 @@ def prepend(filename: str, line: str) -> None:
     :param line: the line to prepend
     :return: none
     """
-    with open(filename, 'r+') as file_to_update:
+    with open(filename, "r+") as file_to_update:
         content = file_to_update.read()
         file_to_update.seek(0, 0)
-        file_to_update.write(line.rstrip('\r\n') + '\n' + content)
+        file_to_update.write(line.rstrip("\r\n") + "\n" + content)
 
 
 def get_class_definition(text: str):
-    text = text.strip() \
-        .removeprefix('class') \
-        .removesuffix(':') \
-        .strip()
+    text = text.strip().removeprefix("class").removesuffix(":").strip()
 
-    if '(' in text:
-        text = text.rsplit('(')
+    if "(" in text:
+        text = text.rsplit("(")
         text = text[0].strip()
 
     return text
@@ -53,21 +50,19 @@ if len(sys.argv) != 2:
     print("Usage: >> python3 add-imports.py <path to directory>")
     exit(1)
 
-files = list(pathlib.Path(sys.argv[1]).glob('*.py'))
+files = list(pathlib.Path(sys.argv[1]).glob("*.py"))
 
 imports = {
-    'List': 'from typing import List',
-    'Optional': 'from typing import Optional',
-    'Union': 'from typing import Union',
-
-    'field': 'from dataclasses import field',
-    'dataclass': 'from dataclasses import dataclass',
-    'dataclass_json': 'from dataclasses_json import dataclass_json',
-    'config': 'from dataclasses_json import config',
-    'datetime': 'from datetime import datetime',
-    'platform': 'import platform',
-
-    'header': 'from openworld.sdk.core.constant import header',
+    "List": "from typing import List",
+    "Optional": "from typing import Optional",
+    "Union": "from typing import Union",
+    "field": "from dataclasses import field",
+    "dataclass": "from dataclasses import dataclass",
+    "dataclass_json": "from dataclasses_json import dataclass_json",
+    "config": "from dataclasses_json import config",
+    "datetime": "from datetime import datetime",
+    "platform": "import platform",
+    "header": "from openworld.sdk.core.constant import header",
 }
 
 for file in files:
@@ -81,9 +76,9 @@ for file in files:
     file_path = str(file)
     with open(file) as f:
         contents = pathlib.Path(file).read_text()
-        prepend(file_path, '\n\n\n')
+        prepend(file_path, "\n\n\n")
         for k in imports.keys():
-            is_class_definition = (f'class {k}' in contents) and (k == get_class_definition(contents))
+            is_class_definition = (f"class {k}" in contents) and (k == get_class_definition(contents))
             if k in contents and not is_class_definition:
                 print(f">> Adding import {k} to {file.name}")
                 prepend(file_path, imports[k])
