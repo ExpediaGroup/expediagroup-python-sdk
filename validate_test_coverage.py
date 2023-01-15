@@ -14,30 +14,36 @@
 
 import json
 import math
+from textwrap import dedent
 
 MINIMUM_REQUIRED_COVERAGE_PERCENTAGE: int = 90
-FAILURE_MESSAGE_TEMPLATE: str = 'Coverage Validation Failed!\n' \
-                                'Minimum Required Coverage Percentage: {0}%\n' \
-                                'Current Coverage Percentage: {1}%'
-SUCCESS_MESSAGE_TEMPLATE: str = 'Coverage Validation Succeed!\n' \
-                                'Current Coverage Percentage: {0}%'
+FAILURE_MESSAGE_TEMPLATE: str = dedent(
+    """
+    > Coverage Validation Failed!
+    >> Minimum Required Coverage Percentage: {0}%
+    >> Current Coverage Percentage: {1}%
+    """
+)
+SUCCESS_MESSAGE_TEMPLATE: str = dedent(
+    """
+    > Coverage Validation Succeed!
+    >> Current Coverage Percentage: {0}%
+    """
+)
 
 
 def validate_test_coverage(report: dict):
-    data: dict = report['totals']
-    current_coverage_percentage: int = math.ceil(int(data['percent_covered']))
+    data: dict = report["totals"]
+    current_coverage_percentage: int = math.ceil(int(data["percent_covered"]))
 
     if current_coverage_percentage < MINIMUM_REQUIRED_COVERAGE_PERCENTAGE:
-        message: str = FAILURE_MESSAGE_TEMPLATE.format(
-            MINIMUM_REQUIRED_COVERAGE_PERCENTAGE,
-            int(data['percent_covered'])
-        )
+        message: str = FAILURE_MESSAGE_TEMPLATE.format(MINIMUM_REQUIRED_COVERAGE_PERCENTAGE, int(data["percent_covered"]))
         raise Exception(message)
 
     else:
         print(SUCCESS_MESSAGE_TEMPLATE.format(current_coverage_percentage))
 
 
-with open('coverage.json', 'r') as coverage_json_report:
+with open("coverage.json", "r") as coverage_json_report:
     coverage_report = json.load(coverage_json_report)
     validate_test_coverage(coverage_report)

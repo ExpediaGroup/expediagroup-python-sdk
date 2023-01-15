@@ -14,26 +14,22 @@
 
 from setuptools import setup
 
-setup(name='openworld-sdk-python-core',
-      # TODO: Version should be received from another party (say GitHub actions)
-      version='0.0.1-alpha.1',
-      packages=[
-          'openworld.sdk.core',
-          'openworld.sdk.core.configuration',
-          'openworld.sdk.core.client',
-          'openworld.sdk.core.constant',
-          'openworld.sdk.core.model',
-          'openworld.sdk.core.model.exception',
-          'openworld.sdk.core.util'
-      ],
-      package_dir={'openworld.sdk.core': '.'},
-      license='Apache License, Version 2.0',
-      author='Expedia Group',
-      install_requires=[
-          'dataclasses_json',
-          'uri',
-          'requests',
-          'python-dateutil'
-      ],
-      description='The Open World SDK for Python allows Expedia Group partners to easily build Python applications that leverage the Open World (TM) platform.'
-      )
+setup(
+    name="openworld-sdk-python-core",
+    # TODO: Version should be received from another party (say GitHub actions)
+    version="0.0.1-alpha.1",
+    packages=[
+        "openworld.sdk.core",
+        "openworld.sdk.core.configuration",
+        "openworld.sdk.core.client",
+        "openworld.sdk.core.constant",
+        "openworld.sdk.core.model",
+        "openworld.sdk.core.model.exception",
+        "openworld.sdk.core.util",
+    ],
+    package_dir={"openworld.sdk.core": "."},
+    license="Apache License, Version 2.0",
+    author="Expedia Group",
+    install_requires=["dataclasses_json", "uri", "requests", "python-dateutil"],
+    description="The Open World SDK for Python allows Expedia Group partners to easily build Python applications that leverage the Open World (TM) platform.",
+)

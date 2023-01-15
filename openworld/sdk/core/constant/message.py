@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-UNABLE_TO_AUTHENTICATE: str = 'Unable to authenticate'
+UNABLE_TO_AUTHENTICATE: str = "Unable to authenticate"
 
-NONE_VALUE_NOT_ALLOWED = 'None value not allowed'
+NONE_VALUE_NOT_ALLOWED = "None value not allowed"
 
-NONE_VALUE_NOT_ALLOWED_FOR_MESSAGE_TEMPLATE = 'None value not allowed for {0}'
+NONE_VALUE_NOT_ALLOWED_FOR_MESSAGE_TEMPLATE = "None value not allowed for {0}"

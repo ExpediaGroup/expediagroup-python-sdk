@@ -12,6 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-AUTH_ENDPOINT: str = 'https://api.expediagroup.com/identity/oauth2/v3/token/'
+AUTH_ENDPOINT: str = "https://api.expediagroup.com/identity/oauth2/v3/token/"
 
-ENDPOINT: str = 'https://api.expediagroup.com/'
+ENDPOINT: str = "https://api.expediagroup.com/"

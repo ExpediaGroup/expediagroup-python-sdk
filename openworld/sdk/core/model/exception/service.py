@@ -25,9 +25,9 @@ class OpenWorldServiceException(OpenWorldException):
 
     @staticmethod
     def of(error: Error, error_code: HTTPStatus):
-        return OpenWorldServiceException(message=f'[{error_code.value}] {error}')
+        return OpenWorldServiceException(message=f"[{error_code.value}] {error}")
 
 
 class OpenWorldAuthException(OpenWorldServiceException):
     def __init__(self, error_code: HTTPStatus, message: str):
-        super().__init__(message=f'[{error_code.value}] {message}')
+        super().__init__(message=f"[{error_code.value}] {message}")

@@ -25,12 +25,13 @@ from openworld.sdk.core.model.exception import client as client_exception
 class ClientConfig:
     __auth_config: AuthConfig = None
 
-    def __init__(self,
-                 key: str,
-                 secret: str,
-                 endpoint: Optional[str] = url.ENDPOINT,
-                 auth_endpoint: Optional[str] = url.AUTH_ENDPOINT
-                 ):
+    def __init__(
+        self,
+        key: str,
+        secret: str,
+        endpoint: Optional[str] = url.ENDPOINT,
+        auth_endpoint: Optional[str] = url.AUTH_ENDPOINT,
+    ):
         r"""SDK Client Configurations Holder.
 
         :param key: The API key to use for authentication.
