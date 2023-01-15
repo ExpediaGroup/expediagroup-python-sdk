@@ -25,7 +25,7 @@ def parse_version():
 setup(
     name="openworld-sdk-python-core",
     version=f"{parse_version()}",
-    package_data={'config_files': ['core.config']},
+    package_data={"config_files": ["core.config"]},
     packages=[
         "openworld.sdk.core",
         "openworld.sdk.core.configuration",
@@ -39,5 +39,5 @@ setup(
     license="Apache License, Version 2.0",
     author="Expedia Group",
     install_requires=["dataclasses_json", "uri", "requests", "python-dateutil"],
-    description="The Open World SDK for Python allows Expedia Group partners to easily build Python applications that leverage the Open World (TM) platform."
+    description="The Open World SDK for Python allows Expedia Group partners to easily build Python applications that leverage the Open World (TM) platform.",
 )
