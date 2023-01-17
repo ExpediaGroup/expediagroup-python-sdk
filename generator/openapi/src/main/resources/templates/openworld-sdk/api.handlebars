@@ -14,7 +14,7 @@ class {{{classname}}}:
         os = platform.platform().split('-')
         os_name = os[0]
         os_version = os[1]
-        sdk_metadata = f'open-world-sdk-python-{{normalizedNamespace}}/{{version}}'
+        sdk_metadata = f'open-world-sdk-python-{{normalizedNamespace}}/{{sdkVersion}}'
 
         self.__api_client = ApiClient(client_config)
         self.__user_agent = f'{sdk_metadata} (Python {python_version}; {os_name} {os_version})'

@@ -92,6 +92,7 @@ class OpenApiSdkGenerator {
                 setArtifactId("openworld-sdk-python-$packageName")
                 // Configure package details
                 setInvokerPackage("openworld.sdk")
+                addAdditionalProperty("sdkVersion", version)
                 addAdditionalProperty("normalizedNamespace", "$packageName")
                 addAdditionalProperty("projectName", "openworld.sdk.$packageName")
                 addAdditionalProperty("namespace", "$namespace")
