@@ -14,7 +14,7 @@ class {{{classname}}}:
         os = platform.platform().split('-')
         os_name = os[0]
         os_version = os[1]
-        sdk_metadata = f'open-world-sdk-python-{{namespace}}/{{version}}'
+        sdk_metadata = f'open-world-sdk-python-{{normalizedNamespace}}/{{version}}'
 
         self.__api_client = ApiClient(client_config)
         self.__user_agent = f'{sdk_metadata} (Python {python_version}; {os_name} {os_version})'
@@ -40,6 +40,6 @@ class {{{classname}}}:
             response_model={{#if returnType}}{{{returnType}}}{{/if}}{{#unless returnType}}None{{/unless}},
             url=request_url
         )
-        
+
 {{/each}}
 {{/with}}

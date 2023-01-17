@@ -89,9 +89,10 @@ class OpenApiSdkGenerator {
                 // Configure SDK Artifact Coordinates
                 setArtifactVersion(version)
                 setGroupId("openworld.sdk")
-                setArtifactId("openworld-sdk-python-$namespace")
+                setArtifactId("openworld-sdk-python-$packageName")
                 // Configure package details
                 setInvokerPackage("openworld.sdk")
+                addAdditionalProperty("normalizedNamespace", "$packageName")
                 addAdditionalProperty("projectName", "openworld.sdk.$packageName")
                 addAdditionalProperty("namespace", "$namespace")
                 setPackageName("openworld.sdk.$packageName")

@@ -52,8 +52,11 @@ while getopts ":n:v:i:" OPTION; do
         esac
 done; validate_arguments
 
-wrong_import="from openworld/sdk/$sdk_namespace"
-new_import="from openworld.sdk.$sdk_namespace"
+normalized_namespace=$(echo "$sdk_namespace"|sed -e 's/\(.*\)/\L\1/')
+normalized_namespace=$(echo "$normalized_namespace"|sed -e 's/[^a-z0-9]//g')
+
+wrong_import="from openworld/sdk/$normalized_namespace"
+new_import="from openworld.sdk.$normalized_namespace"
 
 # Generates an SDK wheel
 echo "Generating an SDK"\
@@ -64,17 +67,17 @@ echo "Generating an SDK"\
 && mvn exec:java "-Dnamespace=$sdk_namespace" -DsdkVersion=$sdk_version "-Dspec=$input_spec"\
 && cd ..\
 && rm -rf ./package\
-&& mkdir -p package/openworld/sdk/$sdk_namespace/client\
-&& mkdir package/openworld/sdk/$sdk_namespace/model\
-&& mv ./openapi/target/sdk/openworld/sdk/$sdk_namespace/client/tags/*.py ./package/openworld/sdk/$sdk_namespace/client/\
-&& mv ./openapi/target/sdk/openworld/sdk/$sdk_namespace/model/*.py ./package/openworld/sdk/$sdk_namespace/model/\
+&& mkdir -p package/openworld/sdk/$normalized_namespace/client\
+&& mkdir package/openworld/sdk/$normalized_namespace/model\
+&& mv ./openapi/target/sdk/openworld/sdk/$normalized_namespace/client/tags/*.py ./package/openworld/sdk/$normalized_namespace/client/\
+&& mv ./openapi/target/sdk/openworld/sdk/$normalized_namespace/model/*.py ./package/openworld/sdk/$normalized_namespace/model/\
 && mv ./openapi/target/sdk/requirements.txt ./package/requirements.txt\
 && mv ./openapi/target/sdk/setup.py ./package/setup.py\
 \
 \
 && echo "Adding Imports"\
 && cd ./scripts || exit \
-&& cd ../package/openworld/sdk/"$sdk_namespace"/model\
+&& cd ../package/openworld/sdk/"$normalized_namespace"/model\
 && python3 ./../../../../../scripts/add-imports.py . \
 && pip3 install autoflake\
 && autoflake --in-place --remove-all-unused-imports -r .\
