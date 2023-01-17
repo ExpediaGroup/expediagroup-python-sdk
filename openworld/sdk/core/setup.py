@@ -16,14 +16,17 @@ import configparser
 
 from setuptools import setup
 
+
 def parse_version():
     config_parser = configparser.ConfigParser()
     config_parser.read("./core.config")
     return config_parser["sdk-properties"]["version"]
 
+
 def readme():
     with open("README.md") as f:
         return f.read()
+
 
 setup(
     name="openworld-sdk-python-core",
@@ -45,19 +48,19 @@ setup(
     url="https://github.com/ExpediaGroup/openworld-sdk-python",
     classifiers=[
         "Development Status :: 3 - Alpha",
-        'Programming Language :: Python',
+        "Programming Language :: Python",
         "Programming Language :: Python :: 3 :: Only",
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'License :: OSI Approved :: MIT License',
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "License :: OSI Approved :: MIT License",
     ],
     python_requires=">=3.7",
     install_requires=["dataclasses_json", "uri", "requests", "python-dateutil"],
     description="Open World SDK Core Library for Python",
     long_description=readme(),
-    long_description_content_type="text/markdown"
+    long_description_content_type="text/markdown",
 )
