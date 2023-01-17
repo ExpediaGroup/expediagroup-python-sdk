@@ -13,9 +13,7 @@
 # limitations under the License.
 
 name: Build and Publish Core
-on:
-  workflow_dispatch:
-  pull_request:
+on: workflow_dispatch
 jobs:
   build-and-publish-core:
     runs-on: ubuntu-latest
