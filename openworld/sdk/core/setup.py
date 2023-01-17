@@ -39,6 +39,6 @@ setup(
     package_dir={"openworld.sdk.core": "."},
     license="Apache License, Version 2.0",
     author="Expedia Group",
-    install_requires=["dataclasses_json", "uri", "requests", "python-dateutil"],
+    install_requires=["dataclasses_json", "uri", "requests", "python-dateutil", "openworld-sdk-python-core"],
     description="The Open World SDK for Python allows Expedia Group partners to easily build Python applications that leverage the Open World (TM) platform.",
 )

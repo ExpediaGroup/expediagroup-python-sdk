@@ -4,9 +4,9 @@ setup(
     name='openworld-python-sdk-{{artifactId}}',
     version='{{version}}',
     packages=['openworld.sdk.{{namespace}}', 'openworld.sdk.{{namespace}}.model', 'openworld.sdk.{{namespace}}.client'],
-    package_dir={'openworld-python-sdk-{{artifactId}}': '.'},
+    package_dir={'{{artifactId}}': '.'},
     license='Apache License, Version 2.0',
     author='Expedia Group',
-    install_requires=['dataclasses_json', 'uri', 'requests', 'furl', 'openworld-sdk-python-core~=0.0.1a1'],
+    install_requires=['dataclasses_json', 'uri', 'requests', 'furl', 'openworld-sdk-python-core'],
     description='The Open World SDK for Python allows Expedia Group partners to easily build Python applications that leverage the Open World (TM) platform.'
 )
