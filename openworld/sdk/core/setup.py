@@ -12,12 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import configparser
+
 from setuptools import setup
+
+
+def parse_version():
+    config_parser = configparser.ConfigParser()
+    config_parser.read("./core.config")
+    return config_parser["sdk-properties"]["version"]
+
 
 setup(
     name="openworld-sdk-python-core",
-    # TODO: Version should be received from another party (say GitHub actions)
-    version="0.0.1-alpha.1",
+    version=f"{parse_version()}",
+    package_data={"config_files": ["core.config"]},
     packages=[
         "openworld.sdk.core",
         "openworld.sdk.core.configuration",
