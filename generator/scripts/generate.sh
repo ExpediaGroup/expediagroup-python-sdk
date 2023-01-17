@@ -53,7 +53,7 @@ while getopts ":n:v:i:" OPTION; do
 done; validate_arguments
 
 normalized_namespace=$(echo "$sdk_namespace"|sed -e 's/\(.*\)/\L\1/')
-normalized_namespace=$(echo "$normalized_namespace"|sed -e 's/[^a-zA-Z0-9]//g')
+normalized_namespace=$(echo "$normalized_namespace"|sed -e 's/[^a-z0-9]//g')
 
 wrong_import="from openworld/sdk/$normalized_namespace"
 new_import="from openworld.sdk.$normalized_namespace"

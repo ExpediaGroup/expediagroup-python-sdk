@@ -65,7 +65,7 @@ class OpenApiSdkGenerator {
         try {
             val config = CodegenConfigurator().apply {
                 // Adjust namespace to fit with JVM package naming conventions
-                val packageName = namespace.lowercase().replace(Regex("[^a-zA-Z0-9]"), "")
+                val packageName = namespace.lowercase().replace(Regex("[^a-z0-9]"), "")
                 // specify the target language
                 setGeneratorName("python")
                 setTemplateDir("templates/openworld-sdk/")
