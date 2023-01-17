@@ -32,6 +32,6 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.TEST_PY_PI_TOKEN }}
+          password: ${{ secrets.PY_PI_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
           packages_dir: openworld/sdk/core/dist
