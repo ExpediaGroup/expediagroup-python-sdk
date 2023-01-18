@@ -1,0 +1,25 @@
+name: Generate and Publish SDK
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'generated sdk version'
+        required: true
+        default: ''
+      name:
+        description: 'generated sdk name'
+        required: true
+      fileAsBase64:
+        description: 'generated sdk file as base64 encoded'
+        required: true
+jobs:
+  generate_sdk:
+    uses: ./.github/workflows/generate-sdk.yaml
+    with:
+      version: ${{ github.event.inputs.version }}
+      name: ${{ github.event.inputs.name }}
+      fileAsBase64: ${{ github.event.inputs.fileAsBase64 }}
+  publish_sdk:
+    needs: [ generate_sdk ]
+    uses: ./.github/workflows/publish-sdk.yaml
+    secrets: inherit

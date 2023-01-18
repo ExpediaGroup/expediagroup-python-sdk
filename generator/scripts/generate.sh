@@ -86,6 +86,7 @@ echo "Generating an SDK"\
 && python3 ./../../../../../scripts/add-imports.py . \
 && autoflake --in-place --remove-all-unused-imports -r .\
 && cd ../../../..\
+&& go install github.com/google/addlicense@latest \
 && `go env GOPATH`/bin/addlicense -f ../../LICENSE_header.txt . \
 \
 \

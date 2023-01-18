@@ -1,0 +1,16 @@
+name: Publish SDK
+on:
+  workflow_call:
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: sdk
+          path: sdk
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages_dir: sdk
