@@ -9,9 +9,8 @@ jobs:
         with:
           name: sdk
           path: sdk
-      - name: Publish to Test PyPI
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
+          password: ${{ secrets.PYPI_API_TOKEN }}
           packages_dir: sdk
