@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: 'generated sdk version'
-        required: false
+        required: true
         default: ''
       name:
         description: 'generated sdk name'
