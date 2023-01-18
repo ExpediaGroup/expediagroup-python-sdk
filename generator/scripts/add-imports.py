@@ -37,13 +37,8 @@ def prepend(filename: str, line: str) -> None:
 
 
 def get_class_definition(text: str):
-    text = text.strip().removeprefix("class").removesuffix(":").strip()
-
-    if "(" in text:
-        text = text.rsplit("(")
-        text = text[0].strip()
-
-    return text
+    text = ast.parse(text)
+    return [node.name for node in ast.walk(text) if isinstance(node, ast.ClassDef)][0]
 
 
 if len(sys.argv) != 2:
