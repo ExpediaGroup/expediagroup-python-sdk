@@ -42,7 +42,7 @@ jobs:
         working-directory: generator/scripts
         run: |
           echo ${{ github.event.inputs.name }}
-          ./generate.sh -n ${{ inputs.name }} -v ${{ inputs.version }} -i ${{ inputs.fileAsBase64 }}
+          ./generate.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i "${{ inputs.fileAsBase64 }}"
       - uses: actions/upload-artifact@v3
         with:
           name: sdk
