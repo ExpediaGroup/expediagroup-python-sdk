@@ -1,10 +1,10 @@
 uri~=2.0.1
 requests~=2.28.2
-dataclasses_json
-build
-setuptools
-virtualenv
-coverage
+dataclasses_json~=0.5.7
+build~=0.10.0
+setuptools~=65.6.3
+virtualenv~=20.17.1
+coverage~=7.0.5
 flake8~=6.0.0
 flake8-black~=0.3.6
 flake8-bugbear~=23.1.20
