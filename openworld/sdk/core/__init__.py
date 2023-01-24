@@ -14,11 +14,8 @@
 
 import logging
 
+default_formatter = logging.Formatter(fmt="[%(asctime)s] %(name)s %(levelname)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+logging.lastResort.setFormatter(default_formatter)
+
 logging.lastResort.setLevel(logging.NOTSET)
-logging.lastResort.setFormatter(
-    logging.Formatter(
-        fmt="[%(asctime)s] %(name)s %(levelname)s: %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
-    )
-)
 logging.root.setLevel(logging.NOTSET)
