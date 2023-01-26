@@ -1,4 +1,4 @@
-name: Publish SDK
+name: Commit SDK
 on:
   workflow_call:
 jobs:
