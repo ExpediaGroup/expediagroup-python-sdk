@@ -23,6 +23,6 @@ jobs:
           git add --all
           git commit -m "chore: Publish $key@v${{github.event.inputs.version}} generated SDK"
           git push --set-upstream origin "$key/${{github.event.inputs.version}}"
-          gh pr create -B main -H "$key/${{github.event.inputs.version}}" --title 'Publish $key@${{github.event.inputs.version}} Generated SDK' --body 'Publish $key@v${{github.event.inputs.version}} generated SDK'
+          gh pr create -B main -H "$key/${{github.event.inputs.version}}" --title "Publish $key@${{github.event.inputs.version}} Generated SDK" --body "Publish $key@v${{github.event.inputs.version}} generated SDK"
         env:
           GH_TOKEN: ${{ github.token }}
