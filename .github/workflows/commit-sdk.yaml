@@ -19,8 +19,7 @@ jobs:
           key=$(`go env GOPATH`/bin/casbab kebab '${{github.event.inputs.name}}')
           echo $key
           git checkout -b "$key/${{github.event.inputs.version}}"
-          ls -R
-          tar -xzf *.tar.gz .
+          tar -xzf *.tar.gz
           rm *.tar.gz
           mkdir -p ./generated/"$key/${{github.event.inputs.version}}"
           mv . ./generated/"$key/${{github.event.inputs.version}}"
