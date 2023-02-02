@@ -22,7 +22,7 @@ jobs:
           tar -xzf *.tar.gz
           rm *.tar.gz
           mkdir -p ./generated/"$key/${{github.event.inputs.version}}"
-          mv . ./generated/"$key/${{github.event.inputs.version}}"
+          mv * ./generated/"$key/${{github.event.inputs.version}}"
           git add --all
           git commit -m "chore: Publish $key@v${{github.event.inputs.version}} generated SDK"
           git push --set-upstream origin "$key/${{github.event.inputs.version}}"
