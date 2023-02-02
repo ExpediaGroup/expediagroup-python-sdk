@@ -19,6 +19,9 @@ jobs:
       version: ${{ github.event.inputs.version }}
       name: ${{ github.event.inputs.name }}
       fileAsBase64: ${{ github.event.inputs.fileAsBase64 }}
+  commit_sdk:
+    needs: [ generate_sdk ]
+    uses: ./.github/workflows/commit-sdk.yaml
   publish_sdk:
     needs: [ generate_sdk ]
     uses: ./.github/workflows/publish-sdk.yaml

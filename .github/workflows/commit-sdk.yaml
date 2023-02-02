@@ -1,0 +1,30 @@
+name: Commit SDK
+on:
+  workflow_call:
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: sdk
+          path: sdk
+      - name: Commit
+        working-directory: ./sdk
+        run: |
+          git config --global user.email "oss@expediagroup.com"
+          git config --global user.name "Expedia Group Open Source"
+          go install resenje.org/casbab/cmd/casbab@latest
+          key=$(`go env GOPATH`/bin/casbab kebab '${{github.event.inputs.name}}')
+          git checkout -b "$key/${{github.event.inputs.version}}"
+          tar -xzf *.tar.gz
+          rm *.tar.gz
+          mkdir -p  ${GITHUB_WORKSPACE}/generated/"$key/${{github.event.inputs.version}}"
+          mv *  ${GITHUB_WORKSPACE}/generated/"$key/${{github.event.inputs.version}}"
+          git add --all
+          git commit -m "chore: Publish $key@v${{github.event.inputs.version}} generated SDK"
+          git push --set-upstream origin "$key/${{github.event.inputs.version}}"
+          gh pr create -B main -H "$key/${{github.event.inputs.version}}" --title "Publish $key v${{github.event.inputs.version}} Generated SDK" --body "Publish $key v${{github.event.inputs.version}} generated SDK"
+        env:
+          GH_TOKEN: ${{ github.token }}
