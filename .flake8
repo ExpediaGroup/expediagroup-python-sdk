@@ -17,6 +17,9 @@ ignore =
     E203
     W503
 
+exclude=
+    ./openworld/sdk/generator
+
 require-plugins =
     flake8-black
     flake8-bugbear
