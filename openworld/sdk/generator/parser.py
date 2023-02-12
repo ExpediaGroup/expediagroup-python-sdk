@@ -305,7 +305,7 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
         )
 
         # openworld: add snake_case_arguments_list, as it is present as a string instead of a list
-        #   in the templates, which makes very hard to traverse the properly.
+        #   in the templates, which makes very hard to traverse them properly.
         self._temporary_operation['snake_case_arguments_list'] = self.get_argument_list(
             snake_case=True, path=path
         )
