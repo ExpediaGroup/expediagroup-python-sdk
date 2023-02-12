@@ -17,7 +17,7 @@
 
 function fail {
   echo "SDK properties can't be empty!"
-  echo "Usage: >> ./generate.sh -i input_spec_file -n namespace -v version"
+  echo "Usage: >> ./generate-client.sh -i input_spec_file -n namespace -v version"
   exit 1
 }
 
@@ -59,6 +59,6 @@ version=$sdk_version"\
 >./visitors/sdk.config
 
 # Generate SDK
-python3 ./__main__.py -i "$input_spec" -t "./templates" -o "./sdk"\
+python3 ./__main__.py -i "$input_spec" -t "./templates" -o "./sdk" -m models.py\
 &&\
 autoflake --in-place --remove-all-unused-imports ./sdk/client.py
