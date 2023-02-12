@@ -30,7 +30,7 @@ def get_imports(parser: OpenAPIParser, model_path: Path) -> Dict[str, object]:
             imports.append(
                 Import.from_full_path(f'.{model_path.stem}.{reference.name}')
             )
-    # No need for any header imports as we are not including any headers for now
+    # openworld: refactor fastapi_imports to parameter_imports.
     for from_, imports_ in parser.parameter_imports.items():
         imports[from_].update(imports_)
     return {'imports': imports}

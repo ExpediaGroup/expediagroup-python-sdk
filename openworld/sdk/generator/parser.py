@@ -125,17 +125,6 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
         self.parameter_imports: Imports = Imports()
         self.data_types: List[DataType] = []
 
-    def parse_info(self) -> Optional[Dict[str, Any]]:
-        result = self.raw_obj.get('info', {}).copy()
-        servers = self.raw_obj.get('servers')
-        if servers:
-            result['servers'] = servers
-        return result or None
-
-    def parse_parameters(self, parameters: ParameterObject, path: List[str]) -> None:
-        super().parse_parameters(parameters, path)
-        self._temporary_operation['_parameters'].append(parameters)
-
     def get_parameter_type(
         self,
         parameters: ParameterObject,
@@ -144,6 +133,7 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
     ) -> Optional[Argument]:
         orig_name = parameters.name
         if snake_case:
+            # openworld: add regex to ensure header snakecase names (double underscore case)
             name = stringcase.snakecase(
                 re.sub(r'[^\w\s]', '', parameters.name) if not parameters.name.islower()
                 else parameters.name)
@@ -176,10 +166,12 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
             data_type=data_type,
             required=parameters.required or parameters.in_ == ParameterLocation.path,
         )
+        # openworld: use default value instead of `fastapi.Header` model (None in most cases)
         default = repr(schema.default) if schema.has_default else None
         self.parameter_imports.append(field.imports)
         self.data_types.append(field.data_type)
         return Argument(
+            # openworld: add `in_` and `alias` to each argument.
             in_=parameters.in_.value if parameters.in_ else ParamTypes.body,
             alias=orig_name,
             name=field.name,
@@ -191,6 +183,8 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
         )
 
     def get_arguments(self, snake_case: bool, path: List[str]) -> str:
+        # openworld: traverse arguments and move them into a list while
+        #   validating there are no duplicates to solve duplicate params.
         argument_list = []
         for argument in self.get_argument_list(snake_case, path):
             if argument.argument not in argument_list:
@@ -210,13 +204,15 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
                     parameter, snake_case, [*path, 'parameters']
                 )
                 if parameter_type:
+                    # openworld: set `None` as default value in case value missing
                     if not parameter_type.default:
                         parameter_type.default = 'None'
 
                     arguments.append(parameter_type)
 
-        request: Argument = self._temporary_operation.get('_request')
+        request = self._temporary_operation.get('_request')
         if request:
+            # openworld: ensure default value is present for request body params.
             if not request.default:
                 request.default = 'None'
             arguments.append(request)
@@ -229,9 +225,11 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
                 argument.default = parser.UsefulStr('None')
             positional_argument = argument.required
 
+        # openworld: ensure default value is present for request headers/query params.
         for index, arg in enumerate(arguments):
             if arguments[index].default is None:
                 arguments[index].default = 'None'
+        # Ensure there are no duplicates
         arguments_dict = dict()
         for argument in arguments:
             arguments_dict[argument.name] = argument
@@ -262,6 +260,7 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
                         )
                     arguments.append(
                         # TODO: support multiple body
+                        # openworld: Add `in_` attribute.
                         Argument(
                             in_=ParamTypes.body,
                             name='body',  # type: ignore
@@ -273,6 +272,7 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
                 elif media_type == 'application/x-www-form-urlencoded':
                     arguments.append(
                         # TODO: support form with `Form()`
+                        # openworld: Add `in_` attribute.
                         Argument(
                             in_=ParamTypes.body,
                             name='request',  # type: ignore
@@ -304,6 +304,8 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
             snake_case=True, path=path
         )
 
+        # openworld: add snake_case_arguments_list, as it is present as a string instead of a list
+        #   in the templates, which makes very hard to traverse the properly.
         self._temporary_operation['snake_case_arguments_list'] = self.get_argument_list(
             snake_case=True, path=path
         )

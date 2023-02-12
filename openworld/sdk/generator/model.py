@@ -2,6 +2,7 @@ from enum import Enum
 from fastapi_code_generator import parser as fastapi_code_generator_parser
 
 
+# openworld: new models to add more attributes for SDK generation.
 class ParamTypes(Enum):
     query = "query"
     header = "header"

@@ -7,6 +7,7 @@ from fastapi_code_generator.parser import OpenAPIParser
 from fastapi_code_generator.visitor import Visitor
 
 
+# openworld: new visitor.
 def get_sdk(parser: OpenAPIParser, model_path: Path) -> Dict[str, object]:
     config = configparser.ConfigParser()
     config.read(f'{Path(__file__).parent}/sdk.config')
