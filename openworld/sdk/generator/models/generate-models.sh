@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 
 # Copyright 2022 Expedia, Inc.
 #
