@@ -13,11 +13,11 @@
 # limitations under the License.
 
 import unittest
+from test.core.constant import authentication as auth_constant
 
 from openworld.sdk.core.configuration.auth_config import AuthConfig
 from openworld.sdk.core.constant import url
 from openworld.sdk.core.model.exception import client as client_exception
-from test.core.constant import authentication as auth_constant
 
 
 class AuthConfigTest(unittest.TestCase):
@@ -44,5 +44,5 @@ class AuthConfigTest(unittest.TestCase):
         self.assertEqual(auth_config.auth_endpoint, url.AUTH_ENDPOINT)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(verbosity=True, failfast=True)

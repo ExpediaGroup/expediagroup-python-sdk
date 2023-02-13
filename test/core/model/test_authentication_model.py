@@ -14,12 +14,14 @@
 
 import time
 import unittest
+from test.core.constant import authentication as auth_constant
 
 import requests
 
 from openworld.sdk.core.constant import header
-from openworld.sdk.core.model.authentication import _TokenResponse, Token, HttpBearerAuth
-from test.core.constant import authentication as auth_constant
+from openworld.sdk.core.model.authentication import (HttpBearerAuth,
+                                                     Token,
+                                                     _TokenResponse,)
 
 
 class TokenTest(unittest.TestCase):
@@ -101,5 +103,5 @@ class HttpBearerAuthHeaderTest(unittest.TestCase):
             http_bearer_auth = HttpBearerAuth()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(verbosity=True, failfast=True)

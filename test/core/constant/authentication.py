@@ -21,7 +21,7 @@ import requests
 
 from openworld.sdk.core.model.authentication import Credentials
 
-VALID_KEY: str = 'valid_key'
+VALID_KEY: str = "valid_key"
 
 VALID_SECRET: str = "valid_secret"
 
@@ -57,7 +57,7 @@ TOKEN_RESPONSE_DATA = {
     SCOPE: SCOPE,
     TOKEN_TYPE: TOKEN_TYPE,
     ID_TOKEN: ID_TOKEN,
-    REFRESH_TOKEN: REFRESH_TOKEN
+    REFRESH_TOKEN: REFRESH_TOKEN,
 }
 
 
@@ -68,7 +68,7 @@ class MockResponse:
 
         response.status_code = HTTPStatus.OK
         response.url = AUTH_ENDPOINT
-        response.code = 'ok'
+        response.code = "ok"
         response._content = orjson.dumps(TOKEN_RESPONSE_DATA.copy(), default=pydantic.schema.pydantic_encoder)
 
         return response
@@ -78,7 +78,7 @@ class MockResponse:
         response = requests.Response()
         response.status_code = HTTPStatus.OK
         response.url = AUTH_ENDPOINT
-        response.code = 'ok'
+        response.code = "ok"
 
         content = TOKEN_RESPONSE_DATA.copy()
         content[EXPIRES_IN] = 11
@@ -90,6 +90,6 @@ class MockResponse:
         response = requests.Response()
         response.status_code = HTTPStatus.UNAUTHORIZED
         response.url = AUTH_ENDPOINT
-        response.code = 'Unauthorized'
+        response.code = "Unauthorized"
         response._content = "Unauthorized".encode()
         return response

@@ -14,15 +14,14 @@
 
 import logging
 import typing
-
-import pydantic
-import pydantic.schema
-import orjson
-import requests
-
-from furl import furl
 from http import HTTPStatus
 from typing import Any, Optional
+
+import orjson
+import pydantic
+import pydantic.schema
+import requests
+from furl import furl
 
 from openworld.sdk.core.client.auth_client import _AuthClient
 from openworld.sdk.core.configuration.client_config import ClientConfig

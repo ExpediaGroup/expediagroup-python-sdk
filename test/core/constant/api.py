@@ -17,19 +17,19 @@ import datetime
 import enum
 import typing
 from http import HTTPStatus
+from test.core.constant import authentication as auth_constant
 
 import orjson
 import pydantic.schema
 import requests
 
 from openworld.sdk.core.model.error import Error
-from test.core.constant import authentication as auth_constant
 
-METHOD = 'post'
+METHOD = "post"
 
 ENDPOINT = "https://www.example.com/"
 
-HELLO_WORLD_MESSAGE: str = 'Hello, World!'
+HELLO_WORLD_MESSAGE: str = "Hello, World!"
 
 DATETIME_NOW: datetime.datetime = datetime.datetime.now()
 
@@ -46,7 +46,7 @@ class HelloWorld(pydantic.BaseModel):
 
 HELLO_WORLD_OBJECT: HelloWorld = HelloWorld()
 
-ERROR_OBJECT = Error(type=ENDPOINT, detail='Test Error')
+ERROR_OBJECT = Error(type=ENDPOINT, detail="Test Error")
 
 
 class MockResponse:
@@ -55,7 +55,7 @@ class MockResponse:
         response = requests.Response()
         response.status_code = HTTPStatus.OK
         response.url = auth_constant.AUTH_ENDPOINT
-        response.code = 'ok'
+        response.code = "ok"
         response._content = orjson.dumps(HELLO_WORLD_OBJECT, default=pydantic.schema.pydantic_encoder)
         return response
 
@@ -64,6 +64,6 @@ class MockResponse:
         response = requests.Response()
         response.status_code = HTTPStatus.BAD_REQUEST
         response.url = auth_constant.AUTH_ENDPOINT
-        response.code = 'Bad Request'
+        response.code = "Bad Request"
         response._content = orjson.dumps(ERROR_OBJECT, default=pydantic.schema.pydantic_encoder)
         return response

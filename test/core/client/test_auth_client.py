@@ -15,25 +15,22 @@
 import time
 import unittest
 from concurrent.futures import ThreadPoolExecutor
+from test.core.constant import authentication as auth_constant
 from unittest import mock
 from unittest.mock import Mock
 
 from openworld.sdk.core.client.auth_client import _AuthClient
 from openworld.sdk.core.model.exception import service as service_exception
-from test.core.constant import authentication as auth_constant
 
 
 class AuthClientTest(unittest.TestCase):
-    authorized_retrieve_token_mock = Mock(
-        return_value=auth_constant.MockResponse.default_token_response())
+    authorized_retrieve_token_mock = Mock(return_value=auth_constant.MockResponse.default_token_response())
 
-    unauthorized_auth_request_mock = Mock(
-        return_value=auth_constant.MockResponse.unauthorized_token_response())
+    unauthorized_auth_request_mock = Mock(return_value=auth_constant.MockResponse.unauthorized_token_response())
 
-    eleven_seconds_expiration_token_mock = Mock(
-        return_value=auth_constant.MockResponse.eleven_seconds_expiration_token_response())
+    eleven_seconds_expiration_token_mock = Mock(return_value=auth_constant.MockResponse.eleven_seconds_expiration_token_response())
 
-    @mock.patch('openworld.sdk.core.client.auth_client.post', authorized_retrieve_token_mock)
+    @mock.patch("openworld.sdk.core.client.auth_client.post", authorized_retrieve_token_mock)
     def test_auth_client(self, mocked=authorized_retrieve_token_mock):
         auth_client = _AuthClient(auth_constant.VALID_CREDENTIALS, auth_constant.AUTH_ENDPOINT)
 
@@ -46,7 +43,7 @@ class AuthClientTest(unittest.TestCase):
 
         mocked.assert_called_once()
 
-    @mock.patch('openworld.sdk.core.client.auth_client.post', authorized_retrieve_token_mock)
+    @mock.patch("openworld.sdk.core.client.auth_client.post", authorized_retrieve_token_mock)
     def test_default_auth_endpoint(self, mocked=authorized_retrieve_token_mock):
         auth_client = _AuthClient(auth_constant.VALID_CREDENTIALS)
 
@@ -62,12 +59,12 @@ class AuthClientTest(unittest.TestCase):
         with self.assertRaises(TypeError) as missing_credentials_test:
             auth_client = _AuthClient(auth_endpoint=auth_constant.AUTH_ENDPOINT)
 
-    @mock.patch('openworld.sdk.core.client.auth_client.post', unauthorized_auth_request_mock)
+    @mock.patch("openworld.sdk.core.client.auth_client.post", unauthorized_auth_request_mock)
     def test_auth_client_invalid_credentials(self):
         with self.assertRaises(expected_exception=service_exception.OpenWorldAuthException) as invalid_credentials_test:
             auth_client = _AuthClient(auth_constant.INVALID_CREDENTIALS)
 
-    @mock.patch('openworld.sdk.core.client.auth_client.post', eleven_seconds_expiration_token_mock)
+    @mock.patch("openworld.sdk.core.client.auth_client.post", eleven_seconds_expiration_token_mock)
     def test_refresh_token(self, mocked=eleven_seconds_expiration_token_mock):
         auth_client = _AuthClient(auth_constant.VALID_CREDENTIALS, auth_constant.AUTH_ENDPOINT)
         self.assertIsNotNone(auth_client)
@@ -97,5 +94,5 @@ class AuthClientTest(unittest.TestCase):
         super().tearDown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(verbosity=True, failfast=True)

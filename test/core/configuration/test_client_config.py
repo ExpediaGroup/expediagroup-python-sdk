@@ -13,20 +13,17 @@
 # limitations under the License.
 
 import unittest
+from test.core.constant import api as api_constant
+from test.core.constant import authentication as auth_constant
 
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from openworld.sdk.core.constant import url
-from test.core.constant import api as api_constant
-from test.core.constant import authentication as auth_constant
 
 
 class ClientConfigTest(unittest.TestCase):
     def test_client_configuration(self):
         client_config = ClientConfig(
-            key=auth_constant.VALID_KEY,
-            secret=auth_constant.VALID_SECRET,
-            endpoint=api_constant.ENDPOINT,
-            auth_endpoint=auth_constant.AUTH_ENDPOINT
+            key=auth_constant.VALID_KEY, secret=auth_constant.VALID_SECRET, endpoint=api_constant.ENDPOINT, auth_endpoint=auth_constant.AUTH_ENDPOINT
         )
 
         self.assertIsNotNone(client_config)
@@ -46,31 +43,16 @@ class ClientConfigTest(unittest.TestCase):
 
     def test_missing_credentials(self):
         with self.assertRaises(TypeError) as missing_key_test:
-            client_config = ClientConfig(
-                secret=auth_constant.VALID_SECRET,
-                endpoint=api_constant.ENDPOINT,
-                auth_endpoint=auth_constant.AUTH_ENDPOINT
-            )
+            client_config = ClientConfig(secret=auth_constant.VALID_SECRET, endpoint=api_constant.ENDPOINT, auth_endpoint=auth_constant.AUTH_ENDPOINT)
 
         with self.assertRaises(TypeError) as missing_secret_test:
-            client_config = ClientConfig(
-                key=auth_constant.VALID_KEY,
-                endpoint=api_constant.ENDPOINT,
-                auth_endpoint=auth_constant.AUTH_ENDPOINT
-            )
+            client_config = ClientConfig(key=auth_constant.VALID_KEY, endpoint=api_constant.ENDPOINT, auth_endpoint=auth_constant.AUTH_ENDPOINT)
 
         with self.assertRaises(TypeError) as missing_key_and_secret_test:
-            client_config = ClientConfig(
-                endpoint=api_constant.ENDPOINT,
-                auth_endpoint=auth_constant.AUTH_ENDPOINT
-            )
+            client_config = ClientConfig(endpoint=api_constant.ENDPOINT, auth_endpoint=auth_constant.AUTH_ENDPOINT)
 
     def test_with_default_auth_endpoint(self):
-        client_config = ClientConfig(
-            key=auth_constant.VALID_KEY,
-            secret=auth_constant.VALID_SECRET,
-            auth_endpoint=auth_constant.AUTH_ENDPOINT
-        )
+        client_config = ClientConfig(key=auth_constant.VALID_KEY, secret=auth_constant.VALID_SECRET, auth_endpoint=auth_constant.AUTH_ENDPOINT)
 
         self.assertIsNotNone(client_config)
         self.assertIsNotNone(client_config.endpoint)
@@ -88,11 +70,7 @@ class ClientConfigTest(unittest.TestCase):
         self.assertEqual(client_config.auth_config.credentials.secret, auth_constant.VALID_SECRET)
 
     def test_with_default_endpoint(self):
-        client_config = ClientConfig(
-            key=auth_constant.VALID_KEY,
-            secret=auth_constant.VALID_SECRET,
-            endpoint=api_constant.ENDPOINT
-        )
+        client_config = ClientConfig(key=auth_constant.VALID_KEY, secret=auth_constant.VALID_SECRET, endpoint=api_constant.ENDPOINT)
 
         self.assertIsNotNone(client_config)
         self.assertIsNotNone(client_config.endpoint)
@@ -110,5 +88,5 @@ class ClientConfigTest(unittest.TestCase):
         self.assertEqual(client_config.auth_config.credentials.secret, auth_constant.VALID_SECRET)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(verbosity=True, failfast=True)

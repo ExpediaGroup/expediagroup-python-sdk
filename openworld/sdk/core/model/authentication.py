@@ -21,7 +21,6 @@ from typing import Optional
 import pydantic.schema
 import requests
 from requests.auth import AuthBase
-import orjson
 
 from openworld.sdk.core.constant import header, log
 from openworld.sdk.core.constant.constant import REFRESH_TOKEN_TIME_GAP_IN_SECONDS
