@@ -1,5 +1,6 @@
 {{#each models}}
 {{#with model}}
+from pydantic import BaseModel, Field
 {{#if isEnum}}{{>model_templates/classes/enum_class}}
 {{/if}}
 {{#unless isEnum}}{{>model_templates/classes/model_dataclass}}
