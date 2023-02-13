@@ -11,3 +11,4 @@ flake8-bugbear~=23.1.20
 flake8-isort~=6.0.0
 flake8-pep585~=0.1.6
 orjson~=3.8.6
+furl~=2.1.3
