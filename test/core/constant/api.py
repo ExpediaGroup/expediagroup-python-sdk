@@ -15,14 +15,13 @@
 import dataclasses
 import datetime
 import enum
-import json
+import typing
 from http import HTTPStatus
 
-import dataclasses_json
+import orjson
+import pydantic.schema
 import requests
-from dataclasses_json.mm import _IsoField
 
-from openworld.sdk.core.client.api import ApiClient
 from openworld.sdk.core.model.error import Error
 from test.core.constant import authentication as auth_constant
 
@@ -39,19 +38,10 @@ class HelloWorldEnum(enum.Enum):
     HELLO_WORLD: str = HELLO_WORLD_MESSAGE
 
 
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
-class HelloWorld:
-    # TODO: Consider using the below approach instead of __serialization_helper in ApiClient (Generator Templates Work)
-    time: datetime.datetime = dataclasses.field(
-        default=DATETIME_NOW,
-        metadata={'dataclasses_json': {
-            'encoder': datetime.datetime.isoformat,
-            'decoder': datetime.datetime.fromisoformat,
-            'mm_field': _IsoField()
-        }})
-    message: str = HELLO_WORLD_MESSAGE
-    enum_value: HelloWorldEnum = HelloWorldEnum.HELLO_WORLD
+class HelloWorld(pydantic.BaseModel):
+    time: typing.Optional[datetime.datetime] = pydantic.Field(default=DATETIME_NOW)
+    message: typing.Optional[str] = pydantic.Field(default=HELLO_WORLD_MESSAGE)
+    enum_value: typing.Optional[HelloWorldEnum] = pydantic.Field(default=HelloWorldEnum.HELLO_WORLD)
 
 
 HELLO_WORLD_OBJECT: HelloWorld = HelloWorld()
@@ -66,7 +56,7 @@ class MockResponse:
         response.status_code = HTTPStatus.OK
         response.url = auth_constant.AUTH_ENDPOINT
         response.code = 'ok'
-        response._content = f"{HELLO_WORLD_OBJECT.to_json(default=ApiClient._ApiClient__serialization_helper)}".encode()
+        response._content = orjson.dumps(HELLO_WORLD_OBJECT, default=pydantic.schema.pydantic_encoder)
         return response
 
     @staticmethod
@@ -75,5 +65,5 @@ class MockResponse:
         response.status_code = HTTPStatus.BAD_REQUEST
         response.url = auth_constant.AUTH_ENDPOINT
         response.code = 'Bad Request'
-        response._content = f"{json.dumps(ERROR_OBJECT.to_json())}".encode()
+        response._content = orjson.dumps(ERROR_OBJECT, default=pydantic.schema.pydantic_encoder)
         return response

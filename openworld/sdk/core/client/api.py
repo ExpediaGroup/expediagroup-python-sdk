@@ -13,12 +13,16 @@
 # limitations under the License.
 
 import logging
-from datetime import datetime
-from enum import Enum
+import typing
+
+import pydantic
+import pydantic.schema
+import orjson
+import requests
+
+from furl import furl
 from http import HTTPStatus
 from typing import Any, Optional
-
-import requests
 
 from openworld.sdk.core.client.auth_client import _AuthClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
@@ -47,56 +51,61 @@ class ApiClient:
         self.endpoint = config.endpoint
 
     @staticmethod
-    def __build_response(response: requests.Response, response_model):
+    def __build_response(response: requests.Response, response_models: list[pydantic.BaseModel]):
         if response.status_code not in OK_STATUS_CODES_RANGE:
             raise service_exception.OpenWorldServiceException.of(
-                error=Error.from_json(response.json()),
+                error=Error.parse_obj(response.json()),
                 error_code=HTTPStatus(response.status_code),
             )
 
-        if response_model is None:
-            return None
+        response_object = None
+        for model in response_models:
+            if not model:
+                continue
+            try:
+                response_object = pydantic.parse_obj_as(model, response.json())
+                return response_object
+            except Exception:
+                continue
 
-        return response_model.from_dict(response.json())
+        return response_object
 
     def call(
         self,
         method: str,
-        url: str,
-        obj: Any = None,
-        request_headers: Optional[dict] = None,
-        response_model: Optional[Any] = None,
+        url: furl,
+        body: pydantic.BaseModel,
+        headers: dict = dict(),
+        response_models: Optional[typing.List[Any]] = [None],
     ) -> Any:
         r"""Sends HTTP request to API.
 
-        :param method: Http request method
-        :param obj: Object that holds request data
-        :param response_model: Model to fetch the response data into
-        :param url: URL used to send the request
-        :param request_headers: Headers of the request
+        :param method: Http request method.
+        :param body: Object that holds request data.
+        :param response_models: Model to fetch the response data into.
+        :param url: URL used to send the request.
+        :param headers: Request headers.
 
         :return: response as object
         :rtype: Any
         """
         self.__auth_client.refresh_token()
-
-        request_headers = ApiClient.__fill_request_headers(request_headers)
-
+        request_headers = ApiClient.__prepare_request_headers(headers)
         auth_bearer = HttpBearerAuth(access_token=self.__auth_client.access_token)
         request_body = dict()
 
-        if not obj:
+        if not body:
             response = requests.request(
                 method=method.upper(),
-                url=url,
+                url=str(url),
                 headers=request_headers,
                 auth=auth_bearer,
             )
         else:
-            request_body = obj.to_json(default=ApiClient.__serialization_helper)
+            request_body = body.json(exclude_none=True, exclude_unset=True)
             response = requests.request(
                 method=method.upper(),
-                url=url,
+                url=str(url),
                 headers=request_headers,
                 data=request_body,
                 auth=auth_bearer,
@@ -105,22 +114,15 @@ class ApiClient:
         request_log_message = log_util.request_log(
             headers=request_headers,
             body=str(request_body),
-            endpoint=url,
+            endpoint=str(url),
             method=method,
             response=response,
         )
 
         LOG.info(log_constant.OPENWORLD_LOG_MESSAGE_TEMPLATE.format(request_log_message))
 
-        result = ApiClient.__build_response(response=response, response_model=response_model)
+        result = ApiClient.__build_response(response=response, response_models=response_models)
         return result
-
-    @staticmethod
-    def __serialization_helper(obj: Any) -> Any:
-        if isinstance(obj, datetime):
-            return obj.isoformat()
-        if isinstance(obj, Enum):
-            return obj.value
 
     @staticmethod
     def __fill_request_headers(request_headers: dict):
@@ -135,3 +137,13 @@ class ApiClient:
             request_headers[key] = header_constant.API_REQUEST[key]
 
         return request_headers
+
+    @staticmethod
+    def __prepare_request_headers(headers: dict) -> dict:
+        request_headers = dict()
+        for header_key, header_value in headers.items():
+            if not header_value:
+                continue
+            request_headers[header_key] = orjson.dumps(header_value, default=pydantic.schema.pydantic_encoder)
+
+        return ApiClient.__fill_request_headers(request_headers)

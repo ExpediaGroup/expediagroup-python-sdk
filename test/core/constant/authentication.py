@@ -14,6 +14,9 @@
 
 import json
 from http import HTTPStatus
+
+import orjson
+import pydantic.schema
 import requests
 
 from openworld.sdk.core.model.authentication import Credentials
@@ -66,7 +69,7 @@ class MockResponse:
         response.status_code = HTTPStatus.OK
         response.url = AUTH_ENDPOINT
         response.code = 'ok'
-        response._content = f"{json.dumps(TOKEN_RESPONSE_DATA.copy())}".encode()
+        response._content = orjson.dumps(TOKEN_RESPONSE_DATA.copy(), default=pydantic.schema.pydantic_encoder)
 
         return response
 
@@ -79,7 +82,7 @@ class MockResponse:
 
         content = TOKEN_RESPONSE_DATA.copy()
         content[EXPIRES_IN] = 11
-        response._content = f"{json.dumps(content)}".encode()
+        response._content = orjson.dumps(content, default=pydantic.schema.pydantic_encoder)
         return response
 
     @staticmethod

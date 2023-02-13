@@ -73,10 +73,10 @@ class ApiClientTest(unittest.TestCase):
 
         response_obj: api_constant.HelloWorld = api_client.call(
             method=api_constant.METHOD,
-            obj=api_constant.HELLO_WORLD_OBJECT,
-            response_model=api_constant.HelloWorld,
+            body=api_constant.HELLO_WORLD_OBJECT,
+            response_models=[api_constant.HelloWorld],
             url=api_constant.ENDPOINT,
-            request_headers=dict()
+            headers=dict()
         )
 
         self.assertEqual(response_obj.message, api_constant.HELLO_WORLD_MESSAGE)
@@ -90,8 +90,8 @@ class ApiClientTest(unittest.TestCase):
 
         response_obj: api_constant.HelloWorld = api_client.call(
             method=api_constant.METHOD,
-            obj=api_constant.HELLO_WORLD_OBJECT,
-            response_model=api_constant.HelloWorld,
+            body=api_constant.HELLO_WORLD_OBJECT,
+            response_models=[api_constant.HelloWorld],
             url=api_constant.ENDPOINT
         )
 
@@ -105,10 +105,10 @@ class ApiClientTest(unittest.TestCase):
 
         with self.assertRaises(Exception) as call_missing_url_test:
             api_client.call(
-                obj=api_constant.HELLO_WORLD_OBJECT,
+                body=api_constant.HELLO_WORLD_OBJECT,
                 method=api_constant.METHOD,
-                response_model=api_constant.HelloWorld,
-                request_headers=dict()
+                response_models=[api_constant.HelloWorld],
+                headers=dict()
             )
 
     @mock.patch.object(_AuthClient, '_AuthClient__retrieve_token', authorized_retrieve_token_mock)
@@ -118,9 +118,9 @@ class ApiClientTest(unittest.TestCase):
 
         response_obj: api_constant.HelloWorld = api_client.call(
             method=api_constant.METHOD,
-            obj=api_constant.HELLO_WORLD_OBJECT,
+            body=api_constant.HELLO_WORLD_OBJECT,
             url=api_constant.ENDPOINT,
-            request_headers=dict()
+            headers=dict()
         )
 
         self.assertIsNone(response_obj)
@@ -133,8 +133,8 @@ class ApiClientTest(unittest.TestCase):
             api_client.call(
                 method=api_constant.METHOD,
                 url=api_constant.ENDPOINT,
-                response_model=api_constant.HelloWorld,
-                request_headers=dict()
+                response_models=[api_constant.HelloWorld],
+                headers=dict()
             )
 
     @mock.patch.object(_AuthClient, '_AuthClient__retrieve_token', authorized_retrieve_token_mock)
@@ -144,11 +144,11 @@ class ApiClientTest(unittest.TestCase):
 
         with self.assertRaises(service_exception.OpenWorldServiceException) as call_error_response:
             api_client.call(
-                obj=api_constant.HELLO_WORLD_OBJECT,
+                body=api_constant.HELLO_WORLD_OBJECT,
                 method=api_constant.METHOD,
                 url=api_constant.ENDPOINT,
-                response_model=api_constant.HelloWorld,
-                request_headers=dict()
+                response_models=[api_constant.HelloWorld],
+                headers=dict()
             )
 
     @mock.patch.object(_AuthClient, '_AuthClient__retrieve_token', authorized_retrieve_token_mock)
@@ -157,22 +157,23 @@ class ApiClientTest(unittest.TestCase):
 
         with self.assertRaises(TypeError) as call_missing_method_test:
             api_client.call(
-                obj=api_constant.HELLO_WORLD_OBJECT,
+                body=api_constant.HELLO_WORLD_OBJECT,
                 url=api_constant.ENDPOINT,
-                response_model=api_constant.HelloWorld,
-                request_headers=dict()
+                response_models=[api_constant.HelloWorld],
+                headers=dict(),
             )
 
     @mock.patch.object(_AuthClient, '_AuthClient__retrieve_token', authorized_retrieve_token_mock)
     @mock.patch('openworld.sdk.core.client.api.requests.request', hello_world_request_response_mock)
-    def test_api_client_call_none_obj(self):
+    def test_api_client_call_none_body(self):
         api_client = ApiClient(ApiClientTest.client_config)
 
         response_obj: api_constant.HelloWorld = api_client.call(
             method=api_constant.METHOD,
-            response_model=api_constant.HelloWorld,
+            response_models=[api_constant.HelloWorld],
             url=api_constant.ENDPOINT,
-            request_headers=dict()
+            headers=dict(),
+            body=None
         )
 
         self.assertEqual(response_obj.message, api_constant.HELLO_WORLD_MESSAGE)
