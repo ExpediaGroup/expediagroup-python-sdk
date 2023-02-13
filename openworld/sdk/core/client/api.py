@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import logging
-import typing
 from http import HTTPStatus
 from typing import Any, Optional
 
@@ -74,8 +73,8 @@ class ApiClient:
         method: str,
         url: furl,
         body: pydantic.BaseModel,
-        headers: dict = dict(),
-        response_models: Optional[list[Any]] = [None],
+        headers: dict = dict(), # noqa
+        response_models: Optional[list[Any]] = [None], # noqa
     ) -> Any:
         r"""Sends HTTP request to API.
 
