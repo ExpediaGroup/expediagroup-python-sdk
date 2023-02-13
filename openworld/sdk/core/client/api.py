@@ -75,7 +75,7 @@ class ApiClient:
         url: furl,
         body: pydantic.BaseModel,
         headers: dict = dict(),
-        response_models: Optional[typing.List[Any]] = [None],
+        response_models: Optional[list[Any]] = [None],
     ) -> Any:
         r"""Sends HTTP request to API.
 
