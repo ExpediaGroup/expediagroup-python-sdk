@@ -10,15 +10,15 @@ count = True
 pep585-activation = always
 
 ignore =
+    B008
     D10
     D204
     D401
     E126
     E203
-    W503
     I005
     I001
-    B008
+    W503
 
 require-plugins =
     flake8-black
