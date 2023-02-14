@@ -14,6 +14,7 @@
 
 
 from enum import Enum
+
 from fastapi_code_generator import parser as fastapi_code_generator_parser
 
 

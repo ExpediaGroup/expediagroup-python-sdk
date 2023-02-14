@@ -16,9 +16,9 @@ ignore =
     E126
     E203
     W503
-
-exclude=
-    ./openworld/sdk/generator
+    I005
+    I001
+    B008
 
 require-plugins =
     flake8-black
