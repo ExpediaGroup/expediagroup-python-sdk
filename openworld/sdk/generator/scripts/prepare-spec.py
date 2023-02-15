@@ -13,10 +13,11 @@
 # limitations under the License.
 
 from base64 import b64decode
+from io import BytesIO
 from pathlib import Path
 from zipfile import ZipFile
-from io import BytesIO
-from typer import run, Option
+
+from typer import Option, run
 
 
 def decode_base64_spec_file(encoded_file_content: str):
@@ -28,16 +29,16 @@ def unzip_base64_encoded_zip_file(base64_zip_file_content: str):
     decoded_zip_file_content = BytesIO(b64decode(base64_zip_file_content))
     zip_file = ZipFile(decoded_zip_file_content)
 
-    specs_path = Path('specs')
+    specs_path = Path("specs")
     zip_file.extractall(path=specs_path)
 
-    for spec in specs_path.glob('*.yaml'):
-        spec.rename(f'{specs_path.absolute()}/spec.yaml')
+    for spec in specs_path.glob("*.yaml"):
+        spec.rename(f"{specs_path.absolute()}/spec.yaml")
 
 
 def main(spec: str = Option(..., "--input", "-i")):
     unzip_base64_encoded_zip_file(spec)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run(main)
