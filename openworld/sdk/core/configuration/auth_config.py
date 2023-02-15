@@ -49,7 +49,6 @@ class AuthConfig:
             ("Secret", self.__credentials.secret),
             ("Auth_Endpoint", self.__auth_endpoint),
         ]:
-
             if not attribute[1]:
                 missing.append(attribute[0])
 
