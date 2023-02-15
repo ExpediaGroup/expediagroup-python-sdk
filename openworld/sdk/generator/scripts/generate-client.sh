@@ -17,26 +17,51 @@
 
 function fail {
   echo "SDK properties can't be empty!"
-  echo "Usage: >> ./generate_models.sh -i input_spec_file"
+  echo "Usage: >> ./generate-client.sh -i input_spec_file -n namespace -v version"
   exit 1
 }
 
 function validate_arguments() {
+  if [ -z "$sdk_namespace" ]
+  then
+    fail
+  fi
+
+  if [ -z "$sdk_version" ]
+  then
+    fail
+  fi
+
   if [ -z "$input_spec" ]
   then
     fail
   fi
 }
 
+sdk_namespace=''
+sdk_version=''
 input_spec=''
 
 # Parse arguments
 while getopts ":n:v:i:" OPTION; do
         case $OPTION in
+              n) sdk_namespace="$OPTARG";;
+              v) sdk_version="$OPTARG";;
               i) input_spec="$OPTARG";;
               ?) echo "Invalid options!";;
         esac
 done; validate_arguments
 
-# Generate SDK Models
-datamodel-codegen --input-file-type openapi --input $input_spec --use-schema-description  --use-standard-collections --output ./models.py --collapse-root-models --custom-template-dir ./templates --use-field-description
+cd client || exit 1\
+&&\
+# Write to config file
+echo -e "[sdk]\n\
+namespace=$sdk_namespace\n\
+version=$sdk_version"\
+>./visitors/sdk.config\
+&&\
+# Generate SDK
+python3 ./__main__.py -i "$input_spec" -t "./templates" -o "./sdk" -m models.py\
+&&\
+autoflake --in-place --remove-all-unused-imports ./sdk/client.py\
+&& cd ..
