@@ -20,7 +20,6 @@ import orjson
 import pydantic
 import pydantic.schema
 import requests
-from furl import furl
 
 from openworld.sdk.core.client.auth_client import _AuthClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
@@ -71,7 +70,7 @@ class ApiClient:
     def call(
         self,
         method: str,
-        url: furl,
+        url: str,
         body: pydantic.BaseModel,
         headers: dict = dict(), # noqa
         response_models: Optional[list[Any]] = [None], # noqa
@@ -103,7 +102,7 @@ class ApiClient:
             request_body = body.json(exclude_none=True, exclude_unset=True)
             response = requests.request(
                 method=method.upper(),
-                url=str(url),
+                url=url,
                 headers=request_headers,
                 data=request_body,
                 auth=auth_bearer,
@@ -112,7 +111,7 @@ class ApiClient:
         request_log_message = log_util.request_log(
             headers=request_headers,
             body=str(request_body),
-            endpoint=str(url),
+            endpoint=url,
             method=method,
             response=response,
         )
