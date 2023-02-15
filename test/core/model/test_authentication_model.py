@@ -14,17 +14,19 @@
 
 import time
 import unittest
+from test.core.constant import authentication as auth_constant
 
 import requests
 
 from openworld.sdk.core.constant import header
-from openworld.sdk.core.model.authentication import _TokenResponse, Token, HttpBearerAuth
-from test.core.constant import authentication as auth_constant
+from openworld.sdk.core.model.authentication import (HttpBearerAuth,
+                                                     Token,
+                                                     _TokenResponse,)
 
 
 class TokenTest(unittest.TestCase):
     def test_token_response_model(self):
-        token_response: _TokenResponse = _TokenResponse.from_dict(auth_constant.TOKEN_RESPONSE_DATA)
+        token_response: _TokenResponse = _TokenResponse.parse_obj(auth_constant.TOKEN_RESPONSE_DATA)
 
         self.assertIsNotNone(token_response)
         self.assertIsNotNone(token_response.expires_in)
@@ -101,5 +103,5 @@ class HttpBearerAuthHeaderTest(unittest.TestCase):
             http_bearer_auth = HttpBearerAuth()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(verbosity=True, failfast=True)

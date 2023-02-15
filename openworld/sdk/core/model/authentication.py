@@ -18,8 +18,8 @@ from dataclasses import dataclass
 from multiprocessing import Lock
 from typing import Optional
 
+import pydantic.schema
 import requests
-from dataclasses_json import dataclass_json
 from requests.auth import AuthBase
 
 from openworld.sdk.core.constant import header, log
@@ -36,9 +36,7 @@ class Credentials:
     secret: str
 
 
-@dataclass_json
-@dataclass
-class _TokenResponse:
+class _TokenResponse(pydantic.BaseModel):
     """A model of an API response."""
 
     access_token: str
@@ -49,14 +47,13 @@ class _TokenResponse:
     refresh_token: Optional[str] = None
 
 
-@dataclass
 class Token:
     def __init__(self, data: dict):
         r"""Represents a token model.
 
         :param data: token data
         """
-        self.__token = _TokenResponse.from_dict(data)
+        self.__token: _TokenResponse = _TokenResponse.parse_obj(data)
         self.lock = Lock()
         self.__expiration_time = datetime.datetime.now() + datetime.timedelta(seconds=self.__token.expires_in)
 
@@ -81,11 +78,10 @@ class Token:
         return datetime.datetime.now() + datetime.timedelta(seconds=REFRESH_TOKEN_TIME_GAP_IN_SECONDS) >= self.__expiration_time
 
     def update(self, data: dict):
-        self.__token = _TokenResponse.from_dict(data)
+        self.__token = _TokenResponse.parse_obj(data)
         self.__expiration_time = datetime.datetime.now() + datetime.timedelta(seconds=self.__token.expires_in)
 
 
-@dataclass
 class HttpBearerAuth(AuthBase):
     r"""Holds Bearer access token."""
 

@@ -1,3 +1,4 @@
 uri~=2.0.1
 requests~=2.28.1
-dataclasses_json~=0.5.7
+pydantic~=1.10.4
+orjson~=3.8.6

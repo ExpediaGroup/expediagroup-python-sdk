@@ -58,7 +58,7 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     python_requires=">=3.8",
-    install_requires=["dataclasses_json", "uri", "requests", "python-dateutil"],
+    install_requires=["pydantic", "orjson", "uri", "requests", "python-dateutil"],
     description="Open World SDK Core Library for Python",
     long_description=readme(),
     long_description_content_type="text/markdown",

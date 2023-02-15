@@ -12,15 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from dataclasses_json import dataclass_json
+from pydantic import BaseModel
 
 
-@dataclass_json
-@dataclass
 class Location(Enum):
     HEADER = "HEADER"
     PATH = "PATH"
@@ -28,9 +25,7 @@ class Location(Enum):
     BODY = "BODY"
 
 
-@dataclass_json
-@dataclass
-class ErrorCause:
+class ErrorCause(BaseModel):
     type: str
     detail: str
     location: Location
@@ -38,9 +33,7 @@ class ErrorCause:
     value: str
 
 
-@dataclass_json
-@dataclass
-class Error:
+class Error(BaseModel):
     type: str
     detail: str
     causes: Optional[list[ErrorCause]] = None
