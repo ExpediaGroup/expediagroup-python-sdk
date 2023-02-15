@@ -4,9 +4,8 @@
 {{#unless complexType}}
 {{#each vars}}
 {{#required}}
-    {{{name}}}: {{>model_templates/vars/vars_datatype}} = field(
-        {{#if defaultValue}}default={{{defaultValue}}}{{/if}}{{#unless defaultValue}}default_factory=lambda: require_value("{{{name}}}"){{/unless}},
-        metadata=config(exclude=lambda f: f is None)
+    {{{name}}}: {{>model_templates/vars/vars_datatype}} = Field(
+        {{#if defaultValue}}default={{{defaultValue}}}{{/if}}{{#unless defaultValue}}default_factory=lambda: require_value("{{{name}}}"){{/unless}}
     )
 {{/required}}
 {{/each}}
@@ -17,9 +16,8 @@
 {{#unless composedSchemas}}
 {{#each vars}}
 {{#required}}
-    {{{name}}}: {{>model_templates/vars/vars_datatype}} = field(
-        {{#if defaultValue}}default={{{defaultValue}}}{{/if}}{{#unless defaultValue}}default_factory=lambda: require_value("{{{name}}}"){{/unless}},
-        metadata=config(exclude=lambda f: f is None)
+    {{{name}}}: {{>model_templates/vars/vars_datatype}} = Field(
+        {{#if defaultValue}}default={{{defaultValue}}}{{/if}}{{#unless defaultValue}}default_factory=lambda: require_value("{{{name}}}"){{/unless}}
     )
 {{/required}}
 {{/each}}
