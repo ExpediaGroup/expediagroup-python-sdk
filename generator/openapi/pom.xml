@@ -41,7 +41,7 @@
         <sdkVersion>0.0.1-SNAPSHOT</sdkVersion>
 
         <!-- Versions -->
-        <openapi-generator.version>6.2.1</openapi-generator.version>
+        <openapi-generator.version>6.3.0</openapi-generator.version>
     </properties>
 
     <dependencies>
