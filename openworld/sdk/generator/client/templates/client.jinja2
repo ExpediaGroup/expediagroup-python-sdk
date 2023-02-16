@@ -7,7 +7,7 @@ from uuid import UUID, uuid4
 class {{ classname }}:
     def __init__(self, client_config: ClientConfig):
         python_version = platform.python_version()
-        os_name, os_version = platform.platform().split('-')
+        os_name, os_version = platform.platform().split('-')[:2]
         sdk_metadata = f'open-world-sdk-python-{{ namespace }}/{{ version }}'
 
         self.__api_client = ApiClient(client_config)
