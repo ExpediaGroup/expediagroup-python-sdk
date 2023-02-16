@@ -39,11 +39,11 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: generate_sdk
-        working-directory: generator/scripts
+        working-directory: openworld/sdk/generator
         run: |
           echo ${{ github.event.inputs.name }}
-          ./generate.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i "${{ inputs.fileAsBase64 }}"
+          ./scripts/generate-sdk.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i "${{ inputs.fileAsBase64 }}"
       - uses: actions/upload-artifact@v3
         with:
           name: sdk
-          path: generator/wheels
+          path: openworld/sdk/generator/package/dist
