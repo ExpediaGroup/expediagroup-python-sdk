@@ -19,7 +19,7 @@ import typing
 from http import HTTPStatus
 from test.core.constant import authentication as auth_constant
 
-import orjson
+import json
 import pydantic.schema
 import requests
 
@@ -56,7 +56,7 @@ class MockResponse:
         response.status_code = HTTPStatus.OK
         response.url = auth_constant.AUTH_ENDPOINT
         response.code = "ok"
-        response._content = orjson.dumps(HELLO_WORLD_OBJECT, default=pydantic.schema.pydantic_encoder)
+        response._content = json.dumps(HELLO_WORLD_OBJECT, default=pydantic.schema.pydantic_encoder).encode()
         return response
 
     @staticmethod
@@ -65,5 +65,5 @@ class MockResponse:
         response.status_code = HTTPStatus.BAD_REQUEST
         response.url = auth_constant.AUTH_ENDPOINT
         response.code = "Bad Request"
-        response._content = orjson.dumps(ERROR_OBJECT, default=pydantic.schema.pydantic_encoder)
+        response._content = json.dumps(ERROR_OBJECT, default=pydantic.schema.pydantic_encoder).encode()
         return response
