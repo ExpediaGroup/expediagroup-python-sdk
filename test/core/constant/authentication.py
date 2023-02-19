@@ -15,7 +15,7 @@
 import json
 from http import HTTPStatus
 
-import orjson
+import json
 import pydantic.schema
 import requests
 
@@ -69,7 +69,7 @@ class MockResponse:
         response.status_code = HTTPStatus.OK
         response.url = AUTH_ENDPOINT
         response.code = "ok"
-        response._content = orjson.dumps(TOKEN_RESPONSE_DATA.copy(), default=pydantic.schema.pydantic_encoder)
+        response._content = json.dumps(TOKEN_RESPONSE_DATA.copy(), default=pydantic.schema.pydantic_encoder).encode()
 
         return response
 
@@ -82,7 +82,7 @@ class MockResponse:
 
         content = TOKEN_RESPONSE_DATA.copy()
         content[EXPIRES_IN] = 11
-        response._content = orjson.dumps(content, default=pydantic.schema.pydantic_encoder)
+        response._content = json.dumps(content, default=pydantic.schema.pydantic_encoder).encode()
         return response
 
     @staticmethod
