@@ -24,17 +24,10 @@ done; validate_arguments
 normalized_namespace=$(echo "$namespace"|sed -e 's/\(.*\)/\L\1/')
 normalized_namespace=$(echo "$normalized_namespace"|sed -e 's/[^a-z0-9]//g')
 
-ls &&\
-mkdir -p "package/openworld/sdk/$normalized_namespace"\
-&&\
-cp -r "client/sdk/" "package/openworld/sdk/$normalized_namespace/"\
-&&\
-cp "models/models.py" "package/openworld/sdk/$normalized_namespace/models.py"\
-&&\
-cp "resources/requirements.txt" "package/requirements.txt"\
-&&\
-mv "package/openworld/sdk/$normalized_namespace/setup.py" "package/setup.py"\
-&&\
-cd package\
-&&\
+mkdir -p "package/openworld/sdk/$normalized_namespace" &&\
+cp -a "client/sdk/." "package/openworld/sdk/$normalized_namespace/" &&\
+cp "models/models.py" "package/openworld/sdk/$normalized_namespace/models.py" &&\
+cp "resources/requirements.txt" "package/requirements.txt" &&\
+mv "package/openworld/sdk/$normalized_namespace/setup.py" "package/setup.py" &&\
+cd package &&\
 python3 -m build

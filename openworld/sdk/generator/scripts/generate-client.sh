@@ -52,16 +52,12 @@ while getopts ":n:v:i:" OPTION; do
         esac
 done; validate_arguments
 
-cd client || exit 1\
-&&\
-# Write to config file
+# Generate SDK Client
+cd client || exit 1 &&\
 echo -e "[sdk]\n\
 namespace=$sdk_namespace\n\
 version=$sdk_version"\
->./visitors/sdk.config\
-&&\
-# Generate SDK
-python3 ./__main__.py -i "$input_spec" -t "./templates" -o "./sdk" -m models.py\
-&&\
+>./visitors/sdk.config &&\
+python3 ./__main__.py -i "$input_spec" -t "./templates" -o "./sdk" -m models.py &&\
 autoflake --in-place --remove-all-unused-imports ./sdk/client.py\
 && cd ..
