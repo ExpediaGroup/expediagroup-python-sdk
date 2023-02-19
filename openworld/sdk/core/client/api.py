@@ -16,7 +16,7 @@ import logging
 from http import HTTPStatus
 from typing import Any, Optional
 
-import orjson
+import json
 import pydantic
 import pydantic.schema
 import requests
@@ -141,6 +141,6 @@ class ApiClient:
         for header_key, header_value in headers.items():
             if not header_value:
                 continue
-            request_headers[header_key] = orjson.dumps(header_value, default=pydantic.schema.pydantic_encoder)
+            request_headers[header_key] = json.dumps(header_value, default=pydantic.schema.pydantic_encoder)
 
         return ApiClient.__fill_request_headers(request_headers)
