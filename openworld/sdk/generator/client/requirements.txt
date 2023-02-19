@@ -1,2 +1,4 @@
 fastapi-code-generator~=0.4.0
 autoflake~=2.0.1
+virtualenv~=20.19.0
+build~=0.10.0
