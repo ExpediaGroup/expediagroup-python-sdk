@@ -1,2 +1,3 @@
 fastapi-code-generator~=0.4.0
 autoflake~=2.0.1
+build~=0.10.0
