@@ -48,7 +48,7 @@ go install github.com/google/addlicense@latest &&\
 cd - &&\
 mkdir -p "package/openworld/sdk/$normalized_namespace" &&\
 cp -a "client/sdk/." "package/openworld/sdk/$normalized_namespace/" &&\
-cp "models/models.py" "package/openworld/sdk/$normalized_namespace/models.py" &&\
+cp "models/model.py" "package/openworld/sdk/$normalized_namespace/model.py" &&\
 cp "resources/requirements.txt" "package/requirements.txt" &&\
 mv "package/openworld/sdk/$normalized_namespace/setup.py" "package/setup.py" &&\
 cd package &&\
