@@ -44,7 +44,7 @@ class {{ classname }}:
         return self.__api_client.call(
             headers=headers,
             method='{{ operation.method }}',
-            obj={% if 'body' in operation.snake_case_arguments %}body{% else %}None{% endif %},
+            body={% if 'body' in operation.snake_case_arguments %}body{% else %}None{% endif %},
             response_models={{ operation.return_type.removeprefix('Union')}},
             url=request_url
         )

@@ -40,5 +40,5 @@ done; validate_arguments
 
 # Generate SDK Models
 cd models &&\
-datamodel-codegen --input-file-type openapi --input $input_spec --use-schema-description  --use-standard-collections --output ./models.py --collapse-root-models --custom-template-dir ./templates --use-field-description\
+datamodel-codegen --input-file-type openapi --input $input_spec --use-schema-description  --use-standard-collections --output ./model.py --collapse-root-models --custom-template-dir ./templates --use-field-description\
 && cd ..
