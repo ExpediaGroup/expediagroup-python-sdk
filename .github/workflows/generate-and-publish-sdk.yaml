@@ -3,15 +3,18 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'generated sdk version'
+        description: 'Generated SDK version'
         required: true
         default: ''
       name:
-        description: 'generated sdk name'
+        description: 'Generated SDK name'
         required: true
       fileAsBase64:
-        description: 'generated sdk file as base64 encoded'
+        description: 'Generated SDK file as base64 encoded'
         required: true
+      test:
+        description: 'Release to test?'
+        required: false
 jobs:
   generate_sdk:
     uses: ./.github/workflows/generate-sdk.yaml
@@ -26,3 +29,5 @@ jobs:
     needs: [ generate_sdk ]
     uses: ./.github/workflows/publish-sdk.yaml
     secrets: inherit
+    with:
+      test: ${{ github.event.inputs.test }}
