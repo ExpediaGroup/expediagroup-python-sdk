@@ -30,7 +30,7 @@ class ClientConfig:
         key: str,
         secret: str,
         endpoint: Optional[str] = url.ENDPOINT,
-        request_timeout_seconds: Optional[float] = constant.TEN_SECONDS_SECONDS,
+        request_timeout_milliseconds: Optional[float] = constant.TEN_SECONDS_MILLISECONDS,
         auth_endpoint: Optional[str] = url.AUTH_ENDPOINT,
     ):
         r"""SDK Client Configurations Holder.
@@ -38,11 +38,12 @@ class ClientConfig:
         :param key: The API key to use for authentication.
         :param secret: The API secret to use for authentication.
         :param endpoint: An optional API endpoint to use for requests.
+        :param request_timeout_milliseconds: Request timeout to be used in milliseconds.
         :param auth_endpoint: An optional API endpoint to use for authentication.
         """
         self.__auth_config = AuthConfig(Credentials(key, secret), auth_endpoint)
         self.__endpoint = endpoint
-        self.__request_timeout = request_timeout_seconds
+        self.__request_timeout = request_timeout_milliseconds / 1000
 
         self.__post_init__()
 
