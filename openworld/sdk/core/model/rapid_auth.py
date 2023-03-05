@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import requests
 import datetime
-from openworld.sdk.core.constant import header, constant
 from dataclasses import dataclass
 from multiprocessing import Lock
 
+import requests
 from requests.auth import AuthBase
+
+from openworld.sdk.core.constant import constant, header
 
 
 @dataclass
@@ -37,9 +38,7 @@ class RapidAuthHeader(AuthBase):
         return request
 
     def __str__(self) -> str:
-        return f'{header.EAN} {header.API_KEY}={self.__api_key},' \
-               f'{header.SIGNATURE}={self.__signature},' \
-               f'{header.TIMESTAMP}={self.__timestamp}'
+        return f"{header.EAN} {header.API_KEY}={self.__api_key}," f"{header.SIGNATURE}={self.__signature}," f"{header.TIMESTAMP}={self.__timestamp}"
 
 
 @dataclass
@@ -48,22 +47,19 @@ class RapidToken:
 
     def __init__(self, auth_header: RapidAuthHeader):
         self.__access_token = str(auth_header)
-        self.__expiration_time = datetime.datetime.now() \
-                                 + datetime.timedelta(seconds=constant.RAPID_TOKEN_LIFE_SPAN_IN_SECONDS)
+        self.__expiration_time = datetime.datetime.now() + datetime.timedelta(seconds=constant.RAPID_TOKEN_LIFE_SPAN_IN_SECONDS)
 
         self.lock: Lock = Lock()
 
     def update(self, auth_header: RapidAuthHeader):
         self.__access_token = str(auth_header)
-        self.__expiration_time = datetime.datetime.now() \
-                                 + datetime.timedelta(seconds=constant.RAPID_TOKEN_LIFE_SPAN_IN_SECONDS)
+        self.__expiration_time = datetime.datetime.now() + datetime.timedelta(seconds=constant.RAPID_TOKEN_LIFE_SPAN_IN_SECONDS)
 
     def is_expired(self):
         return datetime.datetime.now() >= self.__expiration_time
 
     def is_about_expired(self):
-        return datetime.datetime.now() \
-               + datetime.timedelta(seconds=constant.REFRESH_TOKEN_TIME_GAP_IN_SECONDS) >= self.__expiration_time
+        return datetime.datetime.now() + datetime.timedelta(seconds=constant.REFRESH_TOKEN_TIME_GAP_IN_SECONDS) >= self.__expiration_time
 
     @property
     def access_token(self):

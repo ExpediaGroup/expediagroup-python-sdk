@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import logging
 from http import HTTPStatus
 from typing import Any, Optional
 
-import json
 import pydantic
 import pydantic.schema
 import requests
@@ -72,8 +72,8 @@ class ApiClient:
         method: str,
         url: str,
         body: pydantic.BaseModel,
-        headers: dict = dict(), # noqa
-        response_models: Optional[list[Any]] = [None], # noqa
+        headers: dict = dict(),  # noqa
+        response_models: Optional[list[Any]] = [None],  # noqa
     ) -> Any:
         r"""Sends HTTP request to API.
 
