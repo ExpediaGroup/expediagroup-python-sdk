@@ -12,14 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import datetime
 import time
 import unittest
 from concurrent.futures import ThreadPoolExecutor
+
+from openworld.sdk.core.model.rapid_auth import RapidToken, RapidAuthHeader
 from test.core.constant import authentication as auth_constant
 from unittest import mock
 from unittest.mock import Mock
 
-from openworld.sdk.core.client.auth_client import _AuthClient
+from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
 from openworld.sdk.core.model.exception import service as service_exception
 
 
@@ -30,9 +33,9 @@ class AuthClientTest(unittest.TestCase):
 
     eleven_seconds_expiration_token_mock = Mock(return_value=auth_constant.MockResponse.eleven_seconds_expiration_token_response())
 
-    @mock.patch("openworld.sdk.core.client.auth_client.post", authorized_retrieve_token_mock)
+    @mock.patch("openworld.sdk.core.client.openworld_auth_client.post", authorized_retrieve_token_mock)
     def test_auth_client(self, mocked=authorized_retrieve_token_mock):
-        auth_client = _AuthClient(auth_constant.VALID_CREDENTIALS, auth_constant.AUTH_ENDPOINT)
+        auth_client = _OpenWorldAuthClient(auth_constant.VALID_CREDENTIALS, auth_constant.AUTH_ENDPOINT)
 
         self.assertIsNotNone(auth_client.access_token)
 
@@ -43,9 +46,9 @@ class AuthClientTest(unittest.TestCase):
 
         mocked.assert_called_once()
 
-    @mock.patch("openworld.sdk.core.client.auth_client.post", authorized_retrieve_token_mock)
+    @mock.patch("openworld.sdk.core.client.openworld_auth_client.post", authorized_retrieve_token_mock)
     def test_default_auth_endpoint(self, mocked=authorized_retrieve_token_mock):
-        auth_client = _AuthClient(auth_constant.VALID_CREDENTIALS)
+        auth_client = _OpenWorldAuthClient(auth_constant.VALID_CREDENTIALS)
 
         self.assertIsNotNone(auth_client.access_token)
 
@@ -57,16 +60,16 @@ class AuthClientTest(unittest.TestCase):
 
     def test_auth_client_missing_credentials(self):
         with self.assertRaises(TypeError) as missing_credentials_test:
-            auth_client = _AuthClient(auth_endpoint=auth_constant.AUTH_ENDPOINT)
+            auth_client = _OpenWorldAuthClient(auth_endpoint=auth_constant.AUTH_ENDPOINT)
 
-    @mock.patch("openworld.sdk.core.client.auth_client.post", unauthorized_auth_request_mock)
+    @mock.patch("openworld.sdk.core.client.openworld_auth_client.post", unauthorized_auth_request_mock)
     def test_auth_client_invalid_credentials(self):
         with self.assertRaises(expected_exception=service_exception.OpenWorldAuthException) as invalid_credentials_test:
-            auth_client = _AuthClient(auth_constant.INVALID_CREDENTIALS)
+            auth_client = _OpenWorldAuthClient(auth_constant.INVALID_CREDENTIALS)
 
-    @mock.patch("openworld.sdk.core.client.auth_client.post", eleven_seconds_expiration_token_mock)
+    @mock.patch("openworld.sdk.core.client.openworld_auth_client.post", eleven_seconds_expiration_token_mock)
     def test_refresh_token(self, mocked=eleven_seconds_expiration_token_mock):
-        auth_client = _AuthClient(auth_constant.VALID_CREDENTIALS, auth_constant.AUTH_ENDPOINT)
+        auth_client = _OpenWorldAuthClient(auth_constant.VALID_CREDENTIALS, auth_constant.AUTH_ENDPOINT)
         self.assertIsNotNone(auth_client)
 
         # Test refresh token on AuthClient initialization
@@ -93,6 +96,69 @@ class AuthClientTest(unittest.TestCase):
         AuthClientTest.unauthorized_auth_request_mock.reset_mock()
         super().tearDown()
 
+
+class RapidAuthHeaderTest(unittest.TestCase):
+    def test_rapid_auth_header_str(self):
+        rapid_auth_header: RapidAuthHeader = RapidAuthHeader(
+            signature=auth_constant.SIGNATURE,
+            api_key=auth_constant.VALID_KEY,
+            timestamp=auth_constant.TIMESTAMP
+        )
+
+        self.assertIsNotNone(rapid_auth_header)
+
+        self.assertEqual(str(rapid_auth_header), str(auth_constant.RAPID_AUTH_HEADER_OBJECT))
+
+
+class RapidTokenTest(unittest.TestCase):
+    def test_rapid_token_model(self):
+        token: RapidToken = RapidToken(
+            auth_header=auth_constant.RAPID_AUTH_HEADER_OBJECT
+        )
+
+        self.assertIsNotNone(token)
+        self.assertIsNotNone(token.access_token)
+
+    def test_rapid_auth_token_expiration_status(self):
+        token: RapidToken = RapidToken(
+            auth_header=auth_constant.RAPID_AUTH_HEADER_OBJECT
+        )
+
+        self.assertIsNotNone(token)
+        self.assertIsNotNone(token.is_expired())
+        self.assertIsNotNone(token.is_about_expired())
+
+        self.assertFalse(token.is_expired())
+        self.assertFalse(token.is_about_expired())
+
+        token.__setattr__('_RapidToken__expiration_time',
+                          datetime.datetime.now() + datetime.timedelta(seconds=5))
+
+        self.assertTrue(token.is_about_expired())
+        self.assertFalse(token.is_expired())
+
+        token.__setattr__('_RapidToken__expiration_time',
+                          datetime.datetime.now() - datetime.timedelta(seconds=5))
+
+        self.assertTrue(token.is_about_expired())
+        self.assertTrue(token.is_expired())
+
+    def test_rapid_auth_token_update(self):
+        token = RapidToken(
+            auth_header=auth_constant.RAPID_AUTH_HEADER_OBJECT
+        )
+
+        self.assertIsNotNone(token)
+
+        new_auth_header = RapidAuthHeader(
+            signature=auth_constant.SIGNATURE + auth_constant.ACCESS_TOKEN,
+            api_key=auth_constant.INVALID_KEY,
+            timestamp=auth_constant.TIMESTAMP
+        )
+        token.update(new_auth_header)
+
+        self.assertIsNotNone(token.access_token)
+        self.assertEqual(str(new_auth_header), token.access_token)
 
 if __name__ == "__main__":
     unittest.main(verbosity=True, failfast=True)
