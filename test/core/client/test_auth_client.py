@@ -16,14 +16,13 @@ import datetime
 import time
 import unittest
 from concurrent.futures import ThreadPoolExecutor
-
-from openworld.sdk.core.model.rapid_auth import RapidToken, RapidAuthHeader
 from test.core.constant import authentication as auth_constant
 from unittest import mock
 from unittest.mock import Mock
 
 from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
 from openworld.sdk.core.model.exception import service as service_exception
+from openworld.sdk.core.model.rapid_auth import RapidAuthHeader, RapidToken
 
 
 class AuthClientTest(unittest.TestCase):
@@ -100,9 +99,7 @@ class AuthClientTest(unittest.TestCase):
 class RapidAuthHeaderTest(unittest.TestCase):
     def test_rapid_auth_header_str(self):
         rapid_auth_header: RapidAuthHeader = RapidAuthHeader(
-            signature=auth_constant.SIGNATURE,
-            api_key=auth_constant.VALID_KEY,
-            timestamp=auth_constant.TIMESTAMP
+            signature=auth_constant.SIGNATURE, api_key=auth_constant.VALID_KEY, timestamp=auth_constant.TIMESTAMP
         )
 
         self.assertIsNotNone(rapid_auth_header)
@@ -112,17 +109,13 @@ class RapidAuthHeaderTest(unittest.TestCase):
 
 class RapidTokenTest(unittest.TestCase):
     def test_rapid_token_model(self):
-        token: RapidToken = RapidToken(
-            auth_header=auth_constant.RAPID_AUTH_HEADER_OBJECT
-        )
+        token: RapidToken = RapidToken(auth_header=auth_constant.RAPID_AUTH_HEADER_OBJECT)
 
         self.assertIsNotNone(token)
         self.assertIsNotNone(token.access_token)
 
     def test_rapid_auth_token_expiration_status(self):
-        token: RapidToken = RapidToken(
-            auth_header=auth_constant.RAPID_AUTH_HEADER_OBJECT
-        )
+        token: RapidToken = RapidToken(auth_header=auth_constant.RAPID_AUTH_HEADER_OBJECT)
 
         self.assertIsNotNone(token)
         self.assertIsNotNone(token.is_expired())
@@ -131,34 +124,29 @@ class RapidTokenTest(unittest.TestCase):
         self.assertFalse(token.is_expired())
         self.assertFalse(token.is_about_expired())
 
-        token.__setattr__('_RapidToken__expiration_time',
-                          datetime.datetime.now() + datetime.timedelta(seconds=5))
+        token.__setattr__("_RapidToken__expiration_time", datetime.datetime.now() + datetime.timedelta(seconds=5))
 
         self.assertTrue(token.is_about_expired())
         self.assertFalse(token.is_expired())
 
-        token.__setattr__('_RapidToken__expiration_time',
-                          datetime.datetime.now() - datetime.timedelta(seconds=5))
+        token.__setattr__("_RapidToken__expiration_time", datetime.datetime.now() - datetime.timedelta(seconds=5))
 
         self.assertTrue(token.is_about_expired())
         self.assertTrue(token.is_expired())
 
     def test_rapid_auth_token_update(self):
-        token = RapidToken(
-            auth_header=auth_constant.RAPID_AUTH_HEADER_OBJECT
-        )
+        token = RapidToken(auth_header=auth_constant.RAPID_AUTH_HEADER_OBJECT)
 
         self.assertIsNotNone(token)
 
         new_auth_header = RapidAuthHeader(
-            signature=auth_constant.SIGNATURE + auth_constant.ACCESS_TOKEN,
-            api_key=auth_constant.INVALID_KEY,
-            timestamp=auth_constant.TIMESTAMP
+            signature=auth_constant.SIGNATURE + auth_constant.ACCESS_TOKEN, api_key=auth_constant.INVALID_KEY, timestamp=auth_constant.TIMESTAMP
         )
         token.update(new_auth_header)
 
         self.assertIsNotNone(token.access_token)
         self.assertEqual(str(new_auth_header), token.access_token)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=True, failfast=True)

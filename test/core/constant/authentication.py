@@ -19,8 +19,8 @@ from http import HTTPStatus
 
 import pydantic.schema
 import requests
-from openworld.sdk.core.constant import constant
 
+from openworld.sdk.core.constant import constant
 from openworld.sdk.core.model.authentication import Credentials
 from openworld.sdk.core.model.rapid_auth import RapidAuthHeader, RapidToken
 
@@ -65,16 +65,9 @@ TOKEN_RESPONSE_DATA = {
 
 TIMESTAMP = str(int(time.time()))
 
-SIGNATURE: str = sha512(
-    f'{VALID_KEY}{VALID_SECRET}{TIMESTAMP}'.encode(
-        encoding=constant.UTF8)
-).hexdigest()
+SIGNATURE: str = sha512(f"{VALID_KEY}{VALID_SECRET}{TIMESTAMP}".encode(encoding=constant.UTF8)).hexdigest()
 
-RAPID_AUTH_HEADER_OBJECT = RapidAuthHeader(
-    signature=SIGNATURE,
-    api_key=VALID_KEY,
-    timestamp=TIMESTAMP
-)
+RAPID_AUTH_HEADER_OBJECT = RapidAuthHeader(signature=SIGNATURE, api_key=VALID_KEY, timestamp=TIMESTAMP)
 
 RAPID_TOKEN_OBJECT = RapidToken(RAPID_AUTH_HEADER_OBJECT)
 
