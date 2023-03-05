@@ -34,10 +34,10 @@ OPENWORLD_SDK_PYTHON: str = "open-world-sdk-python/"
 
 API_REQUEST: dict = {CONTENT_TYPE: JSON_CONTENT_TYPE, ACCEPT: JSON_CONTENT_TYPE}
 
-EAN: str = 'EAN'
+EAN: str = "EAN"
 
-API_KEY: str = 'APIKey'
+API_KEY: str = "APIKey"
 
-SIGNATURE: str = 'Signature'
+SIGNATURE: str = "Signature"
 
-TIMESTAMP: str = 'timestamp'
+TIMESTAMP: str = "timestamp"

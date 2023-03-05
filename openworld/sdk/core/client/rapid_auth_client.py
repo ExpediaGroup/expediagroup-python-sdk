@@ -17,8 +17,11 @@ import logging
 import time
 
 from openworld.sdk.core.client.openworld_auth_client import AbstractAuthClient
-from openworld.sdk.core.constant import (log as log_constant, constant)
-from openworld.sdk.core.model.authentication import Credentials, RapidToken, RapidAuthHeader
+from openworld.sdk.core.constant import constant
+from openworld.sdk.core.constant import log as log_constant
+from openworld.sdk.core.model.authentication import (Credentials,
+                                                     RapidAuthHeader,
+                                                     RapidToken,)
 
 LOG = logging.getLogger(__name__)
 
@@ -35,22 +38,12 @@ class _RapidAuthClient(AbstractAuthClient):
     def __retrieve_token(self):
         LOG.info(log_constant.OPENWORLD_LOG_MESSAGE_TEMPLATE.format(log_constant.TOKEN_RENEWAL_IN_PROCESS))
         timestamp = str(int(time.time()))
-        signature: str = hashlib.sha512(
-            f'{self.__credentials.key}{self.__credentials.secret}{timestamp}'.encode(
-                encoding=constant.UTF8)
-        ).hexdigest()
+        signature: str = hashlib.sha512(f"{self.__credentials.key}{self.__credentials.secret}{timestamp}".encode(encoding=constant.UTF8)).hexdigest()
 
-        return RapidToken(
-            RapidAuthHeader(
-                signature=signature,
-                api_key=self.__credentials.key,
-                timestamp=timestamp
-            )
-        )
+        return RapidToken(RapidAuthHeader(signature=signature, api_key=self.__credentials.key, timestamp=timestamp))
 
     def refresh_token(self) -> None:
-        r"""Refreshes access token.
-        """
+        r"""Refreshes access token."""
         if not self.__token.is_about_expired():
             return
 
