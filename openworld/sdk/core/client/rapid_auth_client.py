@@ -19,9 +19,11 @@ import time
 from openworld.sdk.core.client.openworld_auth_client import AbstractAuthClient
 from openworld.sdk.core.constant import constant
 from openworld.sdk.core.constant import log as log_constant
-from openworld.sdk.core.model.authentication import (Credentials,
-                                                     RapidAuthHeader,
-                                                     RapidToken,)
+from openworld.sdk.core.model.authentication import (
+    Credentials,
+    RapidAuthHeader,
+    RapidToken,
+)
 
 LOG = logging.getLogger(__name__)
 

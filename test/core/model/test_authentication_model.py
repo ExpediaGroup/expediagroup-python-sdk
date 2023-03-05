@@ -19,9 +19,11 @@ from test.core.constant import authentication as auth_constant
 import requests
 
 from openworld.sdk.core.constant import header
-from openworld.sdk.core.model.authentication import (HttpBearerAuth,
-                                                     Token,
-                                                     _TokenResponse,)
+from openworld.sdk.core.model.authentication import (
+    HttpBearerAuth,
+    Token,
+    _TokenResponse,
+)
 
 
 class TokenTest(unittest.TestCase):
