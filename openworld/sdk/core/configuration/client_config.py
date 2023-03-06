@@ -43,7 +43,7 @@ class ClientConfig:
         """
         self.__auth_config = AuthConfig(Credentials(key, secret), auth_endpoint)
         self.__endpoint = endpoint
-        self.__request_timeout = request_timeout_milliseconds / 1000
+        self.__request_timeout = float(request_timeout_milliseconds / 1000)
 
         self.__post_init__()
 
@@ -61,4 +61,4 @@ class ClientConfig:
 
     @property
     def request_timeout(self) -> float:
-        return float(self.__request_timeout)
+        return self.__request_timeout
