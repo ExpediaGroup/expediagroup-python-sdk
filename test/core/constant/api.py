@@ -68,14 +68,3 @@ class MockResponse:
         response.code = "Bad Request"
         response._content = json.dumps(ERROR_OBJECT, default=pydantic.schema.pydantic_encoder).encode()
         return response
-
-    @staticmethod
-    def hello_world_delayed_response():
-        time.sleep(3.0)
-        response = requests.Response()
-        response.status_code = HTTPStatus.OK
-        response.url = auth_constant.AUTH_ENDPOINT
-        response.headers = dict()
-        response.code = "ok"
-        response._content = json.dumps(HELLO_WORLD_OBJECT, default=pydantic.schema.pydantic_encoder).encode()
-        return response
