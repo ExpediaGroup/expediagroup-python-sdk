@@ -22,12 +22,16 @@ from openworld.sdk.core.constant import url
 
 class ClientConfigTest(unittest.TestCase):
     def test_client_configuration(self):
+        request_timeout_millis = 10_000
+        request_timeout_seconds = 10
+
         client_config = ClientConfig(
-            key=auth_constant.VALID_KEY, secret=auth_constant.VALID_SECRET, endpoint=api_constant.ENDPOINT, auth_endpoint=auth_constant.AUTH_ENDPOINT
+            key=auth_constant.VALID_KEY, secret=auth_constant.VALID_SECRET, endpoint=api_constant.ENDPOINT, auth_endpoint=auth_constant.AUTH_ENDPOINT, request_timeout_milliseconds=request_timeout_millis
         )
 
         self.assertIsNotNone(client_config)
         self.assertIsNotNone(client_config.endpoint)
+        self.assertIsNotNone(client_config.request_timeout)
 
         self.assertIsNotNone(client_config.auth_config)
         self.assertIsNotNone(client_config.auth_config.auth_endpoint)
@@ -36,6 +40,7 @@ class ClientConfigTest(unittest.TestCase):
         self.assertIsNotNone(client_config.auth_config.credentials.secret)
 
         self.assertEqual(client_config.endpoint, api_constant.ENDPOINT)
+        self.assertEqual(client_config.request_timeout, request_timeout_seconds)
 
         self.assertEqual(client_config.auth_config.auth_endpoint, auth_constant.AUTH_ENDPOINT)
         self.assertEqual(client_config.auth_config.credentials.key, auth_constant.VALID_KEY)

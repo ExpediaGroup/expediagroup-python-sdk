@@ -26,26 +26,6 @@ from openworld.sdk.core.constant import header as header_constant
 from openworld.sdk.core.model.exception import service as service_exception
 
 
-class Helpers:
-    @staticmethod
-    def request_timeout_helper_5_secs(*args, **kwargs):
-        request_timeout: float = 5.0
-        request_send_time = datetime.datetime.now()
-        time.sleep(3.0)
-        if datetime.timedelta(seconds=request_timeout) + request_send_time < datetime.datetime.now():
-            raise TimeoutError()
-        return api_constant.MockResponse.hello_world_response()
-
-    @staticmethod
-    def request_timeout_helper_1_sec(*args, **kwargs):
-        request_timeout: float = 1.0
-        request_send_time = datetime.datetime.now()
-        time.sleep(3.0)
-        if datetime.timedelta(seconds=request_timeout) + request_send_time < datetime.datetime.now():
-            raise TimeoutError()
-        return api_constant.MockResponse.hello_world_response()
-
-
 class Mocks:
     authorized_retrieve_token_mock = Mock(return_value=auth_constant.MockResponse.default_token_response())
 
@@ -53,14 +33,11 @@ class Mocks:
 
     invalid_request_response_mock = Mock(return_value=api_constant.MockResponse.invalid_response())
 
-    one_sec_delayed_hello_world_request_response_mock = Mock(side_effect=Helpers.request_timeout_helper_1_sec)
-
-    five_secs_delayed_hello_world_request_response_mock = Mock(side_effect=Helpers.request_timeout_helper_5_secs)
-
 
 class Configs:
     client_config = ClientConfig(
-        key=auth_constant.VALID_KEY, secret=auth_constant.VALID_SECRET, endpoint=api_constant.ENDPOINT, auth_endpoint=auth_constant.AUTH_ENDPOINT
+        key=auth_constant.VALID_KEY, secret=auth_constant.VALID_SECRET, endpoint=api_constant.ENDPOINT,
+        auth_endpoint=auth_constant.AUTH_ENDPOINT, request_timeout_milliseconds=10_000
     )
 
 
@@ -109,7 +86,8 @@ class ApiClientTest(unittest.TestCase):
         api_client = ApiClient(Configs.client_config)
 
         response_obj: api_constant.HelloWorld = api_client.call(
-            method=api_constant.METHOD, body=api_constant.HELLO_WORLD_OBJECT, response_models=[api_constant.HelloWorld], url=api_constant.ENDPOINT
+            method=api_constant.METHOD, body=api_constant.HELLO_WORLD_OBJECT, response_models=[api_constant.HelloWorld],
+            url=api_constant.ENDPOINT
         )
 
         self.assertEqual(response_obj.message, api_constant.HELLO_WORLD_MESSAGE)
@@ -121,7 +99,8 @@ class ApiClientTest(unittest.TestCase):
         api_client = ApiClient(Configs.client_config)
 
         with self.assertRaises(Exception) as call_missing_url_test:
-            api_client.call(body=api_constant.HELLO_WORLD_OBJECT, method=api_constant.METHOD, response_models=[api_constant.HelloWorld], headers=dict())
+            api_client.call(body=api_constant.HELLO_WORLD_OBJECT, method=api_constant.METHOD,
+                            response_models=[api_constant.HelloWorld], headers=dict())
 
     @mock.patch.object(_AuthClient, "_AuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
     @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
@@ -139,7 +118,8 @@ class ApiClientTest(unittest.TestCase):
         api_client = ApiClient(Configs.client_config)
 
         with self.assertRaises(Exception) as call_missing_obj_test:
-            api_client.call(method=api_constant.METHOD, url=api_constant.ENDPOINT, response_models=[api_constant.HelloWorld], headers=dict())
+            api_client.call(method=api_constant.METHOD, url=api_constant.ENDPOINT,
+                            response_models=[api_constant.HelloWorld], headers=dict())
 
     @mock.patch.object(_AuthClient, "_AuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
     @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.invalid_request_response_mock)
@@ -173,38 +153,8 @@ class ApiClientTest(unittest.TestCase):
         api_client = ApiClient(Configs.client_config)
 
         response_obj: api_constant.HelloWorld = api_client.call(
-            method=api_constant.METHOD, response_models=[api_constant.HelloWorld], url=api_constant.ENDPOINT, headers=dict(), body=None
-        )
-
-        self.assertEqual(response_obj.message, api_constant.HELLO_WORLD_MESSAGE)
-        self.assertEqual(response_obj.time, api_constant.DATETIME_NOW)
-        self.assertEqual(response_obj.enum_value, api_constant.HelloWorldEnum.HELLO_WORLD)
-
-    @mock.patch.object(_AuthClient, "_AuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.one_sec_delayed_hello_world_request_response_mock)
-    def test_api_client_failing_timeout(self):
-        api_client = ApiClient(Configs.client_config)
-
-        with self.assertRaises(TimeoutError):
-            response_obj: api_constant.HelloWorld = api_client.call(
-                method=api_constant.METHOD,
-                body=api_constant.HELLO_WORLD_OBJECT,
-                response_models=[api_constant.HelloWorld],
-                url=api_constant.ENDPOINT,
-                headers=dict(),
-            )
-
-    @mock.patch.object(_AuthClient, "_AuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.five_secs_delayed_hello_world_request_response_mock)
-    def test_api_client_call_valid_timeout(self):
-        api_client = ApiClient(Configs.client_config)
-
-        response_obj: api_constant.HelloWorld = api_client.call(
-            method=api_constant.METHOD,
-            body=api_constant.HELLO_WORLD_OBJECT,
-            response_models=[api_constant.HelloWorld],
-            url=api_constant.ENDPOINT,
-            headers=dict(),
+            method=api_constant.METHOD, response_models=[api_constant.HelloWorld], url=api_constant.ENDPOINT,
+            headers=dict(), body=None
         )
 
         self.assertEqual(response_obj.message, api_constant.HELLO_WORLD_MESSAGE)
