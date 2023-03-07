@@ -46,6 +46,7 @@ class ApiClient:
         )
 
         self.endpoint = config.endpoint
+        self.request_timeout = config.request_timeout
 
     @staticmethod
     def __build_response(response: requests.Response, response_models: list[pydantic.BaseModel]):
@@ -97,6 +98,7 @@ class ApiClient:
                 url=str(url),
                 headers=request_headers,
                 auth=auth_bearer,
+                timeout=self.request_timeout,
             )
         else:
             request_body = body.json(exclude_none=True, exclude_unset=True)
@@ -106,6 +108,7 @@ class ApiClient:
                 headers=request_headers,
                 data=request_body,
                 auth=auth_bearer,
+                timeout=self.request_timeout,
             )
 
         request_log_message = log_util.request_log(

@@ -1,0 +1,22 @@
+{% for decorator in decorators -%}
+{{ decorator }}
+{% endfor -%}
+class {{ class_name }}({{ base_class }}):
+    """Enum {{ class_name }}{%- if description %}: {{ description }}{%- endif %}
+    {# comment for new line #}
+    {%- if fields %}Attributes:
+        {# comment #}
+        {%- for field in fields -%}
+        {{ field.name }}({{ field.type_hint }}, {{ field.required }}): {%- if field.docstring %} {{ field.docstring }}{%- else %} -- {%- endif %}
+        {# comment for new line #}
+        {%- endfor -%}
+    {%- endif %}
+    """
+{%- for field in fields %}
+    {{ field.name }} = {{ field.default }}
+    {%- if field.docstring %}
+    """
+    {{ field.docstring | indent(4) }}
+    """
+    {%- endif %}
+{%- endfor -%}

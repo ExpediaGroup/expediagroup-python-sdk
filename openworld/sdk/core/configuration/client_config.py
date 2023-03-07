@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from openworld.sdk.core.configuration.auth_config import AuthConfig
-from openworld.sdk.core.constant import message, url
+from openworld.sdk.core.constant import constant, message, url
 from openworld.sdk.core.model.authentication import Credentials
 from openworld.sdk.core.model.exception import client as client_exception
 
@@ -30,6 +30,7 @@ class ClientConfig:
         key: str,
         secret: str,
         endpoint: Optional[str] = url.ENDPOINT,
+        request_timeout_milliseconds: Optional[float] = constant.TEN_SECONDS_MILLISECONDS,
         auth_endpoint: Optional[str] = url.AUTH_ENDPOINT,
     ):
         r"""SDK Client Configurations Holder.
@@ -37,10 +38,12 @@ class ClientConfig:
         :param key: The API key to use for authentication.
         :param secret: The API secret to use for authentication.
         :param endpoint: An optional API endpoint to use for requests.
+        :param request_timeout_milliseconds: Request timeout to be used in milliseconds.
         :param auth_endpoint: An optional API endpoint to use for authentication.
         """
         self.__auth_config = AuthConfig(Credentials(key, secret), auth_endpoint)
         self.__endpoint = endpoint
+        self.__request_timeout = float(request_timeout_milliseconds / 1000)
 
         self.__post_init__()
 
@@ -55,3 +58,7 @@ class ClientConfig:
     @property
     def endpoint(self) -> str:
         return self.__endpoint
+
+    @property
+    def request_timeout(self) -> float:
+        return self.__request_timeout
