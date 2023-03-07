@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import dataclasses
 import datetime
 import enum
+import json
+import time
 import typing
 from http import HTTPStatus
 from test.core.constant import authentication as auth_constant
 
-import json
 import pydantic.schema
 import requests
 
@@ -56,6 +56,7 @@ class MockResponse:
         response.status_code = HTTPStatus.OK
         response.url = auth_constant.AUTH_ENDPOINT
         response.code = "ok"
+        response.headers = dict()
         response._content = json.dumps(HELLO_WORLD_OBJECT, default=pydantic.schema.pydantic_encoder).encode()
         return response
 

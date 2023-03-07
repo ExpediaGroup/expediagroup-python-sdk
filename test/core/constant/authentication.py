@@ -15,7 +15,6 @@
 import json
 from http import HTTPStatus
 
-import json
 import pydantic.schema
 import requests
 
