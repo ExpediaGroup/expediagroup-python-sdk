@@ -64,7 +64,7 @@ class ApiClientTest(unittest.TestCase):
             api_client = ApiClient()
 
     @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", hello_world_request_response_mock)
+    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
     def test_api_client_call(self):
         api_client = ApiClient(Configs.client_config)
 
@@ -81,7 +81,7 @@ class ApiClientTest(unittest.TestCase):
         self.assertEqual(response_obj.enum_value, api_constant.HelloWorldEnum.HELLO_WORLD)
 
     @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", hello_world_request_response_mock)
+    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
     def test_api_client_call_missing_headers(self):
         api_client = ApiClient(Configs.client_config)
 
@@ -103,7 +103,7 @@ class ApiClientTest(unittest.TestCase):
                             response_models=[api_constant.HelloWorld], headers=dict())
 
     @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", hello_world_request_response_mock)
+    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
     def test_api_client_call_default_response_model(self):
         api_client = ApiClient(Configs.client_config)
 
@@ -122,7 +122,7 @@ class ApiClientTest(unittest.TestCase):
                             response_models=[api_constant.HelloWorld], headers=dict())
 
     @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", invalid_request_response_mock)
+    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.invalid_request_response_mock)
     def test_error_response(self):
         api_client = ApiClient(Configs.client_config)
 
@@ -148,7 +148,7 @@ class ApiClientTest(unittest.TestCase):
             )
 
     @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", hello_world_request_response_mock)
+    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
     def test_api_client_call_none_body(self):
         api_client = ApiClient(Configs.client_config)
 
