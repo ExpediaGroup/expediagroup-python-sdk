@@ -1,9 +1,11 @@
-{{ imports }}
 import platform
+from .model import *
+from typing import *
 from openworld.sdk.core.client.api import ApiClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from furl import furl
 from uuid import UUID, uuid4
+{{ imports }}
 class {{ classname }}:
     def __init__(self, client_config: ClientConfig):
         """{{ api }} Client.

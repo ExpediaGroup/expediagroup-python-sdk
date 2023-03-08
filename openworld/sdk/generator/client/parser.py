@@ -69,7 +69,7 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
         class_name: Optional[str] = None,
         use_standard_collections: bool = False,
         base_path: Optional[pathlib.Path] = None,
-        use_schema_description: bool = False,
+        use_schema_description: bool = True,
         reuse_model: bool = False,
         encoding: str = "utf-8",
         enum_field_as_literal: Optional[LiteralType] = None,
@@ -123,6 +123,8 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
             field_extra_keys=field_extra_keys,
             field_include_all_keys=field_include_all_keys,
         )
+        self.use_field_description = True
+        self.use_schema_description = True
         self.operations: dict[str, Operation] = {}
         self._temporary_operation: dict[str, Any] = {}
         self.parameter_imports: Imports = Imports()
