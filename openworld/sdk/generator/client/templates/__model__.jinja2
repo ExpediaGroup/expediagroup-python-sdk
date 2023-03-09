@@ -13,14 +13,6 @@
 {# limitations under the License.#}
 {{ model_imports }}
 {% for model in models %}
-{% if "Payment" in model.class_name %}
-"""{{ model.class_name }}"""
-{%- for field in model.fields -%}
-"""{{ field.name }}: {{ field.type_hint }}"""
-{% endfor %}
-{% endif %}
-{% endfor %}
-{% for model in models %}
 {% for decorator in model.decorators -%}
 {{ decorator }}
 {% endfor -%}
