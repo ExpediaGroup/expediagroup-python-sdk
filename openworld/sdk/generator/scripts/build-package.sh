@@ -48,8 +48,9 @@ go install github.com/google/addlicense@latest &&\
 cd - &&\
 mkdir -p "package/openworld/sdk/$normalized_namespace" &&\
 cp -a "client/sdk/." "package/openworld/sdk/$normalized_namespace/" &&\
-cp "models/model.py" "package/openworld/sdk/$normalized_namespace/model.py" &&\
+mv "package/openworld/sdk/$normalized_namespace/__model__.py" "package/openworld/sdk/$normalized_namespace/model.py" &&\
 cp "resources/requirements.txt" "package/requirements.txt" &&\
 mv "package/openworld/sdk/$normalized_namespace/setup.py" "package/setup.py" &&\
+rm -rf "package/openworld/sdk/$normalized_namespace/models.py" &&\
 cd package &&\
 python3 -m build
