@@ -26,7 +26,7 @@ LOG = logging.getLogger(__name__)
 
 
 class _RapidAuthClient(AbstractAuthClient):
-    def __init__(self, credentials: Credentials):
+    def __init__(self, credentials: Credentials, *args, **kwargs):
         r"""Manages user authentication process.
 
         :param credentials: Client key and secret pair
@@ -61,6 +61,10 @@ class _RapidAuthClient(AbstractAuthClient):
         :rtype: str
         """
         return self.__token.access_token
+
+    @property
+    def auth_header(self):
+        return self.__token.auth_header
 
     @property
     def is_token_expired(self):

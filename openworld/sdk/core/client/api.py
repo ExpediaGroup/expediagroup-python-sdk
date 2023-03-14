@@ -21,6 +21,7 @@ import pydantic
 import pydantic.schema
 import requests
 
+from openworld.sdk.core.client.auth_client import AbstractAuthClient
 from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from openworld.sdk.core.constant import header as header_constant
@@ -35,12 +36,12 @@ LOG = logging.getLogger(__name__)
 
 
 class ApiClient:
-    def __init__(self, config: ClientConfig):
+    def __init__(self, config: ClientConfig, auth_client_cls):
         r"""Sends requests to API.
 
         :param config: Client Configuration Wrapper
         """
-        self.__auth_client: _OpenWorldAuthClient = _OpenWorldAuthClient(
+        self.__auth_client: AbstractAuthClient = auth_client_cls(
             credentials=config.auth_config.credentials,
             auth_endpoint=config.auth_config.auth_endpoint,
         )
@@ -89,7 +90,6 @@ class ApiClient:
         """
         self.__auth_client.refresh_token()
         request_headers = ApiClient.__prepare_request_headers(headers)
-        auth_bearer = HttpBearerAuth(access_token=self.__auth_client.access_token)
         request_body = dict()
 
         if not body:
@@ -97,7 +97,7 @@ class ApiClient:
                 method=method.upper(),
                 url=str(url),
                 headers=request_headers,
-                auth=auth_bearer,
+                auth=self.__auth_client.auth_header,
                 timeout=self.request_timeout,
             )
         else:
@@ -107,7 +107,7 @@ class ApiClient:
                 url=url,
                 headers=request_headers,
                 data=request_body,
-                auth=auth_bearer,
+                auth=self.__auth_client.auth_header,
                 timeout=self.request_timeout,
             )
 

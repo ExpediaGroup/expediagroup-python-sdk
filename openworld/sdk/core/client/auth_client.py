@@ -30,6 +30,11 @@ class AbstractAuthClient(abc.ABC):
 
     @property
     @abc.abstractmethod
+    def auth_header(self):
+        return None
+
+    @property
+    @abc.abstractmethod
     def is_token_expired(self):
         return None
 
