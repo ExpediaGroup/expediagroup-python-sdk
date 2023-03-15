@@ -19,17 +19,14 @@ import time
 from openworld.sdk.core.client.openworld_auth_client import AbstractAuthClient
 from openworld.sdk.core.constant import constant
 from openworld.sdk.core.constant import log as log_constant
-from openworld.sdk.core.model.authentication import (
-    Credentials,
-    RapidAuthHeader,
-    RapidToken,
-)
+from openworld.sdk.core.model.authentication import Credentials
+from openworld.sdk.core.model.rapid_auth import RapidAuthHeader, RapidToken
 
 LOG = logging.getLogger(__name__)
 
 
 class _RapidAuthClient(AbstractAuthClient):
-    def __init__(self, credentials: Credentials):
+    def __init__(self, credentials: Credentials, *args, **kwargs):
         r"""Manages user authentication process.
 
         :param credentials: Client key and secret pair
@@ -64,6 +61,10 @@ class _RapidAuthClient(AbstractAuthClient):
         :rtype: str
         """
         return self.__token.access_token
+
+    @property
+    def auth_header(self):
+        return self.__token.auth_header
 
     @property
     def is_token_expired(self):

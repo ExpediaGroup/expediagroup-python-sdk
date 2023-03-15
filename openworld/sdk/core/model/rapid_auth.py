@@ -46,13 +46,13 @@ class RapidToken:
     """A model of an API response."""
 
     def __init__(self, auth_header: RapidAuthHeader):
-        self.__access_token = str(auth_header)
+        self.__auth_header = auth_header
         self.__expiration_time = datetime.datetime.now() + datetime.timedelta(seconds=constant.RAPID_TOKEN_LIFE_SPAN_IN_SECONDS)
 
         self.lock: Lock = Lock()
 
     def update(self, auth_header: RapidAuthHeader):
-        self.__access_token = str(auth_header)
+        self.__auth_header = auth_header
         self.__expiration_time = datetime.datetime.now() + datetime.timedelta(seconds=constant.RAPID_TOKEN_LIFE_SPAN_IN_SECONDS)
 
     def is_expired(self):
@@ -63,4 +63,8 @@ class RapidToken:
 
     @property
     def access_token(self):
-        return self.__access_token
+        return str(self.__auth_header)
+
+    @property
+    def auth_header(self):
+        return self.__auth_header

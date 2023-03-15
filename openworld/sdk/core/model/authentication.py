@@ -56,6 +56,7 @@ class Token:
         self.__token: _TokenResponse = _TokenResponse.parse_obj(data)
         self.lock = Lock()
         self.__expiration_time = datetime.datetime.now() + datetime.timedelta(seconds=self.__token.expires_in)
+        self.__auth_header = HttpBearerAuth(self.__token.access_token)
 
         LOG.info(log.OPENWORLD_LOG_MESSAGE_TEMPLATE.format(log.NEW_TOKEN_EXPIRATION_TEMPLATE.format(str(self.__token.expires_in))))
 
@@ -70,6 +71,10 @@ class Token:
     @property
     def id_token(self) -> str:
         return self.__token.id_token
+
+    @property
+    def auth_header(self) -> AuthBase:
+        return self.__auth_header
 
     def is_expired(self):
         return datetime.datetime.now() >= self.__expiration_time

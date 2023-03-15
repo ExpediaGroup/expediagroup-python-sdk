@@ -32,7 +32,7 @@ LOG = logging.getLogger(__name__)
 
 
 class _OpenWorldAuthClient(AbstractAuthClient):
-    def __init__(self, credentials: Credentials, auth_endpoint: str = url_constant.AUTH_ENDPOINT):
+    def __init__(self, credentials: Credentials, auth_endpoint: str = url_constant.AUTH_ENDPOINT, *args, **kwargs):
         r"""Manages user authentication process.
 
         :param credentials: Client key and secret pair
@@ -98,3 +98,7 @@ class _OpenWorldAuthClient(AbstractAuthClient):
 
     def is_token_about_expired(self):
         return self.__token.is_about_expired()
+
+    @property
+    def auth_header(self):
+        return self.__token.auth_header

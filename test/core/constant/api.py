@@ -15,7 +15,6 @@
 import datetime
 import enum
 import json
-import time
 import typing
 from http import HTTPStatus
 from test.core.constant import authentication as auth_constant
