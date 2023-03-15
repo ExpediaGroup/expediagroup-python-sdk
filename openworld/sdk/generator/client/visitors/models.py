@@ -102,7 +102,6 @@ def copy_parent_fields_to_child(parent: DataModel, child: DataModel):
     :param child: Child model.
     :type child: DataModel
     """
-    print(parent.class_name, child.class_name, bool(len([_ for _ in child.fields if _.name == "type"])), [_.name for _ in parent.fields])
     type_does_exist = bool(len([_ for _ in child.fields if _.name == "type"]))
     type_attribute = [_ for _ in parent.fields if _.name == "type"][0].copy()
     parent_fields = [_ for _ in parent.fields if _.name != "type" and _.name != "__root__"]
