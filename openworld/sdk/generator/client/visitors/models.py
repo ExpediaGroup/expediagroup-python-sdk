@@ -93,7 +93,8 @@ def parse_datamodels(parser: OpenAPIParser) -> collections.defaultdict[str, Data
 
 
 def copy_parent_fields_to_child(parent: DataModel, child: DataModel):
-    r"""Copies all fields present in a parent model to a child, except for the fields `type` and `__root__`. Also adds any needed `__root__` field and `Literal` type
+    r"""Copies all fields present in a parent model to a child, except for the fields `type` and `__root__`. Also adds
+    any needed `__root__` field and `Literal` type
 
     :param parent: Parent model.
     :type parent: DataModel.
