@@ -64,7 +64,7 @@ def parse_children(models: collections.defaultdict[str, DataModel]) -> collectio
     :rtype: defaultdict[str, list[DataModel]]
     """
     children: collections.defaultdict[str, list[DataModel]] = collections.defaultdict(list)
-    ignore_parents = ['BaseModel', 'Enum']
+    ignore_parents = ["BaseModel", "Enum"]
     for model_key in models.keys():
         model = models[model_key]
 
@@ -101,31 +101,28 @@ def copy_parent_fields_to_child(parent: DataModel, child: DataModel):
     :param child: Child model.
     :type child: DataModel
     """
-    print(parent.class_name, child.class_name, bool(len([_ for _ in child.fields if _.name == 'type'])),
-          [_.name for _ in parent.fields])
-    type_does_exist = bool(len([_ for _ in child.fields if _.name == 'type']))
-    type_attribute = [_ for _ in parent.fields if _.name == 'type'][0].copy()
-    parent_fields = [_ for _ in parent.fields if _.name != 'type' and _.name != '__root__']
+    print(parent.class_name, child.class_name, bool(len([_ for _ in child.fields if _.name == "type"])), [_.name for _ in parent.fields])
+    type_does_exist = bool(len([_ for _ in child.fields if _.name == "type"]))
+    type_attribute = [_ for _ in parent.fields if _.name == "type"][0].copy()
+    parent_fields = [_ for _ in parent.fields if _.name != "type" and _.name != "__root__"]
 
     if not type_does_exist:
         child.fields.append(type_attribute)
     child.fields = parent_fields + child.fields
 
     for field in child.fields:
-        if field.name != 'type':
+        if field.name != "type":
             continue
 
         literal = DataType(
             type=f'Literal["{child.class_name}", '
-                 f'"{child.class_name.upper()}", '
-                 f'"{child.class_name.lower()}", '
-                 f'"{child.class_name.swapcase()}", '
-                 f'"{child.class_name.capitalize()}"]'
+            f'"{child.class_name.upper()}", '
+            f'"{child.class_name.lower()}", '
+            f'"{child.class_name.swapcase()}", '
+            f'"{child.class_name.capitalize()}"]'
         )
 
-        field.data_type = DataType(
-            data_types=[literal]
-        )
+        field.data_type = DataType(data_types=[literal])
         break
 
     return child
@@ -139,21 +136,14 @@ def refactor_child(child: DataModel, models: collections.defaultdict[str, DataMo
 
 
 def refactor_parent(parent: DataModel, children: list[DataModel]) -> DataModel:
-    type_field = [_ for _ in parent.fields if _.name == 'type'][0]
+    type_field = [_ for _ in parent.fields if _.name == "type"][0]
     parent.fields.clear()
 
-    type_field.name = '__root__'
+    type_field.name = "__root__"
 
-    data_types = [
-        DataType(
-            type=child.class_name,
-            reference=child.reference
-        ) for child in children
-    ]
+    data_types = [DataType(type=child.class_name, reference=child.reference) for child in children]
 
-    type_field.data_type = DataType(
-        data_types=data_types
-    )
+    type_field.data_type = DataType(data_types=data_types)
 
     type_field.default = "Field(None, discriminator='type')"
     type_field.required = True
@@ -179,7 +169,7 @@ def post_process_models_parent_children(parser: OpenAPIParser):
         # If parent has no `type` attribute, then there is no discriminator.
         has_type_attribute = False
         for field in parent.fields:
-            has_type_attribute = has_type_attribute or field.name == 'type'
+            has_type_attribute = has_type_attribute or field.name == "type"
         if not has_type_attribute:
             # Skip model due to lack of discriminator, this also covers for __root__ model case.
             continue
@@ -203,8 +193,7 @@ def post_process_models_parent_children(parser: OpenAPIParser):
 
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     post_process_models_parent_children(parser)
-    _, sorted_models, __ = sort_data_models(
-        unsorted_data_models=[_ for _ in parser.results if isinstance(_, DataModel)])
+    _, sorted_models, __ = sort_data_models(unsorted_data_models=[_ for _ in parser.results if isinstance(_, DataModel)])
 
     return {"models": sorted_models.values(), "model_imports": collect_imports(sorted_models, parser)}
 
