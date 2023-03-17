@@ -91,7 +91,7 @@ def set_datatype(old: Union[DataType, str], current: DataType, new: DataType):
     else:
         type_hint = current.type_hint
         if current.is_optional:
-            type_hint = type_hint.removeprefix('Optional[').removesuffix(']')
+            type_hint = type_hint.removeprefix("Optional[").removesuffix("]")
         if type_hint == old:
             new.is_dict = current.is_dict
             new.is_list = current.is_list
@@ -101,19 +101,12 @@ def set_datatype(old: Union[DataType, str], current: DataType, new: DataType):
     return current
 
 
-def change_field_datatype(field: DataModelFieldBase,
-                          old_type_datamodel: DataModel,
-                          new_datatype: DataType):
-
+def change_field_datatype(field: DataModelFieldBase, old_type_datamodel: DataModel, new_datatype: DataType):
     if field.type_hint and old_type_datamodel.class_name in field.type_hint:
         if bool(len(field.data_type.data_types)):
             for index in range(len(field.data_type.data_types)):
                 datatype = field.data_type.data_types[index]
-                field.data_type.data_types[index] = set_datatype(
-                    old=old_type_datamodel.class_name,
-                    current=datatype,
-                    new=new_datatype
-                )
+                field.data_type.data_types[index] = set_datatype(old=old_type_datamodel.class_name, current=datatype, new=new_datatype)
         else:
             field.data_type = set_datatype(old_type_datamodel.class_name, field.data_type, new_datatype)
 
@@ -122,9 +115,9 @@ def change_field_datatype(field: DataModelFieldBase,
 
 def cleanup_root_models(models: collections.defaultdict[str, DataModel]):
     root_models = [
-        models[model_key] for model_key in models.keys()
-        if ((len(models[model_key].fields) == 1)
-           and models[model_key].fields[0].name == '__root__') or isinstance(models[model_key], CustomRootType)
+        models[model_key]
+        for model_key in models.keys()
+        if ((len(models[model_key].fields) == 1) and models[model_key].fields[0].name == "__root__") or isinstance(models[model_key], CustomRootType)
     ]
 
     for root_model in root_models:
@@ -136,9 +129,7 @@ def cleanup_root_models(models: collections.defaultdict[str, DataModel]):
                 continue
             for field_index in range(len(models[model_key].fields)):
                 models[model_key].fields[field_index] = change_field_datatype(
-                    field=models[model_key].fields[field_index],
-                    old_type_datamodel=root_model,
-                    new_datatype=root_data_type
+                    field=models[model_key].fields[field_index], old_type_datamodel=root_model, new_datatype=root_data_type
                 )
     return models
 
@@ -182,10 +173,10 @@ def copy_parent_fields_to_child(parent: DataModel, child: DataModel):
 
         literal = DataType(
             type=f'Literal["{child.class_name}", '
-                 f'"{child.class_name.upper()}", '
-                 f'"{child.class_name.lower()}", '
-                 f'"{child.class_name.swapcase()}", '
-                 f'"{child.class_name.capitalize()}"]'
+            f'"{child.class_name.upper()}", '
+            f'"{child.class_name.lower()}", '
+            f'"{child.class_name.swapcase()}", '
+            f'"{child.class_name.capitalize()}"]'
         )
 
         field.data_type = DataType(data_types=[literal])
@@ -261,8 +252,7 @@ def post_process_models_parent_children(parser: OpenAPIParser):
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     # TODO: Do the same post-processing to operations `return-type`
     post_process_models_parent_children(parser)
-    _, sorted_models, __ = sort_data_models(
-        unsorted_data_models=[_ for _ in parser.results if isinstance(_, DataModel)])
+    _, sorted_models, __ = sort_data_models(unsorted_data_models=[_ for _ in parser.results if isinstance(_, DataModel)])
 
     return {"models": sorted_models.values(), "model_imports": collect_imports(sorted_models, parser)}
 
