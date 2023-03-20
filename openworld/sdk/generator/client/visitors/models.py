@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from collections import OrderedDict
 from pathlib import Path
 
 from datamodel_code_generator.imports import Import, Imports
@@ -22,14 +21,10 @@ from fastapi_code_generator.visitor import Visitor
 
 
 def collect_imports(sorted_models, parser):
-    models = OrderedDict()
     model_imports = Imports()
 
     imports = Imports()
     imports.update(parser.imports)
-
-    for model in sorted_models.values():
-        models[model.class_name] = model
 
     for model in sorted_models.values():
         for import_ in model.imports:
