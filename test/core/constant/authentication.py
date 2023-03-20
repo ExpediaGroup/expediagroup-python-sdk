@@ -13,12 +13,16 @@
 # limitations under the License.
 
 import json
+import time
+from hashlib import sha512
 from http import HTTPStatus
 
 import pydantic.schema
 import requests
 
+from openworld.sdk.core.constant import constant
 from openworld.sdk.core.model.authentication import Credentials
+from openworld.sdk.core.model.rapid_auth import RapidAuthHeader, RapidToken
 
 VALID_KEY: str = "valid_key"
 
@@ -58,6 +62,14 @@ TOKEN_RESPONSE_DATA = {
     ID_TOKEN: ID_TOKEN,
     REFRESH_TOKEN: REFRESH_TOKEN,
 }
+
+TIMESTAMP = str(int(time.time()))
+
+SIGNATURE: str = sha512(f"{VALID_KEY}{VALID_SECRET}{TIMESTAMP}".encode(encoding=constant.UTF8)).hexdigest()
+
+RAPID_AUTH_HEADER_OBJECT = RapidAuthHeader(signature=SIGNATURE, api_key=VALID_KEY, timestamp=TIMESTAMP)
+
+RAPID_TOKEN_OBJECT = RapidToken(RAPID_AUTH_HEADER_OBJECT)
 
 
 class MockResponse:

@@ -7,6 +7,9 @@ from openworld.sdk.core.client.api import ApiClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from furl import furl
 from uuid import UUID, uuid4
+{% if api.lower() == "rapid" %}from openworld.sdk.core.client.rapid_auth_client import _RapidAuthClient
+{% else %}from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
+{% endif %}
 {{ imports }}
 class {{ classname }}:
     def __init__(self, client_config: ClientConfig):
@@ -18,7 +21,9 @@ class {{ classname }}:
         os_name, os_version = platform.platform().split('-')[:2]
         sdk_metadata = f'open-world-sdk-python-{{ namespace }}/{{ version }}'
 
-        self.__api_client = ApiClient(client_config)
+        {% if api.lower() == "rapid" %}self.__api_client = ApiClient(client_config, _RapidAuthClient)
+        {% else %}self.__api_client = ApiClient(client_config, _OpenWorldAuthClient)
+        {% endif %}
         self.__user_agent = f'{sdk_metadata} (Python {python_version}; {os_name} {os_version})'
 
     {% for operation in operations %}

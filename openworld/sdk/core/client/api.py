@@ -21,12 +21,11 @@ import pydantic
 import pydantic.schema
 import requests
 
-from openworld.sdk.core.client.auth_client import _AuthClient
+from openworld.sdk.core.client.auth_client import AuthClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from openworld.sdk.core.constant import header as header_constant
 from openworld.sdk.core.constant import log as log_constant
 from openworld.sdk.core.constant.constant import OK_STATUS_CODES_RANGE
-from openworld.sdk.core.model.authentication import HttpBearerAuth
 from openworld.sdk.core.model.error import Error
 from openworld.sdk.core.model.exception import service as service_exception
 from openworld.sdk.core.util import log as log_util
@@ -35,12 +34,12 @@ LOG = logging.getLogger(__name__)
 
 
 class ApiClient:
-    def __init__(self, config: ClientConfig):
+    def __init__(self, config: ClientConfig, auth_client_cls):
         r"""Sends requests to API.
 
         :param config: Client Configuration Wrapper
         """
-        self.__auth_client: _AuthClient = _AuthClient(
+        self.__auth_client: AuthClient = auth_client_cls(
             credentials=config.auth_config.credentials,
             auth_endpoint=config.auth_config.auth_endpoint,
         )
@@ -89,7 +88,6 @@ class ApiClient:
         """
         self.__auth_client.refresh_token()
         request_headers = ApiClient.__prepare_request_headers(headers)
-        auth_bearer = HttpBearerAuth(access_token=self.__auth_client.access_token)
         request_body = dict()
 
         if not body:
@@ -97,7 +95,7 @@ class ApiClient:
                 method=method.upper(),
                 url=str(url),
                 headers=request_headers,
-                auth=auth_bearer,
+                auth=self.__auth_client.auth_header,
                 timeout=self.request_timeout,
             )
         else:
@@ -107,7 +105,7 @@ class ApiClient:
                 url=url,
                 headers=request_headers,
                 data=request_body,
-                auth=auth_bearer,
+                auth=self.__auth_client.auth_header,
                 timeout=self.request_timeout,
             )
 
