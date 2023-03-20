@@ -1,9 +1,13 @@
-{{ imports }}
+import json
 import platform
+import pydantic.schema
+from .model import *
+from typing import *
 from openworld.sdk.core.client.api import ApiClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from furl import furl
 from uuid import UUID, uuid4
+{{ imports }}
 class {{ classname }}:
     def __init__(self, client_config: ClientConfig):
         """{{ api }} Client.
@@ -16,34 +20,29 @@ class {{ classname }}:
 
         self.__api_client = ApiClient(client_config)
         self.__user_agent = f'{sdk_metadata} (Python {python_version}; {os_name} {os_version})'
+
     {% for operation in operations %}
     def {{operation.function_name}}(self, {{operation.snake_case_arguments}}) -> {{operation.return_type}}:
         headers = {
         {% for arguemnt in operation.snake_case_arguments_list %}
             {% if arguemnt.in_.value == 'header' %}
-            '{{ arguemnt.alias }}': {{ arguemnt.name.strip() }},
+            '{{ arguemnt.alias }}': json.loads(json.dumps({{ arguemnt.name.strip() }})),
             {% endif %}
         {% endfor %}
         }
 
-        query = {
+        query = {key: value for key, value in {
         {% for arguemnt in operation.snake_case_arguments_list %}
             {% if arguemnt.in_.value == 'query' %}
-            '{{ arguemnt.alias }}': {{ arguemnt.name.strip() }},
+            '{{ arguemnt.alias }}': json.loads(json.dumps({{ arguemnt.name.strip() }}, default=pydantic.schema.pydantic_encoder)),
             {% endif %}
-        {% endfor %}
-        }
+            {% endfor %}
+        }.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
         request_url /= f'{{operation.path}}'
         request_url.query.set(query)
         request_url.path.normalize()
-
-        {% for arguemnt in operation.snake_case_arguments_list %}
-            {% if arguemnt.in_.value == 'body' %}
-            {% set body_variable='body' %}
-            {% endif %}
-        {% endfor %}
 
         return self.__api_client.call(
             headers=headers,

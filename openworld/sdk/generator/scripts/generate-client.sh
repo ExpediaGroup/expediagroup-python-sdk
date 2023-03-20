@@ -58,6 +58,6 @@ echo -e "[sdk]\n\
 namespace=$sdk_namespace\n\
 version=$sdk_version"\
 >./visitors/sdk.config &&\
-python3 ./__main__.py -i "$input_spec" -t "./templates" -o "./sdk" -m models.py &&\
-autoflake --in-place --remove-all-unused-imports ./sdk/client.py\
-&& cd ..
+python3 ./__main__.py -i "$input_spec" -t "./templates" -o "./sdk" -m "model.py" &&\
+autoflake --in-place --remove-all-unused-imports ./sdk/client.py &&\
+cd ..
