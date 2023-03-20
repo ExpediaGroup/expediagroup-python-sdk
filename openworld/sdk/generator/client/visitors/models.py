@@ -13,7 +13,7 @@
 # limitations under the License.
 from pathlib import Path
 
-from datamodel_code_generator.imports import Import, Imports
+from datamodel_code_generator.imports import Imports
 from datamodel_code_generator.model.base import DataModel
 from datamodel_code_generator.parser.base import sort_data_models
 from fastapi_code_generator.parser import OpenAPIParser
@@ -21,21 +21,15 @@ from fastapi_code_generator.visitor import Visitor
 
 
 def collect_imports(sorted_models, parser):
-    model_imports = Imports()
-
     imports = Imports()
     imports.update(parser.imports)
 
     for model in sorted_models.values():
         for import_ in model.imports:
             imports.append(import_)
-            for field in model.fields:
-                for field_import in field.imports:
-                    imports.append(field_import)
-
-    for import_ in model_imports:
-        if isinstance(import_, Import):
-            imports.append(import_)
+        for field in model.fields:
+            for field_import in field.imports:
+                imports.append(field_import)
 
     return imports
 
