@@ -37,7 +37,6 @@ def collect_imports(sorted_models: dict[str, DataModel], parser: OpenAPIParser) 
     :returns: Missing imports needed to add after postprocessing.
     :rtype: Imports
     """
-def collect_imports(sorted_models, parser):
     imports = Imports()
     imports.update(parser.imports)
 
