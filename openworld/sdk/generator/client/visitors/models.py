@@ -35,7 +35,7 @@ def collect_imports(sorted_models, parser):
 
 
 def get_operations(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
-    _, sorted_models, __ = sort_data_models(unsorted_data_models=[_ for _ in parser.results if isinstance(_, DataModel)])
+    _, sorted_models, __ = sort_data_models(unsorted_data_models=[result for result in parser.results if isinstance(result, DataModel)])
 
     return {"models": sorted_models.values(), "model_imports": collect_imports(sorted_models, parser)}
 
