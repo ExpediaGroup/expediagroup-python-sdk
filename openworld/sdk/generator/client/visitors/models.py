@@ -12,12 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import collections
-from collections import OrderedDict
 from pathlib import Path
-from typing import Union
 
 from datamodel_code_generator.imports import Imports
-from datamodel_code_generator.model import DataModel, DataModelFieldBase
+from datamodel_code_generator.model import DataModel
 from datamodel_code_generator.model.pydantic import CustomRootType
 from datamodel_code_generator.parser.base import sort_data_models
 from datamodel_code_generator.types import DataType
@@ -50,7 +48,7 @@ def collect_imports(sorted_models: dict[str, DataModel], parser: OpenAPIParser) 
     return imports
 
 
-def parse_children(models: collections.defaultdict[str, DataModel]) -> collections.defaultdict[str, list[DataModel]]:
+def parse_children(models: dict[str, DataModel]) -> collections.defaultdict[str, list[DataModel]]:
     r"""Parses models that have parents other than `Enum` and `BaseModel`.
 
     :param models: All models parsed from the `OpenApiParser`.
@@ -71,89 +69,6 @@ def parse_children(models: collections.defaultdict[str, DataModel]) -> collectio
         children[parent.class_name].append(model)
 
     return children
-
-
-def set_datatype(old: Union[DataType, str], current: DataType, new: DataType) -> DataType:
-    r"""Takes a datatype object, and converts it into another datatype.
-
-    :param old: The original datatype.
-    :type old: Union[DataType, str].
-
-    :param current: The current datatype.
-    :type current: DataType.
-
-    :param new: The new datatype to use.
-    :type new: DataType
-
-    :returns: The new datatype after transformation.
-    :rtype: DataType
-    """
-    if isinstance(old, DataType):
-        old = old.type_hint
-
-    if bool(len(current.data_types)):
-        for index, datatype in enumerate(current.data_types):
-            if datatype.type_hint == old:
-                current.data_types[index] = new
-
-    else:
-        type_hint = current.type_hint
-        if current.is_optional:
-            type_hint = type_hint.removeprefix("Optional[").removesuffix("]")
-        if type_hint == old:
-            new.is_dict = current.is_dict
-            new.is_list = current.is_list
-            new.is_optional = current.is_optional
-            current = new
-
-    return current
-
-
-def update_field_datatype(field: DataModelFieldBase, old_type_datamodel: DataModel, new_datatype: DataType) -> DataModelFieldBase:
-    r"""Updates the datatype of a field.
-
-    :param field: The field to update its datatype.
-    :type field: DataModelFieldBase.
-
-    :param old_type_datamodel: The original field datatype model.
-    :type old_type_datamodel: DataModel.
-
-    :param new_datatype: The new datatype to use for the field.
-    :type new_datatype: DataType.
-
-    :returns: The field with updated datatype.
-    :rtype: DataModelFieldBase
-    """
-    if field.type_hint and old_type_datamodel.class_name in field.type_hint:
-        if bool(len(field.data_type.data_types)):
-            for index in range(len(field.data_type.data_types)):
-                datatype = field.data_type.data_types[index]
-                field.data_type.data_types[index] = set_datatype(old=old_type_datamodel.class_name, current=datatype, new=new_datatype)
-        else:
-            field.data_type = set_datatype(old_type_datamodel.class_name, field.data_type, new_datatype)
-
-    return field
-
-
-def cleanup_root_models(models: collections.defaultdict[str, DataModel]):
-    root_models = [
-        models[model_key]
-        for model_key in models.keys()
-        if ((len(models[model_key].fields) == 1) and models[model_key].fields[0].name == "__root__") or isinstance(models[model_key], CustomRootType)
-    ]
-
-    for root_model in root_models:
-        root_data_type = root_model.fields[0].data_type
-
-        for model_key in models.keys():
-            model = models[model_key]
-            if model.class_name == root_model.class_name:
-                continue
-            for field_index in range(len(models[model_key].fields)):
-                models[model_key].fields[field_index] = update_field_datatype(
-                    field=models[model_key].fields[field_index], old_type_datamodel=root_model, new_datatype=root_data_type
-                )
-    return models
 
 
 def parse_datamodels(parser: OpenAPIParser) -> collections.defaultdict[str, DataModel]:
@@ -181,9 +96,9 @@ def copy_parent_fields_to_child(parent: DataModel, child: DataModel):
     :param child: Child model.
     :type child: DataModel
     """
-    type_does_exist = bool(len([_ for _ in child.fields if _.name == "type"]))
-    type_attribute = [_ for _ in parent.fields if _.name == "type"][0].copy()
-    parent_fields = [_ for _ in parent.fields if _.name != "type" and _.name != "__root__"]
+    type_does_exist = bool(len([field for field in child.fields if field.name == "type"]))
+    type_attribute = [field for field in parent.fields if field.name == "type"][0].copy()
+    parent_fields = [field for field in parent.fields if field.name != "type" and field.name != "__root__"]
 
     if not type_does_exist:
         child.fields.append(type_attribute)
@@ -193,7 +108,7 @@ def copy_parent_fields_to_child(parent: DataModel, child: DataModel):
         if field.name != "type":
             continue
 
-        literal = DataType(type=f'Literal["{child.class_name}"')
+        literal = DataType(type=f'Literal["{child.class_name}"]')
 
         field.data_type = DataType(data_types=[literal])
         break
@@ -203,8 +118,6 @@ def copy_parent_fields_to_child(parent: DataModel, child: DataModel):
 
 def refactor_child(child: DataModel, models: collections.defaultdict[str, DataModel]):
     child = copy_parent_fields_to_child(parent=models[child.base_class], child=child)
-    child.base_classes.clear()
-    child.set_base_class()
     return child
 
 
@@ -226,6 +139,22 @@ def refactor_parent(parent: DataModel, children: list[DataModel]) -> DataModel:
     return parent
 
 
+def has_type_attribute(model: DataModel) -> bool:
+    result = False
+    for field in model.fields:
+        result = result or field.name == "type"
+    return result
+
+
+def is_parent_processed(parent: DataModel, children: list[DataModel]):
+    result = len(parent.fields) == 1
+    result = result and (parent.fields[0].name == "__root__" or isinstance(parent, CustomRootType))
+    result = result and len(
+        [child.class_name for child in children if child.class_name in parent.fields[0].type_hint]) == len(children)
+
+    return result
+
+
 def post_process_models_parent_children(parser: OpenAPIParser):
     r"""Method to post process models whenever `type` attribute is present, move parent model attributes to children,
     add one `__root__` attribute in each parent, and replace type hint of `type` with Literal type-hint.
@@ -240,10 +169,7 @@ def post_process_models_parent_children(parser: OpenAPIParser):
         parent = models[parent_key]
 
         # If parent has no `type` attribute, then there is no discriminator.
-        has_type_attribute = False
-        for field in parent.fields:
-            has_type_attribute = has_type_attribute or field.name == "type"
-        if not has_type_attribute:
+        if not has_type_attribute(parent):
             # Skip model due to lack of discriminator, this also covers for __root__ model case.
             continue
 
@@ -254,7 +180,6 @@ def post_process_models_parent_children(parser: OpenAPIParser):
         parent = refactor_parent(parent, children[parent.class_name])
         models[parent.class_name] = parent
 
-    models = cleanup_root_models(cleanup_root_models(models))
     for model_index in range(len(parser.results)):
         if isinstance(parser.results[model_index], DataModel):
             model = parser.results[model_index]
@@ -265,12 +190,43 @@ def post_process_models_parent_children(parser: OpenAPIParser):
             parser.results[model_index] = models[model.class_name]
 
 
+def parse_processed_parent_children_classnames(models: dict[str, DataModel]) -> tuple[list[str], dict[str, list[str]]]:
+    r"""Parses processed children and their parents"""
+    processed_parent_children_classnames: dict[str, list[str]] = collections.defaultdict(list)
+    processed_parents_classnames: list[str] = list()
+    children: dict[str, list[DataModel]] = parse_children(models)
+
+    for parent_classname in children.keys():
+        parent = models[parent_classname]
+        if is_parent_processed(parent, children[parent_classname]):
+            processed_parents_classnames.append(parent_classname)
+            processed_parent_children_classnames[parent_classname] = [child.class_name for child in
+                                                                      children[parent_classname]]
+
+    return processed_parents_classnames, processed_parent_children_classnames
+
+
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     # TODO: Do the same post-processing to operations `return-type`
     post_process_models_parent_children(parser)
-    _, sorted_models, __ = sort_data_models(unsorted_data_models=[_ for _ in parser.results if isinstance(_, DataModel)])
+    _, sorted_models, __ = sort_data_models(
+        unsorted_data_models=[_ for _ in parser.results if isinstance(_, DataModel)])
+    processed_parents_classnames, processed_parent_children_classnames = parse_processed_parent_children_classnames(
+        parse_datamodels(parser))
 
-    return {"models": sorted_models.values(), "model_imports": collect_imports(sorted_models, parser)}
+    is_rendered: dict[str, bool] = dict()
+    for parent_classname in processed_parent_children_classnames.keys():
+        is_rendered[parent_classname] = False
+        for child_classname in processed_parent_children_classnames[parent_classname]:
+            is_rendered[child_classname] = False
+    x = collections.defaultdict(bool)
+    return {
+        "models": sorted_models.values(),
+        "model_imports": collect_imports(sorted_models, parser),
+        "processed_parent_children_classnames": processed_parent_children_classnames,
+        "is_rendered": is_rendered,
+        "all_children_rendered_helper": collections.defaultdict(bool)
+    }
 
 
 visit: Visitor = get_models
