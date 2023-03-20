@@ -16,7 +16,7 @@ import hashlib
 import logging
 import time
 
-from openworld.sdk.core.client.openworld_auth_client import AbstractAuthClient
+from openworld.sdk.core.client.openworld_auth_client import AuthClient
 from openworld.sdk.core.constant import constant
 from openworld.sdk.core.constant import log as log_constant
 from openworld.sdk.core.model.authentication import Credentials
@@ -25,7 +25,7 @@ from openworld.sdk.core.model.rapid_auth import RapidAuthHeader, RapidToken
 LOG = logging.getLogger(__name__)
 
 
-class _RapidAuthClient(AbstractAuthClient):
+class _RapidAuthClient(AuthClient):
     def __init__(self, credentials: Credentials, *args, **kwargs):
         r"""Manages user authentication process.
 

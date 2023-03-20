@@ -18,7 +18,7 @@ from http import HTTPStatus
 from requests import Response, post
 from requests.auth import HTTPBasicAuth
 
-from openworld.sdk.core.client.auth_client import AbstractAuthClient
+from openworld.sdk.core.client.auth_client import AuthClient
 from openworld.sdk.core.constant import body as body_constant
 from openworld.sdk.core.constant import log as log_constant
 from openworld.sdk.core.constant import url as url_constant
@@ -31,7 +31,7 @@ from openworld.sdk.core.util import log as log_util
 LOG = logging.getLogger(__name__)
 
 
-class _OpenWorldAuthClient(AbstractAuthClient):
+class _OpenWorldAuthClient(AuthClient):
     def __init__(self, credentials: Credentials, auth_endpoint: str = url_constant.AUTH_ENDPOINT, *args, **kwargs):
         r"""Manages user authentication process.
 
