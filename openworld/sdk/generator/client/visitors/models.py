@@ -33,6 +33,9 @@ def collect_imports(sorted_models: dict[str, DataModel], parser: OpenAPIParser) 
 
     :param parser: The parser holding parsed results.
     :type parser: OpenAPIParser
+
+    :returns: Missing imports needed to add after postprocessing.
+    :rtype: Imports
     """
     models = OrderedDict()
     model_imports = Imports()
@@ -63,6 +66,7 @@ def parse_children(models: collections.defaultdict[str, DataModel]) -> collectio
     :param models: All models parsed from the `OpenApiParser`.
     :type models: defaultdict[str, DataModel]
 
+    :returns: A dictionary of models which are children to other models.
     :rtype: defaultdict[str, list[DataModel]]
     """
     children: collections.defaultdict[str, list[DataModel]] = collections.defaultdict(list)
@@ -79,14 +83,28 @@ def parse_children(models: collections.defaultdict[str, DataModel]) -> collectio
     return children
 
 
-def set_datatype(old: Union[DataType, str], current: DataType, new: DataType):
+def set_datatype(old: Union[DataType, str], current: DataType, new: DataType) -> DataType:
+    r"""Takes a datatype object, and converts it into another datatype.
+
+    :param old: The original datatype.
+    :type old: Union[DataType, str].
+
+    :param current: The current datatype.
+    :type current: DataType.
+
+    :param new: The new datatype to use.
+    :type new: DataType
+
+    :returns: The new datatype after transformation.
+    :rtype: DataType
+    """
     if isinstance(old, DataType):
         old = old.type_hint
 
     if bool(len(current.data_types)):
         for index, datatype in enumerate(current.data_types):
             if datatype.type_hint == old:
-                current.data_types[0] = new
+                current.data_types[index] = new
 
     else:
         type_hint = current.type_hint
@@ -101,7 +119,21 @@ def set_datatype(old: Union[DataType, str], current: DataType, new: DataType):
     return current
 
 
-def change_field_datatype(field: DataModelFieldBase, old_type_datamodel: DataModel, new_datatype: DataType):
+def update_field_datatype(field: DataModelFieldBase, old_type_datamodel: DataModel, new_datatype: DataType) -> DataModelFieldBase:
+    r"""Updates the datatype of a field.
+
+    :param field: The field to update its datatype.
+    :type field: DataModelFieldBase.
+
+    :param old_type_datamodel: The original field datatype model.
+    :type old_type_datamodel: DataModel.
+
+    :param new_datatype: The new datatype to use for the field.
+    :type new_datatype: DataType.
+
+    :returns: The field with updated datatype.
+    :rtype: DataModelFieldBase
+    """
     if field.type_hint and old_type_datamodel.class_name in field.type_hint:
         if bool(len(field.data_type.data_types)):
             for index in range(len(field.data_type.data_types)):
@@ -128,7 +160,7 @@ def cleanup_root_models(models: collections.defaultdict[str, DataModel]):
             if model.class_name == root_model.class_name:
                 continue
             for field_index in range(len(models[model_key].fields)):
-                models[model_key].fields[field_index] = change_field_datatype(
+                models[model_key].fields[field_index] = update_field_datatype(
                     field=models[model_key].fields[field_index], old_type_datamodel=root_model, new_datatype=root_data_type
                 )
     return models
@@ -171,13 +203,7 @@ def copy_parent_fields_to_child(parent: DataModel, child: DataModel):
         if field.name != "type":
             continue
 
-        literal = DataType(
-            type=f'Literal["{child.class_name}", '
-            f'"{child.class_name.upper()}", '
-            f'"{child.class_name.lower()}", '
-            f'"{child.class_name.swapcase()}", '
-            f'"{child.class_name.capitalize()}"]'
-        )
+        literal = DataType(type=f'Literal["{child.class_name}"')
 
         field.data_type = DataType(data_types=[literal])
         break
