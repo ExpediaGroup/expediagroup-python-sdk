@@ -18,7 +18,7 @@ import logging
 LOG = logging.getLogger(__name__)
 
 
-class AbstractAuthClient(abc.ABC):
+class AuthClient(abc.ABC):
     @abc.abstractmethod
     def refresh_token(self):
         pass

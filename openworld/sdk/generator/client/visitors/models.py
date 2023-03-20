@@ -16,7 +16,7 @@ from collections import OrderedDict
 from pathlib import Path
 from typing import Union
 
-from datamodel_code_generator.imports import Import, Imports
+from datamodel_code_generator.imports import Imports
 from datamodel_code_generator.model import DataModel, DataModelFieldBase
 from datamodel_code_generator.model.pydantic import CustomRootType
 from datamodel_code_generator.parser.base import sort_data_models
@@ -37,25 +37,16 @@ def collect_imports(sorted_models: dict[str, DataModel], parser: OpenAPIParser) 
     :returns: Missing imports needed to add after postprocessing.
     :rtype: Imports
     """
-    models = OrderedDict()
-    model_imports = Imports()
-
+def collect_imports(sorted_models, parser):
     imports = Imports()
     imports.update(parser.imports)
 
     for model in sorted_models.values():
-        models[model.class_name] = model
-
-    for model in sorted_models.values():
         for import_ in model.imports:
             imports.append(import_)
-            for field in model.fields:
-                for field_import in field.imports:
-                    imports.append(field_import)
-
-    for import_ in model_imports:
-        if isinstance(import_, Import):
-            imports.append(import_)
+        for field in model.fields:
+            for field_import in field.imports:
+                imports.append(field_import)
 
     return imports
 

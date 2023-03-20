@@ -21,7 +21,7 @@ import pydantic
 import pydantic.schema
 import requests
 
-from openworld.sdk.core.client.auth_client import AbstractAuthClient
+from openworld.sdk.core.client.auth_client import AuthClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from openworld.sdk.core.constant import header as header_constant
 from openworld.sdk.core.constant import log as log_constant
@@ -39,7 +39,7 @@ class ApiClient:
 
         :param config: Client Configuration Wrapper
         """
-        self.__auth_client: AbstractAuthClient = auth_client_cls(
+        self.__auth_client: AuthClient = auth_client_cls(
             credentials=config.auth_config.credentials,
             auth_endpoint=config.auth_config.auth_endpoint,
         )
