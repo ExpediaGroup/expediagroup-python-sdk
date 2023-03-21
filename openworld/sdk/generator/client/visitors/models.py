@@ -225,6 +225,17 @@ def parse_processed_parent_children_classnames(models: dict[str, DataModel]) -> 
 
 
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
+    r"""A visitor that exposes models and related data to `jinja2` templates.
+
+    :param parser: The parser holding results of parsing the OpenApi specification file.
+    :type parser: OpenAPIParser
+
+    :param model_path: Models path.
+    :type model_path: Path
+
+    :returns: Data to be exposed to `jinja2` templates.
+    :rtype: dict[str, object]
+    """
     # TODO: Do the same post-processing to operations `return-type`
     post_process_models_parent_children(parser)
     _, sorted_models, __ = sort_data_models(unsorted_data_models=[result for result in parser.results if isinstance(result, DataModel)])
