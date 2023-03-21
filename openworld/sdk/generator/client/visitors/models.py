@@ -215,7 +215,7 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
         is_rendered[parent_classname] = False
         for child_classname in processed_parent_children_classnames[parent_classname]:
             is_rendered[child_classname] = False
-    x = collections.defaultdict(bool)
+
     return {
         "models": sorted_models.values(),
         "model_imports": collect_imports(sorted_models, parser),
