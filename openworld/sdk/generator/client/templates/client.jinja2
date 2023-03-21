@@ -10,7 +10,6 @@ from uuid import UUID, uuid4
 {% if api.lower() == "rapid" %}from openworld.sdk.core.client.rapid_auth_client import _RapidAuthClient
 {% else %}from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
 {% endif %}
-{{ imports }}
 class {{ classname }}:
     def __init__(self, client_config: ClientConfig):
         """{{ api }} Client.

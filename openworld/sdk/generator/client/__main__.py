@@ -49,6 +49,7 @@ def generate_code(
         parser = OpenApiParser(input_text, enum_field_as_literal=enum_field_as_literal)  # noqa
     else:
         parser = OpenApiParser(input_text)
+        parser.collapse_root_models = True
     with chdir(output_dir):
         models = parser.parse()
     if not models:
