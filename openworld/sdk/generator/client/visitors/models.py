@@ -168,9 +168,11 @@ def is_parent_processed(parent: DataModel, children: list[DataModel]):
     :param children: Children of a given parent model.
     :type children: list[DataModel].
     """
-    return len(parent.fields) == 1 \
-        and (parent.fields[0].name == "__root__" or isinstance(parent, CustomRootType)) \
+    return (
+        len(parent.fields) == 1
+        and (parent.fields[0].name == "__root__" or isinstance(parent, CustomRootType))
         and len([child.class_name for child in children if child.class_name in parent.fields[0].type_hint]) == len(children)
+    )
 
 
 def post_process_models_parent_children(parser: OpenAPIParser):
@@ -225,10 +227,8 @@ def parse_processed_parent_children_classnames(models: dict[str, DataModel]) -> 
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     # TODO: Do the same post-processing to operations `return-type`
     post_process_models_parent_children(parser)
-    _, sorted_models, __ = sort_data_models(
-        unsorted_data_models=[result for result in parser.results if isinstance(result, DataModel)])
-    processed_parent_children_classnames = parse_processed_parent_children_classnames(
-        parse_datamodels(parser))
+    _, sorted_models, __ = sort_data_models(unsorted_data_models=[result for result in parser.results if isinstance(result, DataModel)])
+    processed_parent_children_classnames = parse_processed_parent_children_classnames(parse_datamodels(parser))
 
     is_rendered: dict[str, bool] = dict()
     for parent_classname, children_classnames in processed_parent_children_classnames.items():
