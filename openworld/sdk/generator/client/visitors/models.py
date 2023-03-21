@@ -57,18 +57,16 @@ def parse_children(models: dict[str, DataModel]) -> collections.defaultdict[str,
     :returns: A dictionary of models which are children to other models.
     :rtype: defaultdict[str, list[DataModel]]
     """
-    children: collections.defaultdict[str, list[DataModel]] = collections.defaultdict(list)
+    parent_children: collections.defaultdict[str, list[DataModel]] = collections.defaultdict(list)
     ignore_parents = ["BaseModel", "Enum"]
-    for model_key in models.keys():
-        model = models[model_key]
-
+    for model_key, model in models.items():
         if model.base_class in ignore_parents:
             continue
 
         parent = models[model.base_class]
-        children[parent.class_name].append(model)
+        parent_children[parent.class_name].append(model)
 
-    return children
+    return parent_children
 
 
 def parse_datamodels(parser: OpenAPIParser) -> collections.defaultdict[str, DataModel]:
@@ -79,7 +77,7 @@ def parse_datamodels(parser: OpenAPIParser) -> collections.defaultdict[str, Data
     """
     models: collections.defaultdict[str, DataModel] = collections.defaultdict(lambda: None)
 
-    for model in [_ for _ in parser.results if isinstance(_, DataModel)]:
+    for model in [result for result in parser.results if isinstance(result, DataModel)]:
         if (not model) or (not model.class_name) or (not model.base_class):
             continue
         models[model.class_name] = model
@@ -96,12 +94,16 @@ def copy_parent_fields_to_child(parent: DataModel, child: DataModel):
     :param child: Child model.
     :type child: DataModel
     """
-    type_does_exist = bool(len([field for field in child.fields if field.name == "type"]))
-    type_attribute = [field for field in parent.fields if field.name == "type"][0].copy()
+    type_exists_in_child = bool([field for field in child.fields if field.name == "type"])
+
+    type_attribute_in_parent = [field for field in parent.fields if field.name == "type"]
+    if type_attribute_in_parent:
+        type_attribute_in_parent = type_attribute_in_parent[0].copy()
+
     parent_fields = [field for field in parent.fields if field.name != "type" and field.name != "__root__"]
 
-    if not type_does_exist:
-        child.fields.append(type_attribute)
+    if not type_exists_in_child:
+        child.fields.append(type_attribute_in_parent)
     child.fields = parent_fields + child.fields
 
     for field in child.fields:
@@ -116,13 +118,24 @@ def copy_parent_fields_to_child(parent: DataModel, child: DataModel):
     return child
 
 
-def refactor_child(child: DataModel, models: collections.defaultdict[str, DataModel]):
-    child = copy_parent_fields_to_child(parent=models[child.base_class], child=child)
-    return child
-
-
 def refactor_parent(parent: DataModel, children: list[DataModel]) -> DataModel:
-    type_field = [_ for _ in parent.fields if _.name == "type"][0]
+    r"""Finds if parent has type attribute, removes all fields from it, and replaces them with one `__root__` attribute.
+
+    :param parent: The parent model.
+    :type parent: DataModel.
+
+    :param children: Children of a given parent model.
+    :type children: list[DataModel].
+
+    :returns: Refactored parent model.
+    :rtype: DataModel.
+    """
+    type_field = [field for field in parent.fields if field.name == "type"]
+    if not type_field:
+        return parent
+
+    type_field = type_field[0]
+
     parent.fields.clear()
 
     type_field.name = "__root__"
@@ -140,18 +153,24 @@ def refactor_parent(parent: DataModel, children: list[DataModel]) -> DataModel:
 
 
 def has_type_attribute(model: DataModel) -> bool:
-    result = False
     for field in model.fields:
-        result = result or field.name == "type"
-    return result
+        if field.name == "type":
+            return True
+    return False
 
 
 def is_parent_processed(parent: DataModel, children: list[DataModel]):
-    result = len(parent.fields) == 1
-    result = result and (parent.fields[0].name == "__root__" or isinstance(parent, CustomRootType))
-    result = result and len([child.class_name for child in children if child.class_name in parent.fields[0].type_hint]) == len(children)
+    """Checks if a parent model has been post processed before, in other words, it has children models, and one `__root__` field.
 
-    return result
+    :param parent: Parent model.
+    :type parent: DataModel.
+
+    :param children: Children of a given parent model.
+    :type children: list[DataModel].
+    """
+    return len(parent.fields) == 1 \
+        and (parent.fields[0].name == "__root__" or isinstance(parent, CustomRootType)) \
+        and len([child.class_name for child in children if child.class_name in parent.fields[0].type_hint]) == len(children)
 
 
 def post_process_models_parent_children(parser: OpenAPIParser):
@@ -162,58 +181,59 @@ def post_process_models_parent_children(parser: OpenAPIParser):
     """
 
     models = parse_datamodels(parser)
-    children = parse_children(models)
+    parent_children = parse_children(models)
 
-    for parent_key in children.keys():
-        parent = models[parent_key]
+    for parent, children in parent_children.items():
+        parent = models[parent]
 
         # If parent has no `type` attribute, then there is no discriminator.
         if not has_type_attribute(parent):
             # Skip model due to lack of discriminator, this also covers for __root__ model case.
             continue
 
-        for child_index in range(len(children[parent.class_name])):
-            child = refactor_child(child=children[parent.class_name][child_index], models=models)
+        for child_index in range(len(children)):
+            child = copy_parent_fields_to_child(parent=parent, child=parent_children[parent.class_name][child_index])
             models[child.class_name] = child
 
-        parent = refactor_parent(parent, children[parent.class_name])
+        parent = refactor_parent(parent, parent_children[parent.class_name])
         models[parent.class_name] = parent
 
-    for model_index in range(len(parser.results)):
-        if isinstance(parser.results[model_index], DataModel):
-            model = parser.results[model_index]
-
+    for index, model in enumerate(parser.results):
+        if isinstance(parser.results[index], DataModel):
             if not model or not model.class_name or not model.base_class:
                 continue
 
-            parser.results[model_index] = models[model.class_name]
+            parser.results[index] = models[model.class_name]
 
 
-def parse_processed_parent_children_classnames(models: dict[str, DataModel]) -> tuple[list[str], dict[str, list[str]]]:
-    r"""Parses processed children and their parents"""
+def parse_processed_parent_children_classnames(models: dict[str, DataModel]) -> dict[str, list[str]]:
+    r"""Parses processed children and their parents
+
+    :param models: Parsed datamodels.
+    :type models: dict[str, DataModel].
+    """
     processed_parent_children_classnames: dict[str, list[str]] = collections.defaultdict(list)
-    processed_parents_classnames: list[str] = list()
-    children: dict[str, list[DataModel]] = parse_children(models)
 
-    for parent_classname in children.keys():
+    for parent_classname, children in parse_children(models).items():
         parent = models[parent_classname]
-        if is_parent_processed(parent, children[parent_classname]):
-            processed_parents_classnames.append(parent_classname)
-            processed_parent_children_classnames[parent_classname] = [child.class_name for child in children[parent_classname]]
+        if is_parent_processed(parent, children):
+            processed_parent_children_classnames[parent_classname] = [child.class_name for child in children]
 
-    return processed_parents_classnames, processed_parent_children_classnames
+    return processed_parent_children_classnames
 
 
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     # TODO: Do the same post-processing to operations `return-type`
     post_process_models_parent_children(parser)
-    _, sorted_models, __ = sort_data_models(unsorted_data_models=[_ for _ in parser.results if isinstance(_, DataModel)])
-    processed_parents_classnames, processed_parent_children_classnames = parse_processed_parent_children_classnames(parse_datamodels(parser))
+    _, sorted_models, __ = sort_data_models(
+        unsorted_data_models=[result for result in parser.results if isinstance(result, DataModel)])
+    processed_parent_children_classnames = parse_processed_parent_children_classnames(
+        parse_datamodels(parser))
 
     is_rendered: dict[str, bool] = dict()
-    for parent_classname in processed_parent_children_classnames.keys():
+    for parent_classname, children_classnames in processed_parent_children_classnames.items():
         is_rendered[parent_classname] = False
-        for child_classname in processed_parent_children_classnames[parent_classname]:
+        for child_classname in children_classnames:
             is_rendered[child_classname] = False
 
     return {
