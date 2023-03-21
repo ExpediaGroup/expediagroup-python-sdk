@@ -69,9 +69,7 @@ class {{ model.class_name }}({% if model.base_class in processed_parent_children
 {% endif %}
 {% endfor %}
 {% for model in models %}
-    {% if model.class_name in processed_parent_children_classnames.keys() or model.base_class == 'Enum' %}
-    {# Do nothing #}
-    {% else %}
+    {% if not (model.class_name in processed_parent_children_classnames.keys() or model.base_class == 'Enum') %}
 {{ model.class_name }}.update_forward_refs()
     {% endif %}
 {% endfor %}
