@@ -59,7 +59,7 @@ def parse_children(models: dict[str, DataModel]) -> collections.defaultdict[str,
     """
     parent_children: collections.defaultdict[str, list[DataModel]] = collections.defaultdict(list)
     ignore_parents = ["BaseModel", "Enum"]
-    for model_key, model in models.items():
+    for model in models.values():
         if model.base_class in ignore_parents:
             continue
 
