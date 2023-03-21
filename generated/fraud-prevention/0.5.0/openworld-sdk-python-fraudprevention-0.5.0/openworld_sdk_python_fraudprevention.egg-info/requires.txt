@@ -1,0 +1,5 @@
+uri
+furl
+openworld-sdk-python-core
+pydantic
+pydantic[email]
