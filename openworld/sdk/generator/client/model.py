@@ -30,6 +30,7 @@ class ParamTypes(Enum):
 class Argument(fastapi_code_generator_parser.Argument):
     in_: ParamTypes = None
     alias: str = ""
+    description: str = ""
 
 
 class Operation(fastapi_code_generator_parser.Operation):
