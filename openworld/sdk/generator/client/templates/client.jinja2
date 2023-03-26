@@ -4,6 +4,7 @@ import pydantic.schema
 from .model import *
 from typing import *
 from openworld.sdk.core.client.api import ApiClient
+from openworld.sdk.core.constant import header
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from furl import furl
 from uuid import UUID, uuid4
@@ -17,7 +18,7 @@ class {{ classname }}:
         :param client_config: Client configuration holder.
         """
         python_version = platform.python_version()
-        os_name, os_version = platform.platform().split('-')[:2]
+        os_name, os_version, *_ = platform.platform().split('-')
         sdk_metadata = f'open-world-sdk-python-{{ namespace }}/{{ version }}'
 
         {% if api.lower() == "rapid" %}self.__api_client = ApiClient(client_config, _RapidAuthClient)
@@ -28,6 +29,7 @@ class {{ classname }}:
     {% for operation in operations %}
     def {{operation.function_name}}(self, {{operation.snake_case_arguments}}) -> {{operation.return_type}}:
         headers = {
+            header.USER_AGENT: self.__user_agent,
         {% for arguemnt in operation.snake_case_arguments_list %}
             {% if arguemnt.in_.value == 'header' %}
             '{{ arguemnt.alias }}': json.loads(json.dumps({{ arguemnt.name.strip() }})),
