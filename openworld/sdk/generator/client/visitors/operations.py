@@ -17,7 +17,7 @@ from pathlib import Path
 
 from datamodel_code_generator.model import DataModel
 from datamodel_code_generator.model.pydantic import CustomRootType
-from fastapi_code_generator.parser import OpenAPIParser, Operation, Argument
+from fastapi_code_generator.parser import Argument, OpenAPIParser, Operation
 from fastapi_code_generator.visitor import Visitor
 
 
@@ -117,13 +117,7 @@ def update_non_schema_models_names(parser: OpenAPIParser, models_classnames_to_u
 
 
 def clean_unwanted_headers(snake_case_arguments: list[Argument]):
-    unwanted_headers = [
-        "accept",
-        "accept-encoding",
-        "user-agent",
-        "authorization",
-        "content-type"
-    ]
+    unwanted_headers = ["accept", "accept-encoding", "user-agent", "authorization", "content-type"]
 
     to_remove_argument_indeices = []
     for index, argument in enumerate(snake_case_arguments):
