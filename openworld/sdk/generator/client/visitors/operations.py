@@ -17,7 +17,7 @@ from pathlib import Path
 
 from datamodel_code_generator.model import DataModel
 from datamodel_code_generator.model.pydantic import CustomRootType
-from fastapi_code_generator.parser import OpenAPIParser, Operation
+from fastapi_code_generator.parser import OpenAPIParser, Operation, Argument
 from fastapi_code_generator.visitor import Visitor
 
 
@@ -104,6 +104,7 @@ def clean_non_schema_parameter_models(operations, non_schema_models, models_clas
                     non_schema_models[model_index].class_name = new_classname
                     break
 
+        operations[operation_index].snake_case_arguments_list = clean_unwanted_headers(operations[operation_index].snake_case_arguments_list)
         operations[operation_index].snake_case_arguments = ", ".join(argument.argument for argument in operations[operation_index].snake_case_arguments_list)
     return operations
 
@@ -113,6 +114,26 @@ def update_non_schema_models_names(parser: OpenAPIParser, models_classnames_to_u
         if isinstance(model, DataModel):
             if models_classnames_to_update[model.class_name]:
                 parser.results[model_index].class_name = models_classnames_to_update[model.class_name]
+
+
+def clean_unwanted_headers(snake_case_arguments: list[Argument]):
+    unwanted_headers = [
+        "accept",
+        "accept-encoding",
+        "user-agent",
+        "authorization",
+        "content-type"
+    ]
+
+    to_remove_argument_indeices = []
+    for index, argument in enumerate(snake_case_arguments):
+        if argument.alias.lower() in unwanted_headers:
+            to_remove_argument_indeices.append(index)
+
+    while to_remove_argument_indeices:
+        snake_case_arguments.pop(to_remove_argument_indeices.pop())
+
+    return snake_case_arguments
 
 
 def post_process_operations(parser: OpenAPIParser):
