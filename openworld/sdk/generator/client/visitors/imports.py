@@ -48,4 +48,5 @@ def get_imports(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     return {"imports": imports}
 
 
+order: int = 3
 visit: Visitor = get_imports

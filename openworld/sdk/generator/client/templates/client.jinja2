@@ -30,7 +30,7 @@ class {{ classname }}:
         headers = {
         {% for arguemnt in operation.snake_case_arguments_list %}
             {% if arguemnt.in_.value == 'header' %}
-            '{{ arguemnt.alias }}': json.loads(json.dumps({{ arguemnt.name.strip() }})),
+            '{{ arguemnt.alias }}': {{ arguemnt.name.strip() }},
             {% endif %}
         {% endfor %}
         }

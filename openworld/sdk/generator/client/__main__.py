@@ -71,7 +71,7 @@ def generate_code(
     code_formatter = CodeFormatter(PythonVersion.PY_38, Path().resolve())
 
     template_vars: dict[str, object] = {"info": parser.parse_info()}
-    visitors: list[Visitor] = []
+    visitors: list[tuple[int, Visitor]] = []
 
     # openworld: set new visitors' path.
     BUILTIN_VISITOR_DIR = Path(__file__).parent / "visitors"
@@ -81,12 +81,19 @@ def generate_code(
     for visitor_path in visitors_path:
         module = dynamic_load_module(visitor_path)
         if hasattr(module, "visit"):
-            visitors.append(module.visit)
+            # If visitor was given a positive order, it will be parsed,
+            # otherwise it shall have an order later than ordered visitors.
+            visitor_order = int(module.order) if hasattr(module, "order") and module.order > 0 else int(1e18)
+
+            visitors.append((visitor_order, module.visit))
         else:
             raise Exception(f"{visitor_path.stem} does not have any visit function")
 
+    # Sort visitors by their given order
+    visitors.sort(key=lambda item: item[0])
+
     # Call visitors to build template_vars
-    for visitor in visitors:
+    for _, visitor in visitors:
         visitor_result = visitor(parser, model_path)
         template_vars = {**template_vars, **visitor_result}
 
