@@ -27,6 +27,10 @@ class {{ classname }}:
 
     {% for operation in operations %}
     def {{operation.function_name}}(self, {{operation.snake_case_arguments}}) -> {{operation.return_type}}:
+        """{{ operation.description }}
+Args:
+{% for arguemnt in operation.snake_case_arguments_list %}   {{ arguemnt.name }}({{ arguemnt.type_hint }}{% if not arguemnt.required %}, optional{% endif %}): {{ arguemnt.description.replace("\n", "") }}
+{% endfor %}"""
         headers = {
         {% for arguemnt in operation.snake_case_arguments_list %}
             {% if arguemnt.in_.value == 'header' %}

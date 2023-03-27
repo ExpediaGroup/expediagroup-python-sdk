@@ -181,7 +181,7 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
             type_hint=field.type_hint,
             default=default,  # type: ignore
             default_value=schema.default,
-            description=parameters.description if parameters is not None else "...",
+            description=parameters.description if parameters and parameters.description else "...",
             required=field.required,
         )
 
@@ -261,6 +261,7 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
                             name="body",  # type: ignore
                             type_hint=data_type.type_hint,
                             required=request_body.required,
+                            description=request_body.description if request_body.description else "...",
                         )
                     )
                     self.data_types.append(data_type)
@@ -273,6 +274,7 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
                             name="request",  # type: ignore
                             type_hint="Request",  # type: ignore
                             required=True,
+                            description=request_body.description if request_body.description else "...",
                         )
                     )
                     self.imports_for_fastapi.append(Import.from_full_path("starlette.requests.Request"))
