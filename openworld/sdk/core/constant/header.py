@@ -26,13 +26,17 @@ JSON_CONTENT_TYPE: str = "application/json"
 
 ACCEPT: str = "Accept"
 
+ACCEPT_ENCODING: str = "Accept-Encoding"
+
+GZIP: str = "gzip"
+
 TRANSACTION_ID: str = "transaction-id"
 
 USER_AGENT: str = "User-agent"
 
 OPENWORLD_SDK_PYTHON: str = "open-world-sdk-python/"
 
-API_REQUEST: dict = {CONTENT_TYPE: JSON_CONTENT_TYPE, ACCEPT: JSON_CONTENT_TYPE}
+API_REQUEST: dict = {CONTENT_TYPE: JSON_CONTENT_TYPE, ACCEPT: JSON_CONTENT_TYPE, ACCEPT_ENCODING: GZIP}
 
 EAN: str = "EAN"
 
