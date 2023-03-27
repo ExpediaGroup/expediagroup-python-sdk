@@ -30,6 +30,7 @@ class ParamTypes(Enum):
 class Argument(fastapi_code_generator_parser.Argument):
     in_: ParamTypes = None
     alias: str = ""
+    description: str = ""
     datatype: typing.Optional[DataType] = None
 
     # Replace `cached property` with a normal `property` in order to take effect on change.

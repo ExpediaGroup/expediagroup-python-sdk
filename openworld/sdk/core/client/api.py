@@ -129,11 +129,11 @@ class ApiClient:
             request_headers = dict()
 
         request_header_keys = request_headers.keys()
-        for key in header_constant.API_REQUEST.keys():
+        for key, value in header_constant.API_REQUEST.items():
             if key in request_header_keys:
                 continue
 
-            request_headers[key] = header_constant.API_REQUEST[key]
+            request_headers[key] = value
 
         return request_headers
 
