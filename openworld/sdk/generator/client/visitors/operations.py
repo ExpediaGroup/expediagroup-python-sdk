@@ -118,16 +118,7 @@ def update_non_schema_models_names(parser: OpenAPIParser, models_classnames_to_u
 
 def clean_unwanted_headers(snake_case_arguments: list[Argument]):
     unwanted_headers = ["accept", "accept-encoding", "user-agent", "authorization", "content-type"]
-
-    to_remove_argument_indeices = []
-    for index, argument in enumerate(snake_case_arguments):
-        if argument.alias.lower() in unwanted_headers:
-            to_remove_argument_indeices.append(index)
-
-    while to_remove_argument_indeices:
-        snake_case_arguments.pop(to_remove_argument_indeices.pop())
-
-    return snake_case_arguments
+    return list(filter(lambda arg: arg.alias.lower() not in unwanted_headers, snake_case_arguments))
 
 
 def post_process_operations(parser: OpenAPIParser):
