@@ -81,8 +81,6 @@ def generate_code(
     for visitor_path in visitors_path:
         module = dynamic_load_module(visitor_path)
         if hasattr(module, "visit"):
-            # If visitor was given a positive order, it will be parsed,
-            # otherwise it shall have an order later than ordered visitors.
             visitor_order = int(module.order) if hasattr(module, "order") and module.order > 0 else int(1e18)
 
             visitors.append((visitor_order, module.visit))
