@@ -27,12 +27,13 @@ class {{ classname }}:
         self.__user_agent = f'{sdk_metadata} (Python {python_version}; {os_name} {os_version})'
 
     {% for operation in operations %}
-    def {{operation.function_name}}(self, {{operation.snake_case_arguments}}) -> {{operation.return_type}}:
+    def {{operation.function_name}}(self, transaction_id: UUID = uuid4(), {{operation.snake_case_arguments}}) -> {{operation.return_type}}:
         """{{ operation.description }}
 Args:
 {% for arguemnt in operation.snake_case_arguments_list %}   {{ arguemnt.name }}({{ arguemnt.type_hint }}{% if not arguemnt.required %}, optional{% endif %}): {{ arguemnt.description.replace("\n", "") }}
 {% endfor %}"""
         headers = {
+            header.TRANSACTION_ID: transaction_id,
             header.USER_AGENT: self.__user_agent,
             header.TRANSACTION_ID: uuid4(),
         {% for arguemnt in operation.snake_case_arguments_list %}
