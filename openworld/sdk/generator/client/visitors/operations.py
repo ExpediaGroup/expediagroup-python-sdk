@@ -133,7 +133,8 @@ class RootModelsUtil:
 class OperationParamUtils:
     @staticmethod
     def clean_non_schema_parameter_models(operations: list[Operation], non_schema_models: list[DataModel], models_classnames_to_update: dict[str, str]):
-        r"""For each operation's set of params, replaces a param's type-hint using `update_classname_by_operation_id`, removes any uneeded header, and rebuilds the value of `operation.snake_case_arguments`.
+        r"""For each operation's set of params, replaces a param's type-hint using `update_classname_by_operation_id`, removes any uneeded header, and rebuilds the value of
+        `operation.snake_case_arguments`.
 
         Args:
             operations(list[Operation]): List of operations to be processed.
