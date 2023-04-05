@@ -47,9 +47,7 @@ class NonSchemaModelUtil:
         Returns:
             list[DataModel]
         """
-        models: list[DataModel] = list(set(
-            filter(NonSchemaModelUtil.is_non_schema_model, parser.results)
-        ))
+        models: list[DataModel] = list(set(filter(NonSchemaModelUtil.is_non_schema_model, parser.results)))
 
         models_classnames = [model.class_name for model in models]
         for index in range(len(models) - 1, -1, -1):
@@ -63,7 +61,6 @@ class NonSchemaModelUtil:
 
 
 class UnusedModelsUtil:
-
     @staticmethod
     def clean_unused_models(parser: OpenAPIParser, unused_models_classnames: list[str]):
         r"""Removes unused models from parser results.
@@ -135,8 +132,7 @@ class RootModelsUtil:
 
 class OperationParamUtils:
     @staticmethod
-    def clean_non_schema_parameter_models(operations: list[Operation], non_schema_models: list[DataModel],
-                                          models_classnames_to_update: dict[str, str]):
+    def clean_non_schema_parameter_models(operations: list[Operation], non_schema_models: list[DataModel], models_classnames_to_update: dict[str, str]):
         r"""For each operation's set of params, replaces a param's type-hint using `update_classname_by_operation_id`, removes any uneeded header, and rebuilds the value of `operation.snake_case_arguments`.
 
         Args:
@@ -158,18 +154,18 @@ class OperationParamUtils:
                         new_classname = update_classname_by_operation_id(operation.operationId, model.class_name)
                         models_classnames_to_update[model.class_name] = new_classname
 
-                        operations[operation_index].snake_case_arguments_list[
-                            arg_index].type_hint = arg.type_hint.replace(
-                            model.class_name, new_classname)
+                        operations[operation_index].snake_case_arguments_list[arg_index].type_hint = arg.type_hint.replace(model.class_name, new_classname)
 
                         non_schema_models[model_index].class_name = new_classname
                         break
 
             operations[operation_index].snake_case_arguments_list = OperationParamUtils.clean_unwanted_headers(
-                operations[operation_index].snake_case_arguments_list)
+                operations[operation_index].snake_case_arguments_list
+            )
 
             operations[operation_index].snake_case_arguments = ", ".join(
-                argument.argument for argument in operations[operation_index].snake_case_arguments_list)
+                argument.argument for argument in operations[operation_index].snake_case_arguments_list
+            )
 
         return operations
 
@@ -211,13 +207,11 @@ def post_process_operations(parser: OpenAPIParser):
     """
     models = {model.class_name: model for model in parser.results if isinstance(model, DataModel)}
 
-    non_schema_models = sorted(NonSchemaModelUtil.parse_non_schema_models(parser), key=lambda m: len(m.class_name),
-                               reverse=True)
+    non_schema_models = sorted(NonSchemaModelUtil.parse_non_schema_models(parser), key=lambda m: len(m.class_name), reverse=True)
     models_classnames_to_update: dict[str, str] = collections.defaultdict(lambda: None)
 
     sorted_operations = OperationParamUtils.clean_non_schema_parameter_models(
-        RootModelsUtil.clean_root_models_from_operations_return_type(parser, models), non_schema_models,
-        models_classnames_to_update
+        RootModelsUtil.clean_root_models_from_operations_return_type(parser, models), non_schema_models, models_classnames_to_update
     )
 
     OperationParamUtils.update_non_schema_models_names(parser, models_classnames_to_update)
@@ -226,8 +220,7 @@ def post_process_operations(parser: OpenAPIParser):
 
     UnusedModelsUtil.clean_unused_models(
         parser,
-        [model.class_name for model in non_schema_models if
-         model.class_name not in models_classnames_to_update.keys() and model.class_name[-1].isdigit()],
+        [model.class_name for model in non_schema_models if model.class_name not in models_classnames_to_update.keys() and model.class_name[-1].isdigit()],
     )
 
     return sorted_operations
