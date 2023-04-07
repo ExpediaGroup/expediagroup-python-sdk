@@ -35,7 +35,6 @@ Args:
         headers = {
             header.TRANSACTION_ID: transaction_id,
             header.USER_AGENT: self.__user_agent,
-            header.TRANSACTION_ID: uuid4(),
         {% for arguemnt in operation.snake_case_arguments_list %}
             {% if arguemnt.in_.value == 'header' %}
             '{{ arguemnt.alias }}': {{ arguemnt.name.strip() }},
