@@ -22,7 +22,19 @@ from fastapi_code_generator.parser import Argument, OpenAPIParser, Operation
 from fastapi_code_generator.visitor import Visitor
 
 
-class NonSchemaModelUtil:
+class ModelUtils:
+    r"""A class holding static-methods that are used to post-process models that are:
+    + Non-Schema Models: Models that are not defined in `schema` section of OpenApi Spec, but are parsed from schemas
+    defined in operations params, when different operations have an attribute with the same name, such models will be
+    parsed and generated, and their names will be the capital camel case of the attribute's name, which results in
+    models having the same name, with numbers as suffix to differentiate among them (e.g Model, Model1, Model2, ...etc).
+
+    + Root Models: Pydantic root models, which are special type of models, having only one attribute `__root__`, those
+    when used as type-hint, shall be removed, and replace them with the type hint of the `__root__` attribute itself.
+
+    + Unused Models: Models that generated but not used in operations or other methods, those should be removed.
+    """
+
     @staticmethod
     def is_non_schema_model(model: typing.Any) -> bool:
         r"""Checks if a model is a non-schema model or not.
@@ -47,7 +59,7 @@ class NonSchemaModelUtil:
         Returns:
             list[DataModel]
         """
-        models: list[DataModel] = list(set(filter(NonSchemaModelUtil.is_non_schema_model, parser.results)))
+        models: list[DataModel] = list(set(filter(ModelUtils.is_non_schema_model, parser.results)))
 
         models_classnames = [model.class_name for model in models]
         for index in range(len(models) - 1, -1, -1):
@@ -59,8 +71,6 @@ class NonSchemaModelUtil:
 
         return models
 
-
-class UnusedModelsUtil:
     @staticmethod
     def clean_unused_models(parser: OpenAPIParser, unused_models_classnames: list[str]):
         r"""Removes unused models from parser results.
@@ -77,30 +87,28 @@ class UnusedModelsUtil:
         while len(indices_stack):
             parser.results.pop(indices_stack.pop())
 
+    @staticmethod
+    def update_classname_by_operation_id(operation_id: str, classname: str) -> str:
+        r"""Updates a class name by adding camel-case operation ID as a prefix.
 
-def update_classname_by_operation_id(operation_id: str, classname: str) -> str:
-    r"""Updates a class name by adding camel-case operation ID as a prefix.
+        Args:
+            operation_id(str): Camel-Case operation ID.
+            classname(str): Class name to be updated.
 
-    Args:
-        operation_id(str): Camel-Case operation ID.
-        classname(str): Class name to be updated.
+        Returns:
+            str
+        """
+        if not operation_id:
+            return classname
 
-    Returns:
-        str
-    """
-    if not operation_id:
-        return classname
+        if not classname:
+            classname = ""
 
-    if not classname:
-        classname = ""
+        operation_id = list(operation_id)
+        operation_id[0] = operation_id[0].upper()
 
-    operation_id = list(operation_id)
-    operation_id[0] = operation_id[0].upper()
+        return "".join(operation_id) + re.sub(r"\d+$", "", classname)
 
-    return "".join(operation_id) + re.sub(r"\d+$", "", classname)
-
-
-class RootModelsUtil:
     @staticmethod
     def clean_root_models_from_operations_return_type(parser: OpenAPIParser, models: dict[str, DataModel]) -> list[Operation]:
         r"""Replaces any root model from any operation return type with the type-hint of `__root__`.
@@ -131,6 +139,11 @@ class RootModelsUtil:
 
 
 class OperationParamUtils:
+    r"""A class holding static-methods that are used to post-process operations params that are:
+    + Unwanted or to be hidden: Those should be removed from an operation's params list.
+    + Have a Non-Schema model as type-hint: Those should be replaced with their new names, look `ModelUtils` class.
+    """
+
     @staticmethod
     def clean_non_schema_parameter_models(operations: list[Operation], non_schema_models: list[DataModel], models_classnames_to_update: dict[str, str]):
         r"""For each operation's set of params, replaces a param's type-hint using `update_classname_by_operation_id`, removes any uneeded header,
@@ -152,7 +165,7 @@ class OperationParamUtils:
                 for model_index, model in enumerate(non_schema_models):
                     # TODO: Do processing using a `DataType`` object instead of `type_hint`
                     if model.class_name in arg.type_hint:
-                        new_classname = update_classname_by_operation_id(operation.operationId, model.class_name)
+                        new_classname = ModelUtils.update_classname_by_operation_id(operation.operationId, model.class_name)
                         models_classnames_to_update[model.class_name] = new_classname
 
                         operations[operation_index].snake_case_arguments_list[arg_index].type_hint = arg.type_hint.replace(model.class_name, new_classname)
@@ -208,18 +221,18 @@ def post_process_operations(parser: OpenAPIParser):
     """
     models = {model.class_name: model for model in parser.results if isinstance(model, DataModel)}
 
-    non_schema_models = sorted(NonSchemaModelUtil.parse_non_schema_models(parser), key=lambda m: len(m.class_name), reverse=True)
+    non_schema_models = sorted(ModelUtils.parse_non_schema_models(parser), key=lambda m: len(m.class_name), reverse=True)
     models_classnames_to_update: dict[str, str] = collections.defaultdict(lambda: None)
 
     sorted_operations = OperationParamUtils.clean_non_schema_parameter_models(
-        RootModelsUtil.clean_root_models_from_operations_return_type(parser, models), non_schema_models, models_classnames_to_update
+        ModelUtils.clean_root_models_from_operations_return_type(parser, models), non_schema_models, models_classnames_to_update
     )
 
     OperationParamUtils.update_non_schema_models_names(parser, models_classnames_to_update)
 
     models_classnames_to_update = {key: value for key, value in models_classnames_to_update.items() if value}
 
-    UnusedModelsUtil.clean_unused_models(
+    ModelUtils.clean_unused_models(
         parser,
         [model.class_name for model in non_schema_models if model.class_name not in models_classnames_to_update.keys() and model.class_name[-1].isdigit()],
     )
