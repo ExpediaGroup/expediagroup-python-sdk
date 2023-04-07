@@ -14,6 +14,7 @@
 import enum
 import json
 import logging
+import uuid
 from http import HTTPStatus
 from typing import Any, Optional
 
@@ -143,7 +144,7 @@ class ApiClient:
         for header_key, header_value in headers.items():
             if not header_value:
                 continue
-            needs_serialization: bool = isinstance(header_value, BaseModel) or isinstance(header_value, enum.Enum)
+            needs_serialization: bool = isinstance(header_value, BaseModel) or isinstance(header_value, enum.Enum) or isinstance(header_value, uuid.UUID)
             request_headers[header_key] = json.dumps(header_value, default=pydantic.schema.pydantic_encoder) if needs_serialization else header_value
 
         return ApiClient.__fill_request_headers(request_headers)
