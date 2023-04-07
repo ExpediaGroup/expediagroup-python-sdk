@@ -18,7 +18,15 @@ from setuptools import setup
 setup(
     name='{{ id }}',
     version='{{ version }}',
-    packages=['{{ package }}'],
+    packages=['{{ package }}'] + [
+        "openworld.sdk.core",
+        "openworld.sdk.core.configuration",
+        "openworld.sdk.core.client",
+        "openworld.sdk.core.constant",
+        "openworld.sdk.core.model",
+        "openworld.sdk.core.model.exception",
+        "openworld.sdk.core.util",
+    ],
     package_dir={'{{ id }}': '.'},
     license='Apache License, Version 2.0',
     author='Expedia Group',
@@ -36,7 +44,7 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     python_requires='>=3.8',
-    install_requires=['uri', 'furl', 'openworld-sdk-python-core', 'pydantic', 'pydantic[email]'],
+    install_requires=['uri', 'furl', 'pydantic', 'pydantic[email]', 'requests', 'python-dateutil'],
     description='Open World {{ api }} SDK for Python',
     long_description='Open World {{ api }} SDK for Python'
 )
