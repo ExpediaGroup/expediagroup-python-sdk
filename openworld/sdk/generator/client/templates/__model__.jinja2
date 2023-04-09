@@ -22,15 +22,15 @@ from typing import Union, Literal
 {{ decorator }}
 {% endfor -%}
 class {{ model.class_name }}({% if model.base_class in processed_parent_children_classnames.keys() %}BaseModel{% else %}{{ model.base_class }}{% endif %}):{% if comment is defined %}  # {{ model.comment }}{% endif %}
-    """pydantic model {{ model.class_name }}{%- if model.description %}: {{ model.description }}{%- endif %}
+    r"""pydantic model {{ model.class_name }}{%- if model.description %}: {{ model.description }}{%- endif %}
+{# comment for new line #}
+{%- if model.fields %}Attributes:
+    {# comment #}
+    {%- for field in model.fields -%}
+    {% if field.name %}{{ field.name }}{% else %}__root__{% endif %}({{ field.type_hint }}{% if not field.required %}, optional{% endif %}): {%- if field.docstring %} {{ field.docstring.replace("\n", " ") }}{% elif field.description %}{{ field.description.replace("\n", " ") }}{%- else %} -- {%- endif %}
     {# comment for new line #}
-    {%- if model.fields %}Attributes:
-        {# comment #}
-        {%- for field in model.fields -%}
-        {% if field.name %}{{ field.name }}{% else %}__root__{% endif %}({{ field.type_hint }}, {{ field.required }}): {%- if field.docstring %} {{ field.docstring }}{% elif field.description %}{{ field.description }}{%- else %} -- {%- endif %}
-        {# comment for new line #}
-        {%- endfor -%}
-    {%- endif %}
+    {%- endfor -%}
+{%- endif %}
     """
 {%- if not model.fields %}
     pass
