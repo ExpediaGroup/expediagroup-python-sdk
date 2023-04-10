@@ -39,8 +39,8 @@ while getopts ":n:v:i:" OPTION; do
         esac
 done; validate_arguments
 
-normalized_namespace=$(echo "$namespace"|gsed -e 's/\(.*\)/\L\1/')
-normalized_namespace=$(echo "$normalized_namespace"|gsed -e 's/[^a-z0-9]//g')
+normalized_namespace=$(echo "$namespace"|sed -e 's/\(.*\)/\L\1/')
+normalized_namespace=$(echo "$normalized_namespace"|sed -e 's/[^a-z0-9]//g')
 
 cd .. &&\
 go install github.com/google/addlicense@latest &&\
