@@ -51,7 +51,7 @@ while getopts ":n:v:i:" OPTION; do
               ?) echo "Invalid options!";;
         esac
 done; validate_arguments
-
+input_spec=$(cat resources/spec)
 pip3 install -r client/requirements.txt &&\
 python3 scripts/prepare-spec.py -i "$input_spec" &&\
 scripts/generate-client.sh -i "$(pwd)/specs/spec.yaml" -v "$sdk_version" -n "$sdk_namespace" &&\
