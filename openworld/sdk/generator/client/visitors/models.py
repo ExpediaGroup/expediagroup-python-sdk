@@ -197,13 +197,11 @@ def is_parent_processed(parent: DataModel, children: list[DataModel]) -> bool:
     return (
         len(parent.fields) == 1
         and (parent.fields[0].name == "__root__" or isinstance(parent, CustomRootType))
-        and len([child.class_name for child in children if child.class_name in parent.fields[0].type_hint]))
+        and len([child.class_name for child in children if child.class_name in parent.fields[0].type_hint])
+    )
 
 
-def get_flattened_children(
-    parent: DataModel,
-    parent_children: dict[str, list[DataModel]]
-) -> list[DataModel]:
+def get_flattened_children(parent: DataModel, parent_children: dict[str, list[DataModel]]) -> list[DataModel]:
     r"""If a parent has a `type` attribute, it will be considered as discriminator,and parent attributes will be copied to child.
 
     Args:
@@ -217,10 +215,11 @@ def get_flattened_children(
     flattened_children = []
 
     for child in parent_children[parent.class_name]:
-        flattened_children += get_flattened_children(
-            parent=copy_parent_fields_to_child(parent, child),
-            parent_children=parent_children
-        ) + [child] if parent_children[child.class_name] else [copy_parent_fields_to_child(parent, child)]
+        flattened_children += (
+            get_flattened_children(parent=copy_parent_fields_to_child(parent, child), parent_children=parent_children) + [child]
+            if parent_children[child.class_name]
+            else [copy_parent_fields_to_child(parent, child)]
+        )
 
     return flattened_children
 
@@ -261,10 +260,8 @@ def get_highest_ancestor_classname(model_classname: str, child_parent_classnames
 
 
 def flatten_inheritance_hierarchy_tree(
-    models: dict[str, DataModel],
-    parent_children: dict[str, list[DataModel]]
+    models: dict[str, DataModel], parent_children: dict[str, list[DataModel]]
 ) -> tuple[dict[str, DataModel], dict[str, list[DataModel]]]:
-
     r"""Flattens inheritance relationship in the inheritance tree of models, by taking every non-leaf node
     (aka model that is a child, and is parent to no children), and transforming each one into an alias.
 
@@ -297,15 +294,9 @@ def flatten_inheritance_hierarchy_tree(
                 models[parent_classname] = refactor_parent(models[parent_classname], parent_children[parent_classname])
             continue
 
-        flattened_parent_children[highest_ancestor_classname] = get_flattened_children(
-            highest_ancestor,
-            parent_children
-        )
+        flattened_parent_children[highest_ancestor_classname] = get_flattened_children(highest_ancestor, parent_children)
 
-        models[highest_ancestor_classname] = refactor_parent(
-            highest_ancestor,
-            parent_children[highest_ancestor_classname]
-        )
+        models[highest_ancestor_classname] = refactor_parent(highest_ancestor, parent_children[highest_ancestor_classname])
 
         for child in flattened_parent_children[highest_ancestor_classname]:
             if child.base_classes != highest_ancestor_classname and parent_children[child.base_class]:
@@ -333,10 +324,7 @@ def post_process_models_parent_children(parser: OpenAPIParser):
 
     models = parse_datamodels(parser)
 
-    models, parent_children = flatten_inheritance_hierarchy_tree(
-        models=models,
-        parent_children=parse_children(models)
-    )
+    models, parent_children = flatten_inheritance_hierarchy_tree(models=models, parent_children=parse_children(models))
 
     for index, model in enumerate(parser.results):
         if isinstance(parser.results[index], DataModel):
@@ -383,7 +371,7 @@ def get_sorted_aliases(processed_parent_children_classnames: dict[str, list[str]
     is_aliased: dict[str, bool] = collections.defaultdict(bool)
 
     current_order = 1
-    for (parent_classname, children_classnames) in processed_parent_children_classnames.items():
+    for parent_classname, children_classnames in processed_parent_children_classnames.items():
         is_aliased[parent_classname] = True
 
         # If the current parent being aliased has been encountered before (as a child),
@@ -391,11 +379,7 @@ def get_sorted_aliases(processed_parent_children_classnames: dict[str, list[str]
         # depends on it.
         order = current_order if not alias_order[parent_classname] else min(current_order - 1, -current_order)
 
-        alias = Alias(
-            parent_classname=parent_classname,
-            children_classnames=children_classnames,
-            order=order
-        )
+        alias = Alias(parent_classname=parent_classname, children_classnames=children_classnames, order=order)
         aliases.append(alias)
 
         alias_order.update(
@@ -420,20 +404,17 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     """
 
     post_process_models_parent_children(parser)
-    _, sorted_models, __ = sort_data_models(
-        unsorted_data_models=[result for result in parser.results if isinstance(result, DataModel)])
+    _, sorted_models, __ = sort_data_models(unsorted_data_models=[result for result in parser.results if isinstance(result, DataModel)])
 
     processed_parent_children_classnames = parse_processed_parent_children_classnames(parse_datamodels(parser))
 
-    is_aliased: dict[str, bool] = collections.defaultdict(bool, {
-        parent_classname: True for parent_classname in processed_parent_children_classnames.keys()
-    })
+    is_aliased: dict[str, bool] = collections.defaultdict(bool, {parent_classname: True for parent_classname in processed_parent_children_classnames.keys()})
 
     return {
         "models": sorted_models.values(),
         "model_imports": collect_imports(sorted_models, parser),
         "aliases": get_sorted_aliases(processed_parent_children_classnames),
-        "is_aliased": is_aliased
+        "is_aliased": is_aliased,
     }
 
 
