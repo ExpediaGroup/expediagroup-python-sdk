@@ -266,7 +266,7 @@ def flatten_inheritance_hierarchy_tree(
     (aka model that is a child, and is parent to no children), and transforming each one into an alias.
 
     Transformation into an alias includes processing each non-leaf model by transforming it into a `__root__` model,
-    then, each will be marked as aliases in `get_sorted_aliases` method.
+    then, each will be parsed as aliases in `get_sorted_aliases` method.
 
     Args:
         models(dict[str, DataModel]): A mapping of classnames and parsed models.
