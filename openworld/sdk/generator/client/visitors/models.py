@@ -418,4 +418,5 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     }
 
 
+order: int = 2
 visit: Visitor = get_models
