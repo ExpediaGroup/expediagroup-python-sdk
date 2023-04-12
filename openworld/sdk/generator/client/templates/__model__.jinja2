@@ -42,10 +42,9 @@ class {{ model.class_name }}({% if is_aliased[model.base_class] %}BaseModel{% el
     {% if field.name %}{{ field.name }}{% else %}__root__{% endif %}: {{ field.annotated }}
     {%- else %}
     {% if field.name %}{{ field.name }}{% else %}__root__{% endif %}: {{ field.type_hint }}
-    {%- endif %}
-    {%- if 'Enum' in model.base_class or (not (field.required or (field.represented_default == 'None' and field.strip_default_none)))
-            %} = {% if field.default and 'Field' in field.default %}{{ field.default.replace('max_items', 'maxItems').replace('min_items', 'minItems') }}{% else %}{{ field.default }}{% endif %}
-    {%- endif -%}
+    {%- endif %} = {% if field.default and 'Field' in field.default %}
+        {{ field.default.replace('max_items', 'maxItems').replace('min_items', 'minItems') }}
+    {% else %}{{ field.default }}{%- endif -%}
     {%- endif %}
     {%- if field.docstring %}
     """
