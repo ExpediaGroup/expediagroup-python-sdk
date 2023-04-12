@@ -13,9 +13,10 @@ from uuid import UUID, uuid4
 {% endif %}
 class {{ classname }}:
     def __init__(self, client_config: ClientConfig):
-        """{{ api }} Client.
+        r"""{{ api }} API Client.
 
-        :param client_config: Client configuration holder.
+        Args:
+            client_config(ClientConfig): SDK Client Configurations Holder.
         """
         python_version = platform.python_version()
         os_name, os_version, *_ = platform.platform().split('-')
@@ -28,7 +29,7 @@ class {{ classname }}:
 
     {% for operation in operations %}
     def {{operation.function_name}}(self, transaction_id: UUID = uuid4(), {{operation.snake_case_arguments}}) -> {{operation.return_type}}:
-        """{{ operation.description }}
+        r"""{{ operation.description }}
 Args:
 {% for arguemnt in operation.snake_case_arguments_list %}   {{ arguemnt.name }}({{ arguemnt.type_hint }}{% if not arguemnt.required %}, optional{% endif %}): {{ arguemnt.description.replace("\n", "") }}
 {% endfor %}"""
