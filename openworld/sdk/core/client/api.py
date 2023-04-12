@@ -11,15 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import enum
 import json
 import logging
+import uuid
 from http import HTTPStatus
 from typing import Any, Optional
 
 import pydantic
 import pydantic.schema
 import requests
+from pydantic import BaseModel
 
 from openworld.sdk.core.client.auth_client import AuthClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
@@ -142,6 +144,7 @@ class ApiClient:
         for header_key, header_value in headers.items():
             if not header_value:
                 continue
-            request_headers[header_key] = json.dumps(header_value, default=pydantic.schema.pydantic_encoder)
+            needs_serialization: bool = isinstance(header_value, BaseModel) or isinstance(header_value, enum.Enum) or isinstance(header_value, uuid.UUID)
+            request_headers[header_key] = json.dumps(header_value, default=pydantic.schema.pydantic_encoder) if needs_serialization else header_value
 
         return ApiClient.__fill_request_headers(request_headers)
