@@ -1,0 +1,6 @@
+uri
+furl
+pydantic
+pydantic[email]
+requests
+python-dateutil
