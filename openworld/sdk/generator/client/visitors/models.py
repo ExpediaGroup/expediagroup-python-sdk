@@ -130,7 +130,8 @@ def copy_parent_fields_to_child(parent: DataModel, child: DataModel) -> DataMode
 
         literal = DataType(type=f'Literal["{child.class_name}"]')
 
-        field.data_type = DataType(data_types=[literal])
+        if not field.data_type.reference:
+            field.data_type = DataType(data_types=[literal])
         break
 
     return child
