@@ -21,6 +21,8 @@ from typing import Union, Literal
 {{ decorator }}
 {% endfor -%}
 class {{ model.class_name }}({% if is_aliased[model.base_class] %}BaseModel{% else %}{{ model.base_class }}{% endif %}):{% if comment is defined %}  # {{ model.comment }}{% endif %}
+    class Config:
+        smart_union = True
     r"""pydantic model {{ model.class_name }}{%- if model.description %}: {{ model.description }}{%- endif %}
 {# comment for new line #}
 {%- if model.fields %}Attributes:
