@@ -14,14 +14,15 @@
 {{ model_imports }}
 from typing import Union, Literal
 {% for model in models %}
-{% if model.class_name in processed_parent_children_classnames.keys() %}
-{# Do not render #}
+{% if is_aliased[model.class_name] %}
+{# Do nothing. #}
 {% else %}
-{% if is_rendered.update([(model.class_name, True)]) %}{% endif %}
 {% for decorator in model.decorators -%}
 {{ decorator }}
 {% endfor -%}
-class {{ model.class_name }}({% if model.base_class in processed_parent_children_classnames.keys() %}BaseModel{% else %}{{ model.base_class }}{% endif %}):{% if comment is defined %}  # {{ model.comment }}{% endif %}
+class {{ model.class_name }}({% if is_aliased[model.base_class] %}BaseModel{% else %}{{ model.base_class }}{% endif %}):{% if comment is defined %}  # {{ model.comment }}{% endif %}
+    class Config:
+        smart_union = True
     r"""pydantic model {{ model.class_name }}{%- if model.description %}: {{ model.description }}{%- endif %}
 {# comment for new line #}
 {%- if model.fields %}Attributes:
@@ -43,10 +44,9 @@ class {{ model.class_name }}({% if model.base_class in processed_parent_children
     {% if field.name %}{{ field.name }}{% else %}__root__{% endif %}: {{ field.annotated }}
     {%- else %}
     {% if field.name %}{{ field.name }}{% else %}__root__{% endif %}: {{ field.type_hint }}
-    {%- endif %}
-    {%- if 'Enum' in model.base_class or (not (field.required or (field.represented_default == 'None' and field.strip_default_none)))
-            %} = {% if field.default and 'Field' in field.default %}{{ field.default.replace('max_items', 'maxItems').replace('min_items', 'minItems') }}{% else %}{{ field.default }}{% endif %}
-    {%- endif -%}
+    {%- endif %} = {% if field.default and 'Field' in field.default %}
+        {{ field.default.replace('max_items', 'maxItems').replace('min_items', 'minItems') }}
+    {% else %}{{ field.default }}{%- endif -%}
     {%- endif %}
     {%- if field.docstring %}
     """
@@ -57,19 +57,14 @@ class {{ model.class_name }}({% if model.base_class in processed_parent_children
     {{ model.method }}
 {%- endfor -%}
 {%- endfor -%}
-{% if model.base_class in processed_parent_children_classnames.keys() %}
-    {% if all_children_rendered_helper.update([(model.base_class, True)]) %}{% endif %}
-    {% for child_classname in processed_parent_children_classnames[model.base_class] %}
-        {% if all_children_rendered_helper.update([(model.base_class, all_children_rendered_helper[model.base_class] and is_rendered[child_classname])]) %}{% endif %}
-    {% endfor %}
-    {% if all_children_rendered_helper[model.base_class] %}
-{{ model.base_class }} = Union[{% for child_classname in processed_parent_children_classnames[model.base_class] %}{{ child_classname }},{% endfor %}]
-    {% endif %}
-{% endif %}
 {% endif %}
 {% endfor %}
+{% for alias in aliases %}
+{{ alias.__str__() }}
+{% endfor %}
 {% for model in models %}
-    {% if not (model.class_name in processed_parent_children_classnames.keys() or model.base_class == 'Enum') %}
+    {% if not is_aliased[model.class_name] and model.base_class != 'Enum' %}
 {{ model.class_name }}.update_forward_refs()
     {% endif %}
 {% endfor %}
+
