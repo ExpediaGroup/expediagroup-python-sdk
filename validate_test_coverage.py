@@ -42,7 +42,7 @@ def validate_test_coverage(report: dict):
     data: dict = report["totals"]
     current_coverage_percentage: int = int(data["percent_covered_display"])
 
-    data["covered_branches_percentage"] = math.ceil(100 * (data["covered_branches"] / data["num_branches"]))
+    data["covered_branches_percentage"] = f"{math.ceil(100 * (data['covered_branches'] / data['num_branches']))}%"
     full_coverage_report_table = PrettyTable(field_names=["Property", "Value"])
 
     full_coverage_report_table.add_rows([[key, value] for key, value in data.items()])
