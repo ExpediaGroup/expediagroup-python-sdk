@@ -15,6 +15,7 @@
 import json
 import math
 from textwrap import dedent
+
 from prettytable import PrettyTable
 
 MINIMUM_REQUIRED_COVERAGE_PERCENTAGE: int = 90
@@ -42,16 +43,12 @@ def validate_test_coverage(report: dict):
     current_coverage_percentage: int = int(data["percent_covered_display"])
 
     data["covered_branches_percentage"] = math.ceil(100 * (data["covered_branches"] / data["num_branches"]))
-    full_coverage_report_table = PrettyTable()
+    full_coverage_report_table = PrettyTable(field_names=["Property", "Value"])
 
     full_coverage_report_table.add_rows([[key, value] for key, value in data.items()])
 
     if current_coverage_percentage < MINIMUM_REQUIRED_COVERAGE_PERCENTAGE:
-        message: str = FAILURE_MESSAGE_TEMPLATE.format(
-            MINIMUM_REQUIRED_COVERAGE_PERCENTAGE,
-            data["percent_covered_display"],
-            str(full_coverage_report_table)
-        )
+        message: str = FAILURE_MESSAGE_TEMPLATE.format(MINIMUM_REQUIRED_COVERAGE_PERCENTAGE, data["percent_covered_display"], str(full_coverage_report_table))
         raise Exception(message)
 
     else:
