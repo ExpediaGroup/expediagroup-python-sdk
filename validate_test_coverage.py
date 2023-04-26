@@ -22,7 +22,7 @@ MINIMUM_REQUIRED_COVERAGE_PERCENTAGE: int = 90
 FAILURE_MESSAGE_TEMPLATE: str = dedent(
     """
     > Coverage Validation Failed!
-    >> Minimum Required Coverage Percentage: {0}%
+    >> Minimum Required Total Coverage Percentage: {0}%
     >> Current Total Coverage Percentage: {1}%
     >>> Full Coverage Report:
     {2}
