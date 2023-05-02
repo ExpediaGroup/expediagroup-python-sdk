@@ -13,8 +13,8 @@
 # limitations under the License.
 
 name: Build and Publish Core
-on: workflow_dispatch
-workflow_dispatch:
+on:
+  workflow_dispatch:
     inputs:
       test:
         description: 'Release to test?'
