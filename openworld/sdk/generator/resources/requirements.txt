@@ -1,6 +1,5 @@
 uri~=2.0.1
 furl~=2.1.3
 openworld-sdk-python-core~=0.6.1
-pydantic~=1.10.7
-pydantic[email]
+pydantic[email]~=1.10.7
 python-dateutil~=2.8.2
