@@ -17,15 +17,15 @@ on:
   workflow_call:
     inputs:
       version:
-        description: 'Generated sdk version'
+        description: 'Generated SDK version'
         required: true
         type: string
       name:
-        description: 'Generated sdk name'
+        description: 'Generated SDK name'
         required: true
         type: string
       fileAsBase64:
-        description: 'Generated sdk file as base64 encoded'
+        description: 'Generated SDK file as base64 encoded'
         required: true
         type: string
 jobs:

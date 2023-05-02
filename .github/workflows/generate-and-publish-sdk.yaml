@@ -17,14 +17,14 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Generated sdk version'
+        description: 'Generated SDK version'
         required: true
         default: ''
       name:
-        description: 'Generated sdk name'
+        description: 'Generated SDK name'
         required: true
       fileAsBase64:
-        description: 'Generated sdk file as base64 encoded'
+        description: 'Generated SDK file as base64 encoded'
         required: true
       test:
         description: 'Release to test?'
