@@ -22,6 +22,7 @@ from collections.abc import Callable, Iterable, Mapping, Sequence
 from typing import Any, Optional, Union
 from urllib.parse import ParseResult
 
+from constant import IS_PAGINATED, OPERATION_PAGINATION_OPENAPI_FLAG
 from datamodel_code_generator import DefaultPutDict, LiteralType, PythonVersion
 from datamodel_code_generator.imports import Import, Imports
 from datamodel_code_generator.model import DataModel, DataModelFieldBase
@@ -41,7 +42,6 @@ from datamodel_code_generator.parser.openapi import (
 from datamodel_code_generator.types import DataType, DataTypeManager, StrictTypes, Types
 from fastapi_code_generator import parser
 from model import Argument, Operation, ParamTypes
-from constant import IS_PAGINATED, OPERATION_PAGINATION_OPENAPI_FLAG
 from stringcase import snakecase
 
 
