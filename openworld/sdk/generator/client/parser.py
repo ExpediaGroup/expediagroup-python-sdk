@@ -41,6 +41,7 @@ from datamodel_code_generator.parser.openapi import (
 from datamodel_code_generator.types import DataType, DataTypeManager, StrictTypes, Types
 from fastapi_code_generator import parser
 from model import Argument, Operation, ParamTypes
+from constant import IS_PAGINATED, OPERATION_PAGINATION_OPENAPI_FLAG
 from stringcase import snakecase
 
 
@@ -297,6 +298,10 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
         # openworld: add snake_case_arguments_list, as it is present as a string instead of a list
         #   in the templates, which makes very hard to traverse them properly.
         self._temporary_operation["snake_case_arguments_list"] = self.get_argument_list(snake_case=True, path=path)
+
+        # openworld: mark if current operation is paginated
+        if OPERATION_PAGINATION_OPENAPI_FLAG in raw_operation.keys():
+            self._temporary_operation[IS_PAGINATED] = raw_operation[OPERATION_PAGINATION_OPENAPI_FLAG]
 
         self.operations[resolved_path] = Operation(
             **raw_operation,

@@ -3,7 +3,7 @@ import platform
 import pydantic.schema
 from .model import *
 from typing import *
-from openworld.sdk.core.client.api import ApiClient
+from openworld.sdk.core.client import api, pagination
 from openworld.sdk.core.constant import header
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from furl import furl
@@ -22,13 +22,13 @@ class {{ classname }}:
         os_name, os_version, *_ = platform.platform().split('-')
         sdk_metadata = f'open-world-sdk-python-{{ namespace }}/{{ version }}'
 
-        {% if api.lower() == "rapid" %}self.__api_client = ApiClient(client_config, _RapidAuthClient)
-        {% else %}self.__api_client = ApiClient(client_config, _OpenWorldAuthClient)
+        {% if api.lower() == "rapid" %}self.__api_client = api.ApiClient(client_config, _RapidAuthClient)
+        {% else %}self.__api_client = api.ApiClient(client_config, _OpenWorldAuthClient)
         {% endif %}
         self.__user_agent = f'{sdk_metadata} (Python {python_version}; {os_name} {os_version})'
 
     {% for operation in operations %}
-    def {{operation.function_name}}(self, transaction_id: UUID = uuid4(), {{operation.snake_case_arguments}}) -> {{operation.return_type}}:
+    def {{operation.function_name}}{% if operation.is_paginated %}_paginator{% endif %}(self, transaction_id: UUID = uuid4(), {{operation.snake_case_arguments}}) -> {% if operation.is_paginated %}pagination.Paginator{% else %}{{operation.return_type}}{% endif %}:
         r"""{{ operation.description }}
 Args:
 {% for arguemnt in operation.snake_case_arguments_list %}   {{ arguemnt.name }}({{ arguemnt.type_hint }}{% if not arguemnt.required %}, optional{% endif %}): {{ arguemnt.description.replace("\n", "") }}
@@ -56,6 +56,14 @@ Args:
         request_url.query.set(query)
         request_url.path.normalize()
 
+        {% if operation.is_paginated %}
+        return pagination.Paginator(
+            api_client = self.__api_client,
+            response_models = {{ operation.return_type.removeprefix('Union')}},
+            request_headers = headers,
+            endpoint = request_url
+        )
+        {% else %}
         return self.__api_client.call(
             headers=headers,
             method='{{ operation.method }}',
@@ -63,4 +71,5 @@ Args:
             response_models={{ operation.return_type.removeprefix('Union')}},
             url=request_url
         )
+        {% endif %}
 {% endfor %}

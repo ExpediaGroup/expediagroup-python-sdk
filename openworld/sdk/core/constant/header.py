@@ -45,3 +45,7 @@ API_KEY: str = "APIKey"
 SIGNATURE: str = "Signature"
 
 TIMESTAMP: str = "timestamp"
+
+LINK: str = "link"
+
+PAGINATION_TOTAL_RESULTS: str = "pagination-total-results"
