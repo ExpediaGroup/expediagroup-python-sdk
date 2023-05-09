@@ -58,15 +58,14 @@ class Paginator:
         self.__last_response_headers, self.__first_page = response.raw.headers, response.body
 
         self.__pagination_total_results = self.__extract_pagination_total_results()
-        self.__update_next_page_endpoint(page_num=2)
 
-    def __get_first_page_response(
-        self,
-    ) -> Response:
-        resp = self.__api_client.call_with_response(
-            method="GET", url=self.__next_page_endpoint, body=None, headers=self.__request_headers, response_models=self.__response_models
+        self.__update_next_page_endpoint(page_num=2)
+        self.__update_transaction_id()
+
+    def __get_first_page_response(self,) -> Response:
+        return self.__api_client.call_with_response(
+            method="GET", url=self.__next_page_endpoint, headers=self.__request_headers, response_models=self.__response_models
         )
-        return resp
 
     def get_pages(
         self,
@@ -84,12 +83,13 @@ class Paginator:
                 yield self.__first_page
                 continue
 
-            resp = self.__api_client.call_with_response(
-                method="GET", url=self.__next_page_endpoint, body=None, headers=self.__request_headers, response_models=self.__response_models
+            response = self.__api_client.call_with_response(
+                method="GET", url=self.__next_page_endpoint, headers=self.__request_headers, response_models=self.__response_models
             )
 
-            self.__last_response_headers, new_page = resp.raw.headers, resp.body
+            self.__last_response_headers, new_page = response.raw.headers, response.body
             self.__update_next_page_endpoint(page_num=page_num)
+            self.__update_transaction_id()
 
             yield new_page
 

@@ -118,7 +118,7 @@ class ApiClient:
         self,
         method: str,
         url: str,
-        body: typing.Union[pydantic.BaseModel, None],
+        body: typing.Union[pydantic.BaseModel, None] = None,
         headers: dict = dict(),  # noqa
         response_models: Optional[list[Any]] = [None],  # noqa
     ) -> Any:
@@ -148,7 +148,7 @@ class ApiClient:
         self,
         method: str,
         url: str,
-        body: pydantic.BaseModel,
+        body: typing.Union[pydantic.BaseModel, None] = None,
         headers: dict = dict(),  # noqa
         response_models: Optional[list[Any]] = [None],  # noqa
     ) -> ResponseWrapper:
