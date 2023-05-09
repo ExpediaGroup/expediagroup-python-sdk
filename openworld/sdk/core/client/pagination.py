@@ -1,7 +1,6 @@
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from enum import Enum
 from typing import Any
-from collections.abc import Callable
 from uuid import uuid4
 
 from openworld.sdk.core.client.api import ApiClient
@@ -62,7 +61,9 @@ class Paginator:
         self.__update_next_page_endpoint(page_num=2)
         self.__update_transaction_id()
 
-    def __get_first_page_response(self,) -> Response:
+    def __get_first_page_response(
+        self,
+    ) -> Response:
         return self.__api_client.call_with_response(
             method="GET", url=self.__next_page_endpoint, headers=self.__request_headers, response_models=self.__response_models
         )

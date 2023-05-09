@@ -23,9 +23,9 @@ import requests.exceptions
 from openworld.sdk.core.client.api import ApiClient
 from openworld.sdk.core.client.pagination import PageLinkExtractionStrategy, Paginator
 from openworld.sdk.core.client.rapid_auth_client import _RapidAuthClient
-from openworld.sdk.core.model.api import Response
 from openworld.sdk.core.constant.constant import EMPTY_STRING
 from openworld.sdk.core.constant.header import LINK
+from openworld.sdk.core.model.api import Response
 
 
 class Mocks:
@@ -47,7 +47,7 @@ class PageLinkExtractionStrategyTest(unittest.TestCase):
     def test_default_strategy_null_headers(self):
         default_strategy: PageLinkExtractionStrategy = PageLinkExtractionStrategy.DEFAULT
 
-        self.assertEqual(default_strategy(None),  EMPTY_STRING)
+        self.assertEqual(default_strategy(None), EMPTY_STRING)
 
     def test_default_strategy_missing_link(self):
         default_strategy: PageLinkExtractionStrategy = PageLinkExtractionStrategy.DEFAULT
