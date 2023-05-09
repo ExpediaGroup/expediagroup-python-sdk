@@ -62,7 +62,7 @@ class PaginatorTest(unittest.TestCase):
         self.assertIsNotNone(paginator.first_page)
 
         self.assertEqual(paginator.last_response_headers, api_constant.MockResponse.hello_world_paginated_response().headers)
-        self.assertEqual(paginator.endpoint, api_constant.ENDPOINT)  # next-page endpoint
+        self.assertEqual(paginator.endpoint, api_constant.PAGINATED_ENDPOINT)  # next-page endpoint
         self.assertEqual(paginator.first_page, api_constant.HELLO_WORLD_OBJECT)
 
     def test_paginator_null_api_client(self):
