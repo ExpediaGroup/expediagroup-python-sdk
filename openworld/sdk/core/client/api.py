@@ -126,8 +126,8 @@ class ApiClient:
 
         Args:
             method(str): Http request method.
-            body(typing.Union[pydantic.BaseModel, None]): Object that holds request data.
-            response_models(list[Any]): Model to fetch the response data into.
+            body(BaseModel, optional): Object that holds request body data.
+            response_models(list[Any], optional): Model to fetch the response data into.
             url(str): URL used to send the request.
             headers(dict): Request headers.
 
@@ -156,8 +156,8 @@ class ApiClient:
 
         Args:
             method(str): Http request method.
-            body(typing.Union[pydantic.BaseModel, None]): Object that holds request data.
-            response_models(list[Any]): Model to fetch the response data into.
+            body(BaseModel, optional): Object that holds request body data.
+            response_models(list[Any], optional): Model to fetch the response data into.
             url(str): URL used to send the request.
             headers(dict): Request headers.
 
