@@ -1,1 +1,1 @@
-setup.py,*test/,*/test/*,test/*,*test*,*__init__.py,*/__init__.py,*setup.py,*validate_test_coverage.py,validate_test_coverage.py,.github/*,*.github/*,*/.github/*,*venv,*venv/*,venv/*
+setup.py,*test/,*/test/*,test/*,*test*,*__init__.py,*/__init__.py,*setup.py,*validate_test_coverage.py,validate_test_coverage.py,.github/*,*.github/*,*/.github/*,*venv,*venv/*,venv/*,openworld/sdk/generator/*
