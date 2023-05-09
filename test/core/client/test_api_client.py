@@ -23,6 +23,7 @@ from openworld.sdk.core.client.api import ApiClient
 from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from openworld.sdk.core.constant import header as header_constant
+from openworld.sdk.core.model.api import Response
 from openworld.sdk.core.model.exception import service as service_exception
 
 
@@ -82,6 +83,23 @@ class ApiClientTest(unittest.TestCase):
         self.assertEqual(response_obj.message, api_constant.HELLO_WORLD_MESSAGE)
         self.assertEqual(response_obj.time, api_constant.DATETIME_NOW)
         self.assertEqual(response_obj.enum_value, api_constant.HelloWorldEnum.HELLO_WORLD)
+
+    @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
+    @mock.patch("openworld.sdk.core.client.api.ApiClient._ApiClient__call", Mocks.hello_world_request_response_mock)
+    def test_api_client_call_with_response(self):
+        api_client = ApiClient(Configs.client_config, _OpenWorldAuthClient)
+
+        response = api_client.call_with_response(
+            method=api_constant.METHOD, body=api_constant.HELLO_WORLD_OBJECT, response_models=[api_constant.HelloWorld], url=api_constant.ENDPOINT
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIsNotNone(response.raw)
+        self.assertIsNotNone(response.body)
+
+        self.assertTrue(isinstance(response, Response))
+
+        self.assertEqual(response.body, api_constant.HelloWorld.parse_obj(response.raw.json()), response.body)
 
     @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
     @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)

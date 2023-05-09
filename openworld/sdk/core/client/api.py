@@ -14,6 +14,7 @@
 import enum
 import json
 import logging
+import typing
 import uuid
 from http import HTTPStatus
 from typing import Any, Optional
@@ -28,6 +29,7 @@ from openworld.sdk.core.configuration.client_config import ClientConfig
 from openworld.sdk.core.constant import header as header_constant
 from openworld.sdk.core.constant import log as log_constant
 from openworld.sdk.core.constant.constant import OK_STATUS_CODES_RANGE
+from openworld.sdk.core.model.api import Response as ResponseWrapper
 from openworld.sdk.core.model.error import Error
 from openworld.sdk.core.model.exception import service as service_exception
 from openworld.sdk.core.util import log as log_util
@@ -39,7 +41,8 @@ class ApiClient:
     def __init__(self, config: ClientConfig, auth_client_cls):
         r"""Sends requests to API.
 
-        :param config: Client Configuration Wrapper
+        Args:
+            config(ClientConfig): Client Configuration Wrapper
         """
         self.__auth_client: AuthClient = auth_client_cls(
             credentials=config.auth_config.credentials,
@@ -69,25 +72,13 @@ class ApiClient:
 
         return response_object
 
-    def call(
+    def __call(
         self,
         method: str,
         url: str,
         body: pydantic.BaseModel,
         headers: dict = dict(),  # noqa
-        response_models: Optional[list[Any]] = [None],  # noqa
-    ) -> Any:
-        r"""Sends HTTP request to API.
-
-        :param method: Http request method.
-        :param body: Object that holds request data.
-        :param response_models: Model to fetch the response data into.
-        :param url: URL used to send the request.
-        :param headers: Request headers.
-
-        :return: response as object
-        :rtype: Any
-        """
+    ) -> requests.Response:
         self.__auth_client.refresh_token()
         request_headers = ApiClient.__prepare_request_headers(headers)
         request_body = dict()
@@ -121,8 +112,67 @@ class ApiClient:
 
         LOG.info(log_constant.OPENWORLD_LOG_MESSAGE_TEMPLATE.format(request_log_message))
 
-        result = ApiClient.__build_response(response=response, response_models=response_models)
-        return result
+        return response
+
+    def call(
+        self,
+        method: str,
+        url: str,
+        body: typing.Union[pydantic.BaseModel, None],
+        headers: dict = dict(),  # noqa
+        response_models: Optional[list[Any]] = [None],  # noqa
+    ) -> Any:
+        r"""Sends HTTP request to API.
+
+        Args:
+            method(str): Http request method.
+            body(typing.Union[pydantic.BaseModel, None]): Object that holds request data.
+            response_models(list[Any]): Model to fetch the response data into.
+            url(str): URL used to send the request.
+            headers(dict): Request headers.
+
+        Returns:
+            Any: response as object
+        """
+
+        response: requests.Response = self.__call(
+            method=method,
+            url=url,
+            body=body,
+            headers=headers,
+        )
+
+        return ApiClient.__build_response(response=response, response_models=response_models)
+
+    def call_with_response(
+        self,
+        method: str,
+        url: str,
+        body: pydantic.BaseModel,
+        headers: dict = dict(),  # noqa
+        response_models: Optional[list[Any]] = [None],  # noqa
+    ) -> ResponseWrapper:
+        r"""Sends HTTP request to API.
+
+        Args:
+            method(str): Http request method.
+            body(typing.Union[pydantic.BaseModel, None]): Object that holds request data.
+            response_models(list[Any]): Model to fetch the response data into.
+            url(str): URL used to send the request.
+            headers(dict): Request headers.
+
+        Returns:
+            openworld.sdk.core.model.api.Response: A wrapper around raw response and deserialized response object.
+        """
+
+        response: requests.Response = self.__call(
+            method=method,
+            url=url,
+            body=body,
+            headers=headers,
+        )
+
+        return ResponseWrapper(raw=response, body=ApiClient.__build_response(response=response, response_models=response_models))
 
     @staticmethod
     def __fill_request_headers(request_headers: dict):

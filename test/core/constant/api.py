@@ -22,15 +22,26 @@ from test.core.constant import authentication as auth_constant
 import pydantic.schema
 import requests
 
+from openworld.sdk.core.constant import header
 from openworld.sdk.core.model.error import Error
 
-METHOD = "post"
+METHOD: str = "post"
 
-ENDPOINT = "https://www.example.com/"
+ENDPOINT: str = "https://www.example.com/"
+
+PAGINATED_ENDPOINT: str = "https://www.example.com/pagination"
 
 HELLO_WORLD_MESSAGE: str = "Hello, World!"
 
+PAGINATION_TOTAL_RESULTS_VALUE_2: int = 2
+
+PAGINATION: str = "pagination"
+
 DATETIME_NOW: datetime.datetime = datetime.datetime.now()
+
+PAGINATED_LINK: str = f"Code-Geass<{ENDPOINT}>Fullmetal-Alchemist;Hajime-no-Ippo;"
+
+EXTRACTED_PAGINATED_LINK: str = ENDPOINT
 
 
 class HelloWorldEnum(enum.Enum):
@@ -50,20 +61,35 @@ ERROR_OBJECT = Error(type=ENDPOINT, detail="Test Error")
 
 class MockResponse:
     @staticmethod
+    def hello_world_paginated_response():
+        response = requests.Response()
+
+        response.status_code = HTTPStatus.OK
+        response.url = auth_constant.AUTH_ENDPOINT
+        response.code = "ok"
+        response.headers = {header.LINK: PAGINATED_LINK, header.PAGINATION_TOTAL_RESULTS: PAGINATION_TOTAL_RESULTS_VALUE_2}
+        response._content = json.dumps(HELLO_WORLD_OBJECT, default=pydantic.schema.pydantic_encoder).encode()
+        return response
+
+    @staticmethod
     def hello_world_response():
         response = requests.Response()
+
         response.status_code = HTTPStatus.OK
         response.url = auth_constant.AUTH_ENDPOINT
         response.code = "ok"
         response.headers = dict()
         response._content = json.dumps(HELLO_WORLD_OBJECT, default=pydantic.schema.pydantic_encoder).encode()
+
         return response
 
     @staticmethod
     def invalid_response():
         response = requests.Response()
+
         response.status_code = HTTPStatus.BAD_REQUEST
         response.url = auth_constant.AUTH_ENDPOINT
         response.code = "Bad Request"
         response._content = json.dumps(ERROR_OBJECT, default=pydantic.schema.pydantic_encoder).encode()
+
         return response
