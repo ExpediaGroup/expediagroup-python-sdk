@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import copy
 import unittest
 from test.core.client.test_api_client import Configs
 from test.core.client.test_api_client import Mocks as ApiClientTestMocks
@@ -24,6 +24,8 @@ from openworld.sdk.core.client.api import ApiClient
 from openworld.sdk.core.client.pagination import PageLinkExtractionStrategy, Paginator
 from openworld.sdk.core.client.rapid_auth_client import _RapidAuthClient
 from openworld.sdk.core.model.api import Response
+from openworld.sdk.core.constant.constant import EMPTY_STRING
+from openworld.sdk.core.constant.header import LINK
 
 
 class Mocks:
@@ -41,6 +43,23 @@ class PageLinkExtractionStrategyTest(unittest.TestCase):
         self.assertIsNotNone(default_strategy)
 
         self.assertEqual(default_strategy(api_constant.MockResponse.hello_world_paginated_response().headers), api_constant.EXTRACTED_PAGINATED_LINK)
+
+    def test_default_strategy_null_headers(self):
+        default_strategy: PageLinkExtractionStrategy = PageLinkExtractionStrategy.DEFAULT
+
+        self.assertEqual(default_strategy(None),  EMPTY_STRING)
+
+    def test_default_strategy_missing_link(self):
+        default_strategy: PageLinkExtractionStrategy = PageLinkExtractionStrategy.DEFAULT
+
+        self.assertEqual(default_strategy(dict()), EMPTY_STRING)
+
+    def test_default_strategy_empty_link(self):
+        default_strategy: PageLinkExtractionStrategy = PageLinkExtractionStrategy.DEFAULT
+
+        headers = copy.deepcopy(api_constant.MockResponse.hello_world_paginated_response().headers)
+        headers[LINK] = EMPTY_STRING
+        self.assertEqual(default_strategy(headers), EMPTY_STRING)
 
 
 class PaginatorTest(unittest.TestCase):
