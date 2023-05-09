@@ -1,6 +1,7 @@
 from collections.abc import Generator
 from enum import Enum
-from typing import Any, Callable
+from typing import Any
+from collections.abc import Callable
 from uuid import uuid4
 
 from openworld.sdk.core.client.api import ApiClient
