@@ -6,7 +6,7 @@ from pydantic import parse_obj_as
 from test.core.constant.pydantic_model import *
 
 
-class ModelSerializabilityTest(unittest.TestCase):
+class PydanticModelsTest(unittest.TestCase):
     def test_create_object(self):
         polygon: PolygonPydanticModels.Polygon = PolygonPydanticModels.Polygon(
             type=PolygonDictData.POLYGON["type"],
@@ -104,6 +104,7 @@ class ModelSerializabilityTest(unittest.TestCase):
             )
 
     def test_deserialize_polymorphic_object(self):
+        # Case 1
         wrapped_polygon: PolymorphicPydanticModels.PolygonWrapper = parse_obj_as(
             PolymorphicPydanticModels.PolygonWrapper,
             PolygonDictData.WRAPPED_POLYGON
@@ -117,3 +118,16 @@ class ModelSerializabilityTest(unittest.TestCase):
         self.assertTrue(isinstance(wrapped_polygon, PolymorphicPydanticModels.PolygonWrapper))
         self.assertTrue(isinstance(wrapped_polygon.polygon, PolygonPydanticModels.Polygon))
 
+        # Case 2
+        wrapped_multi_polygon: PolymorphicPydanticModels.PolygonWrapper = parse_obj_as(
+            PolymorphicPydanticModels.PolygonWrapper,
+            PolygonDictData.WRAPPED_MULTI_POLYGON
+        )
+
+        self.assertIsNotNone(wrapped_multi_polygon)
+        self.assertIsNotNone(wrapped_multi_polygon.polygon)
+        self.assertIsNotNone(wrapped_multi_polygon.polygon.type)
+        self.assertIsNotNone(wrapped_multi_polygon.polygon.coordinates)
+
+        self.assertTrue(isinstance(wrapped_multi_polygon, PolymorphicPydanticModels.PolygonWrapper))
+        self.assertTrue(isinstance(wrapped_multi_polygon.polygon, PolygonPydanticModels.MultiPolygon))
