@@ -24,16 +24,9 @@ def generate(namespace: str, output: Path, modules: list[Module]):
     for module_component in index_component.modules:
         module = module_component.module
         for class_ in module.classes:
-            classes_components.append(
-                ClassComponent(
-                    class_=class_,
-                    parent_breadcrumb=module_component.breadcrumbs
-                )
-            )
+            classes_components.append(ClassComponent(class_=class_, parent_breadcrumb=module_component.breadcrumbs))
         for alias in module.aliases:
-            aliases_components.append(
-                AliasComponent(alias, module_component.breadcrumbs)
-            )
+            aliases_components.append(AliasComponent(alias, module_component.breadcrumbs))
 
     index_component.render(output)
     for module in index_component.modules:

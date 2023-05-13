@@ -13,10 +13,11 @@
 # limitations under the License.
 
 import ast
-import astor
 from pathlib import Path
 
-from openworld.sdk.docsgen.constant import PYTHON_SUFFIX, IGNORE_MODULES
+import astor
+
+from openworld.sdk.docsgen.constant import IGNORE_MODULES, PYTHON_SUFFIX
 from openworld.sdk.docsgen.models import *
 
 
@@ -51,8 +52,8 @@ def parse_module(definitions: list[ast.AST], name: str) -> Module:
         if isinstance(node, ast.FunctionDef):
             module.functions.append(Method.from_function_def(node))
 
-        if isinstance(node, ast.Assign) :
-            value = astor.to_source(node).strip().replace(' ', '').split('=')
+        if isinstance(node, ast.Assign):
+            value = astor.to_source(node).strip().replace(" ", "").split("=")
             if len(value) < 2:
                 continue
 

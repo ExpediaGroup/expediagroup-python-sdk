@@ -35,13 +35,7 @@ class Attribute(Definition):
     type_hint: str
     optional: bool
 
-    def __init__(
-        self,
-        name: str = "",
-        docstrings: str = "",
-        type_hint: str = "",
-        optional: bool = False
-    ):
+    def __init__(self, name: str = "", docstrings: str = "", type_hint: str = "", optional: bool = False):
         super().__init__(name, docstrings)
         self.docstrings = process_new_lines(self.docstrings)
         self.type_hint = deepcopy(type_hint)
@@ -50,27 +44,13 @@ class Attribute(Definition):
     @staticmethod
     def from_(param_docstrings: docstring_parser.DocstringParam):
         return Attribute(
-            name=param_docstrings.arg_name,
-            docstrings=param_docstrings.description,
-            type_hint=param_docstrings.type_name,
-            optional=param_docstrings.is_optional
+            name=param_docstrings.arg_name, docstrings=param_docstrings.description, type_hint=param_docstrings.type_name, optional=param_docstrings.is_optional
         )
 
 
 class Argument(Attribute):
-    def __init__(
-        self,
-        name: str = "",
-        docstrings: str = "",
-        type_hint: str = "",
-        optional: bool = False
-    ):
-        super().__init__(
-            name=name,
-            docstrings=process_new_lines(docstrings),
-            type_hint=type_hint,
-            optional=optional
-        )
+    def __init__(self, name: str = "", docstrings: str = "", type_hint: str = "", optional: bool = False):
+        super().__init__(name=name, docstrings=process_new_lines(docstrings), type_hint=type_hint, optional=optional)
 
     @staticmethod
     def from_(param_docstrings: docstring_parser.DocstringParam):
@@ -78,7 +58,7 @@ class Argument(Attribute):
             name=param_docstrings.arg_name,
             docstrings=process_new_lines(param_docstrings.description),
             type_hint=param_docstrings.type_name,
-            optional=param_docstrings.is_optional
+            optional=param_docstrings.is_optional,
         )
 
 
@@ -86,22 +66,14 @@ class Method(Definition):
     arguments: list[Argument]
     return_type: str
 
-    def __init__(
-        self,
-        name: str = "",
-        docstrings: str = "",
-        arguments: list[Argument] = [],
-        return_type: str = ""
-    ):
+    def __init__(self, name: str = "", docstrings: str = "", arguments: list[Argument] = [], return_type: str = ""):
         super().__init__(name, process_new_lines(docstrings))
         self.arguments = deepcopy(arguments)
         self.return_type = deepcopy(return_type)
 
     @staticmethod
     def from_function_def(definition: ast.FunctionDef):
-        docstrings = docstring_parser.parse(
-            ast.get_docstring(definition)
-        )
+        docstrings = docstring_parser.parse(ast.get_docstring(definition))
 
         description: str = "---"
         if docstrings.long_description:
@@ -114,26 +86,16 @@ class Method(Definition):
         return Method(
             name=definition.name,
             docstrings=description,
-            arguments=[
-                Argument.from_(param_docstrings)
-                for param_docstrings in docstrings.params
-            ],
-
+            arguments=[Argument.from_(param_docstrings) for param_docstrings in docstrings.params],
         )
 
     @staticmethod
     def from_class_def(definition: ast.ClassDef):
-        ignore_methods = [
-            "__str__",
-            "__dict__"
-        ]
+        ignore_methods = ["__str__", "__dict__"]
 
         methods: list[Method] = []
         for method in [definition for definition in ast.walk(definition) if isinstance(definition, ast.FunctionDef)]:
-            docstrings = docstring_parser.parse(
-                deepcopy(ast.get_docstring(method)),
-                docstring_parser.Style.GOOGLE
-            )
+            docstrings = docstring_parser.parse(deepcopy(ast.get_docstring(method)), docstring_parser.Style.GOOGLE)
 
             if method.name in ignore_methods:
                 continue
@@ -150,10 +112,8 @@ class Method(Definition):
                 Method(
                     name=method.name,
                     docstrings=method_docstrings,
-                    arguments=[
-                        Argument.from_(param_docstring) for param_docstring in docstrings.params
-                    ],
-                    return_type=astor.to_source(node=method.returns) if method.returns else None
+                    arguments=[Argument.from_(param_docstring) for param_docstring in docstrings.params],
+                    return_type=astor.to_source(node=method.returns) if method.returns else None,
                 )
             )
 
@@ -161,19 +121,8 @@ class Method(Definition):
 
 
 class Function(Method):
-    def __init__(
-        self,
-        name: str = "",
-        docstrings: str = "",
-        arguments: list[Argument] = [],
-        return_type: str = ""
-    ):
-        super().__init__(
-            name=name,
-            docstrings=process_new_lines(docstrings),
-            arguments=arguments,
-            return_type=return_type
-        )
+    def __init__(self, name: str = "", docstrings: str = "", arguments: list[Argument] = [], return_type: str = ""):
+        super().__init__(name=name, docstrings=process_new_lines(docstrings), arguments=arguments, return_type=return_type)
 
 
 class Class(Definition):
@@ -181,14 +130,7 @@ class Class(Definition):
     methods: list[Method]
     bases: list[str]
 
-    def __init__(
-        self,
-        name: str = "",
-        docstrings: str = str,
-        attributes: list[Attribute] = [],
-        methods: list[Method] = [],
-        bases: list[str] = ["object"]
-    ):
+    def __init__(self, name: str = "", docstrings: str = str, attributes: list[Attribute] = [], methods: list[Method] = [], bases: list[str] = ["object"]):
         super().__init__(name=name, docstrings=docstrings)
         self.attributes = deepcopy(attributes)
         self.methods = deepcopy(methods)
@@ -196,10 +138,7 @@ class Class(Definition):
 
     @staticmethod
     def from_(definition: ast.ClassDef):
-        docstrings = docstring_parser.parse(
-            ast.get_docstring(definition),
-            docstring_parser.Style.GOOGLE
-        )
+        docstrings = docstring_parser.parse(ast.get_docstring(definition), docstring_parser.Style.GOOGLE)
 
         print(docstrings.meta)
 
@@ -216,7 +155,7 @@ class Class(Definition):
             docstrings=description,
             methods=Method.from_class_def(definition),
             bases=["object"] + [base.id for base in definition.bases] + [definition.name],
-            attributes=[Attribute.from_(param) for param in docstrings.params]
+            attributes=[Attribute.from_(param) for param in docstrings.params],
         )
 
 
@@ -232,11 +171,7 @@ class Alias(Definition):
         text = astor.to_source(node)
         name, one_of = text.split("=")
 
-        return Alias(
-            name=name.strip(),
-            docstrings="",
-            one_of=[model.strip() for model in one_of.removeprefix('Union[').removesuffix(']').split(',')]
-        )
+        return Alias(name=name.strip(), docstrings="", one_of=[model.strip() for model in one_of.removeprefix("Union[").removesuffix("]").split(",")])
 
 
 class Module:
@@ -246,13 +181,7 @@ class Module:
     aliases: list[Alias]
     file: str
 
-    def __init__(
-        self,
-        name: str = "",
-        classes: list[Class] = [],
-        functions: list[Function] = [],
-        aliases: list[Alias] = []
-    ):
+    def __init__(self, name: str = "", classes: list[Class] = [], functions: list[Function] = [], aliases: list[Alias] = []):
         self.name = deepcopy(name)
         self.classes = deepcopy(classes)
         self.functions = deepcopy(functions)

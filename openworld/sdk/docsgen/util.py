@@ -22,9 +22,9 @@ from openworld.sdk.docsgen.constant import CONSTR, MARKDOWN_SUFFIX
 def process_new_lines(text: str) -> str:
     # TODO: Improve to which lines and how the <br> tag is added.
     text = text.strip()
-    while '\n\n' in text:
-        text = text.replace('\n\n', '\n')
-    return text.replace('\n', '<br/>')
+    while "\n\n" in text:
+        text = text.replace("\n\n", "\n")
+    return text.replace("\n", "<br/>")
 
 
 def __remove_constr(datatype: str):
@@ -34,20 +34,20 @@ def __remove_constr(datatype: str):
     if CONSTR not in datatype:
         return datatype
 
-    left_index, right_index = datatype.find(CONSTR + '('), len(datatype) - 1
+    left_index, right_index = datatype.find(CONSTR + "("), len(datatype) - 1
 
-    while datatype[right_index] != ')' and right_index > left_index:
+    while datatype[right_index] != ")" and right_index > left_index:
         right_index -= 1
 
     if left_index == right_index:
         return datatype
 
-    return datatype.replace(datatype[left_index:right_index + 1], "")
+    return datatype.replace(datatype[left_index : right_index + 1], "")
 
 
 def has_class_definition(type_hint: str):
     for index, char in enumerate(type_hint):
-        if char.isupper() and index + 3 < len(type_hint) and type_hint[index:index + 4] != "None":
+        if char.isupper() and index + 3 < len(type_hint) and type_hint[index : index + 4] != "None":
             return True
     return False
 
@@ -59,39 +59,39 @@ def remove_builtin_type_aliases(datatype: str) -> list[str]:
         "Set",
         "Dict",
         "List",
-        'ChainMap',
-        'Counter',
-        'DefaultDict',
-        'OrderedDict',
-        'FrozenSet',
-        'NamedTuple',
-        'TypedDict',
-        'Generator',
+        "ChainMap",
+        "Counter",
+        "DefaultDict",
+        "OrderedDict",
+        "FrozenSet",
+        "NamedTuple",
+        "TypedDict",
+        "Generator",
         "Literal",
     ]
-    generic_datatypes = ['None', 'Any', 'AnyUrl', 'Enum', 'BaseModel', "ClientConfig"]
+    generic_datatypes = ["None", "Any", "AnyUrl", "Enum", "BaseModel", "ClientConfig"]
 
-    datatype = datatype.strip().replace(' ', '')
+    datatype = datatype.strip().replace(" ", "")
 
     has_type_alias = True
     while has_type_alias:
         has_type_alias = False
 
         for type_alias in builtin_type_aliases:
-            if datatype.startswith(type_alias + '['):
+            if datatype.startswith(type_alias + "["):
                 has_type_alias = True
-                datatype = datatype.removeprefix(type_alias + '[')
+                datatype = datatype.removeprefix(type_alias + "[")
 
-            elif datatype.endswith(']'):
-                while datatype.endswith(']'):
-                    datatype = datatype.removesuffix(']')
+            elif datatype.endswith("]"):
+                while datatype.endswith("]"):
+                    datatype = datatype.removesuffix("]")
 
     if "constr" in datatype:
         datatype = __remove_constr(datatype)
 
     result: list[str] = []
-    if ',' in datatype:
-        datatype = datatype.split(',')
+    if "," in datatype:
+        datatype = datatype.split(",")
         for index, value in enumerate(datatype):
             processed_datatype = remove_builtin_type_aliases(value)
             datatype[index] = processed_datatype[0] if processed_datatype else ""
@@ -116,10 +116,10 @@ def add_reference_to_datatype(datatype: str, to_add_reference: str):
     for index in [word.start() for word in re.finditer(to_add_reference, datatype)]:
         if index == 0 and not datatype[length].isalpha():
             return reference + datatype[length::]
-        elif index + length == len(datatype) and not datatype[index-1].isalpha():
+        elif index + length == len(datatype) and not datatype[index - 1].isalpha():
             return datatype[:index] + reference
-        elif not datatype[index-1].isalpha() and not datatype[index+length].isalpha():
-            return datatype[:index] + reference + datatype[index+length:]
+        elif not datatype[index - 1].isalpha() and not datatype[index + length].isalpha():
+            return datatype[:index] + reference + datatype[index + length :]
     return datatype
 
 
@@ -160,7 +160,7 @@ def extract_types(node) -> list[ast.Name]:
 
 def write_file(path: Path, content: str):
     path.touch(exist_ok=True)
-    with open(path, 'w') as file:
+    with open(path, "w") as file:
         file.write(content)
 
 
@@ -181,6 +181,4 @@ def header4(content: str):
 
 
 def bullet_points(points: list[str]):
-    return "\n".join([
-        f"+ {point}" for point in points
-    ])
+    return "\n".join([f"+ {point}" for point in points])

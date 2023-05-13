@@ -14,7 +14,7 @@
 
 import typing
 
-CONSTR: str = 'constr'
+CONSTR: str = "constr"
 
 MARKDOWN_SUFFIX: str = ".md"
 
@@ -62,25 +62,10 @@ INHERITANCE: str = "Inheritance"
 
 ALIAS_DOCSTRINGS: str = "An alias datatype, can be one of:"
 
-IGNORE_TYPES: list[str] = [
-    str(datatype) for datatype in typing.__all__
-] + ["BaseModel", "Enum"]
+IGNORE_TYPES: list[str] = [str(datatype) for datatype in typing.__all__] + ["BaseModel", "Enum"]
 
-IGNORE_MODULES: list[str] = [
-    "__init__",
-    "setup"
-]
+IGNORE_MODULES: list[str] = ["__init__", "setup"]
 
-CLASS_ATTRIBUTES_TABLE_FIELDS: list[str] = [
-    "Name",
-    "Type",
-    "Required",
-    "Description"
-]
+CLASS_ATTRIBUTES_TABLE_FIELDS: list[str] = ["Name", "Type", "Required", "Description"]
 
-METHOD_TABLE_FIELDS: list[str] = [
-    "Param",
-    "Type",
-    "Required",
-    "Description"
-]
+METHOD_TABLE_FIELDS: list[str] = ["Param", "Type", "Required", "Description"]
