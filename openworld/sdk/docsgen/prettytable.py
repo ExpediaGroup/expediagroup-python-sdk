@@ -1682,7 +1682,7 @@ class TableHandler(HTMLParser):
                 for i in range(1, appends):
                     row[0].append("-")
 
-            if row[1] == True:
+            if row[1] is True:
                 self.make_fields_unique(row[0])
                 table.field_names = row[0]
             else:

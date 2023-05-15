@@ -96,7 +96,7 @@ def remove_builtin_type_aliases(datatype: str) -> list[str]:
             processed_datatype = remove_builtin_type_aliases(value)
             datatype[index] = processed_datatype[0] if processed_datatype else ""
 
-        for index, value in enumerate(datatype):
+        for _, value in enumerate(datatype):
             if value and value not in generic_datatypes and value[0].isupper():
                 result.append(value)
 
@@ -131,7 +131,7 @@ def get_datatype_reference(datatype: str) -> typing.Union[None, str]:
     if not processed_datatype:
         return datatype
 
-    for index, type_hint in enumerate(processed_datatype):
+    for _, type_hint in enumerate(processed_datatype):
         # TODO: Find a more decent way to add reference instead of string replacement.
 
         datatype = add_reference_to_datatype(datatype, type_hint)
