@@ -13,7 +13,6 @@
 # limitations under the License.
 import collections
 import dataclasses
-import functools
 from pathlib import Path
 
 from datamodel_code_generator.imports import Imports
