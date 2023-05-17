@@ -95,7 +95,7 @@ def generate_code(
         visitor_result = visitor(parser, model_path)
         template_vars = {**template_vars, **visitor_result}
 
-    for target in template_dir.rglob("*.jinja2"):
+    for target in template_dir.rglob("*"):
         relative_path = target.relative_to(template_dir)
         template = environment.get_template(str(relative_path))
         result = template.render(template_vars)

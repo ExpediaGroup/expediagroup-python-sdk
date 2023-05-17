@@ -126,10 +126,7 @@ def get_is_parent_model_helper(models: dict[str, DataModel]) -> dict[str, bool]:
 
     return collections.defaultdict(
         bool,
-        {
-            model.base_class: (model.base_class not in ignore_parents) and has_type_attribute(parse_highest_ancestor(model, models))
-            for model in models.values()
-        }
+        {model.base_class: (model.base_class not in ignore_parents) and has_type_attribute(parse_highest_ancestor(model, models)) for model in models.values()},
     )
 
 
@@ -137,11 +134,7 @@ def get_is_highest_parent_helper(models: dict[str, DataModel]) -> dict[str, bool
     is_parent_model = get_is_parent_model_helper(models)
 
     return collections.defaultdict(
-        bool,
-        {
-            model.class_name: not is_parent_model[model.base_class] and is_parent_model[model.class_name]
-            for model in models.values()
-        }
+        bool, {model.class_name: not is_parent_model[model.base_class] and is_parent_model[model.class_name] for model in models.values()}
     )
 
 
@@ -178,12 +171,7 @@ def parse_aliases(models: dict[str, DataModel]) -> list[Alias]:
         if not value:
             continue
 
-        aliases.append(
-            Alias(
-                parent_classname=key,
-                children_classnames=parse_descendants_classnames(key, models)
-            )
-        )
+        aliases.append(Alias(parent_classname=key, children_classnames=parse_descendants_classnames(key, models)))
 
     return aliases
 
@@ -199,8 +187,7 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
         dict[str, object]: Data to be exposed to `jinja2` templates.
     """
 
-    _, sorted_models, __ = sort_data_models(
-        unsorted_data_models=[result for result in parser.results if isinstance(result, DataModel)])
+    _, sorted_models, __ = sort_data_models(unsorted_data_models=[result for result in parser.results if isinstance(result, DataModel)])
 
     models: dict[str, DataModel] = parse_datamodels(parser)
 
@@ -209,13 +196,7 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     for alias in aliases:
         print(alias.parent_classname, alias.children_classnames)
 
-    is_aliased = collections.defaultdict(
-        bool,
-        {
-            alias.parent_classname: True
-            for alias in aliases
-        }
-    )
+    is_aliased = collections.defaultdict(bool, {alias.parent_classname: True for alias in aliases})
 
     highest_parent: dict[str, str] = dict()
     for alias in aliases:
