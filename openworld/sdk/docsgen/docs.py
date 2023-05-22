@@ -13,12 +13,18 @@
 # limitations under the License.
 
 from openworld.sdk.docsgen import constant
-from openworld.sdk.docsgen.models import Alias, Attribute, Class, Method, Module
+from openworld.sdk.docsgen.models import Alias, Attribute, Class, Method, Module, Argument
 from openworld.sdk.docsgen.prettytable import PrettyTable
 from openworld.sdk.docsgen.util import *
 
 
 class Breadcrumbs:
+    r"""Breadcrumbs component.
+
+    Args:
+        current(str): Current element/level in breadcrumbs.
+        previous(str): Parent element/level in breadcrumbs.
+    """
     breadcrumbs: str = ""
     namespace: str = ""
 
@@ -30,10 +36,16 @@ class Breadcrumbs:
 
 
 class ConstructorComponent:
-    params: list[Attribute]
+    r"""Constructor component, that renders a Markdown code description of the constructor to a class.
+
+    Args:
+        params(list[Argument]): List of params/args the constructor needs to create an object.
+        classname(str): Name of the class of which the represented constructor creates an object of.
+    """
+    params: list[Argument]
     classname: str
 
-    def __init__(self, classname: str, params: list[Attribute]):
+    def __init__(self, classname: str, params: list[Argument]):
         self.classname = classname
         self.params = params
 
@@ -54,6 +66,16 @@ class ConstructorComponent:
 
 
 class MethodComponent:
+    r"""Method component, that renders a Markdown method representation, including description, arguments & their
+    datatypes. Rendered output contains the following elements:
+    - Method name and params code block.
+    - Method description.
+    - Table of params and their data types, referenced through Markdown reference links.
+    - Method return data types, referenced through Markdown reference links.
+
+    Args:
+        method(Method): Method representation to be used in rendering.
+    """
     method: Method
 
     def __init__(self, method: Method):
