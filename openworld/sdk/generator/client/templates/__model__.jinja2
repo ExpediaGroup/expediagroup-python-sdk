@@ -24,7 +24,7 @@ T = TypeVar('T', bound=str)
 {{ decorator }}
 {% endfor -%}
 
-class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif %}({% if is_aliased[model.class_name] %}GenericModel, Generic[T],{% endif %}{% if is_aliased[model.base_class] %}{{ model.base_class }}Generic[Literal['{{ model.class_name }}']]{% else %}{% if is_parent_model[model.base_class] %} {{ highest_parent[model.class_name] }}Generic[Literal['{{ model.class_name }}']],{% endif %}{{ model.base_class }}{% endif %}, smart_union=True, extra=Extra.forbid,
+class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif %}({% if is_aliased[model.class_name] %}GenericModel, Generic[T],{% endif %}{% if is_aliased[model.base_class] %}{{ model.base_class }}Generic[Literal['{{ model.class_name }}']]{% else %}{% if is_parent_model[model.base_class] %} {{ highest_parent[model.class_name] }}Generic[Literal['{{ model.class_name }}']],{% endif %}{{ model.base_class }}{% endif %},{% if model.base_class != 'Enum' %} smart_union=True, extra=Extra.forbid,{% endif %}
 ): {% if comment is defined %}  # {{ model.comment }}{% endif %}
 
     r"""pydantic model {{ model.class_name }}{%- if model.description %}: {{ model.description }}{%- endif %}
