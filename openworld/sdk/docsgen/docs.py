@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from openworld.sdk.docsgen import constant
-from openworld.sdk.docsgen.models import Alias, Attribute, Class, Method, Module, Argument
+from openworld.sdk.docsgen.models import Alias, Argument, Class, Method, Module
 from openworld.sdk.docsgen.prettytable import PrettyTable
 from openworld.sdk.docsgen.util import *
 
@@ -122,6 +122,25 @@ class MethodComponent:
 
 
 class ClassComponent:
+    r"""Class component, that renders a Markdown class representation, including description, attributes & methods.
+    Rendered output is a whole single page (single file), which contains the following elements:
+        - Class name.
+        - Class description.
+        - Constructor component.
+        - Methods components.
+        - Breadcrumbs component.
+
+        Args:
+            class_(Class): Class representation to be used in rendering.
+            parent_breadcrumb(Breadcrumbs): Parent breadcrumbs of the module containing the class.
+
+        Attributes:
+            name(str): Class name.
+            constructor(ConstructorComponent): Class constructor component.
+            file(str): Markdown file name.
+            class_(Class): Class representation.
+            breadcrumbs(Breadcrumbs): Breadcrumbs component.
+    """
     name: str
     constructor: ConstructorComponent
     breadcrumbs: Breadcrumbs
@@ -173,15 +192,36 @@ class ClassComponent:
         )
 
     def render(self, output: Path):
+        r"""Renders the component using the by transforming the component into string representation, and then writes
+        it into a Markdown file, whose name is equivalent to the class name.
+
+        Args:
+            output(Path): The path to write the rendered Markdown file into.
+        """
         write_file(output / self.file, str(self))
 
 
 class ModuleComponent:
+    r"""Module component, that renders a Markdown module representation, containing classes.
+    Rendered output is a module representation, which includes references to its classes, it contains the following elements:
+        - Module name.
+        - Classes TOC sorted alphabetically.
+        - Breadcrumbs component.
+
+    Args:
+        module(Module): Module representation to be used in rendering.
+        parent_breadcrumb(Breadcrumbs): Parent breadcrumbs of the module.
+
+    Attributes:
+        module(Module): Module representation to be used in rendering.
+        file(str): Markdown file name.
+        breadcrumbs(Breadcrumbs): Breadcrumbs component.
+    """
     module: Module
     breadcrumbs: Breadcrumbs
     file: str
 
-    def __init__(self, module, parent_breadcrumb: Breadcrumbs):
+    def __init__(self, module: Module, parent_breadcrumb: Breadcrumbs):
         self.module = module
         self.breadcrumbs = Breadcrumbs(current=f"[{module.name}](./{module.file})", previous=[parent_breadcrumb.breadcrumbs])
 
@@ -202,10 +242,29 @@ class ModuleComponent:
         )
 
     def render(self, output_path):
+        r"""Renders the component using the by transforming the component into string representation, and then writes
+        it into a Markdown file, whose name is equivalent to the module name.
+
+        Args:
+            output_path(Path): The path to write the rendered Markdown file into.
+        """
         write_file(output_path / self.module.file, str(self))
 
 
 class IndexComponent:
+    r"""Index component, which is the entry to the whole generated documentation. Rendered output contains a TOC of
+    available modules.
+
+    Args:
+        modules(list[Module]): List of modules components.
+        namespace(str): Library namespace.
+
+    Attributes:
+        file(str): Markdown file name.
+        breadcrumbs(Breadcrumbs): Breadcrumbs component.
+        namespace(str): Library namespace.
+        modules(ModuleComponent): List of modules components.
+    """
     file: str
     namespace: str
     modules: list[ModuleComponent]
@@ -234,6 +293,12 @@ class IndexComponent:
         )
 
     def render(self, output_path: Path):
+        r"""Renders the component using the by transforming the component into string representation, and then writes
+        it into a Markdown file, whose name is `index.md`.
+
+        Args:
+            output_path(Path): The path to write the rendered Markdown file into.
+        """
         write_file(output_path / self.file, str(self))
 
 
