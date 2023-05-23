@@ -75,6 +75,9 @@ class MethodComponent:
 
     Args:
         method(Method): Method representation to be used in rendering.
+
+    Attributes:
+        method(Method): Method representation to be used in rendering.
     """
     method: Method
 
@@ -303,6 +306,22 @@ class IndexComponent:
 
 
 class AliasComponent:
+    r"""Alias component, that renders a Markdown type alias representation, including description & aliased datatypes.
+    Rendered output contains the following elements in a whole/single page:
+    - Alias name.
+    - breadcrumbs component.
+    - Aliased data types.
+
+    Args:
+        alias(Alias): Alias representation to be used in rendering.
+        parent_breadcrumbs(Breadcrumbs): Breadcrumbs component of the parent module
+
+    Attributes:
+        alias(Module): Alias representation to be used in rendering.
+        name(str): Alias name.
+        file(str): Markdown file name.
+        breadcrumbs(Breadcrumbs): Breadcrumbs component.
+    """
     alias: Alias
     name: str
     file: str
@@ -324,7 +343,27 @@ class AliasComponent:
         write_file(output_path / self.file, str(self))
 
 
-class Documentation:
+class DocumentationComponent:
+    r"""Documentation component, a wrapper component that renders a Markdown type library documentation representation,
+    Rendered output contains the following elements in a whole/single page:
+    - Index Component.
+
+    Once `render()` is triggered on this component, it will trigger the render of all wrapped components, such as
+    modules, index, classes & others.
+
+    Args:
+        index_component(IndexComponent): Index component of the library documentation.
+        modules_components(ModuleComponent): List of modules components.
+        classes_components(ClassComponent): List of classes components.
+        alias_components(AliasComponent): List of aliases components.
+
+    Attributes:
+        index_component(IndexComponent): Index component
+        modules_components(list[ModuleComponent]): Modules components.
+        classes_components(list[ClassComponent]): Classes components.
+        alias_components(list[AliasComponent]): Aliases components.
+        output(Path): Output path of the rendered documentation.
+    """
     index_component: IndexComponent
     modules_components: list[ModuleComponent]
     classes_components: list[ClassComponent]
@@ -344,6 +383,8 @@ class Documentation:
         self.alias_components = alias_components
 
     def render(self):
+        r"""Renders this component and all it's subcomponents into a given output path.
+        """
         self.index_component.render(self.output)
         for module in self.modules_components:
             module.render(self.output)
