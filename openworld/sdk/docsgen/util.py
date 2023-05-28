@@ -19,8 +19,16 @@ from pathlib import Path
 from openworld.sdk.docsgen.constant import CONSTR, MARKDOWN_SUFFIX
 
 
-def process_new_lines(text: str) -> str:
-    # TODO: Improve to which lines and how the <br> tag is added.
+def replace_new_lines_with_br_tag(text: str) -> str:
+    r"""Replaces new lines in a text with `<br/>` tag.
+
+    Args:
+        text(str): Text to replace new lines with tags in.
+
+    Returns:
+
+    """
+    # TODO: Improve to which lines and how the <br/> tag is added.
     text = text.strip()
     while "\n\n" in text:
         text = text.replace("\n\n", "\n")
@@ -28,6 +36,14 @@ def process_new_lines(text: str) -> str:
 
 
 def __remove_constr(datatype: str):
+    r"""
+
+    Args:
+        datatype:
+
+    Returns:
+
+    """
     """TODO: Cases the algorithm fails on:
     - Union[constr(...), Dict[Model, constr(...)]]: This will remove the `Model` alongside the right constr.
     """
@@ -45,14 +61,15 @@ def __remove_constr(datatype: str):
     return datatype.replace(datatype[left_index : right_index + 1], "")
 
 
-def has_class_definition(type_hint: str):
-    for index, char in enumerate(type_hint):
-        if char.isupper() and index + 3 < len(type_hint) and type_hint[index : index + 4] != "None":
-            return True
-    return False
+def remove_builtin_type_aliases(type_hint: str) -> list[str]:
+    r"""Removes builtin types and those included in the `typing` library from a given type hint.
 
+    Args:
+        type_hint(str): Type hint to remove builtin types from.
 
-def remove_builtin_type_aliases(datatype: str) -> list[str]:
+    Returns:
+        str: Cleaned type hint.
+    """
     builtin_type_aliases = [
         "Optional",
         "Union",
@@ -71,59 +88,83 @@ def remove_builtin_type_aliases(datatype: str) -> list[str]:
     ]
     generic_datatypes = ["None", "Any", "AnyUrl", "Enum", "BaseModel", "ClientConfig"]
 
-    datatype = datatype.strip().replace(" ", "")
+    type_hint = type_hint.strip().replace(" ", "")
 
     has_type_alias = True
     while has_type_alias:
         has_type_alias = False
 
         for type_alias in builtin_type_aliases:
-            if datatype.startswith(type_alias + "["):
+            if type_hint.startswith(type_alias + "["):
                 has_type_alias = True
-                datatype = datatype.removeprefix(type_alias + "[")
+                type_hint = type_hint.removeprefix(type_alias + "[")
 
-            elif datatype.endswith("]"):
-                while datatype.endswith("]"):
-                    datatype = datatype.removesuffix("]")
+            elif type_hint.endswith("]"):
+                while type_hint.endswith("]"):
+                    type_hint = type_hint.removesuffix("]")
 
-    if "constr" in datatype:
-        datatype = __remove_constr(datatype)
+    if "constr" in type_hint:
+        type_hint = __remove_constr(type_hint)
 
     result: list[str] = []
-    if "," in datatype:
-        datatype = datatype.split(",")
-        for index, value in enumerate(datatype):
+    if "," in type_hint:
+        type_hint = type_hint.split(",")
+        for index, value in enumerate(type_hint):
             processed_datatype = remove_builtin_type_aliases(value)
-            datatype[index] = processed_datatype[0] if processed_datatype else ""
+            type_hint[index] = processed_datatype[0] if processed_datatype else ""
 
-        for _, value in enumerate(datatype):
+        for _, value in enumerate(type_hint):
             if value and value not in generic_datatypes and value[0].isupper():
                 result.append(value)
 
     else:
-        result = [datatype] if datatype and datatype not in generic_datatypes and datatype[0].isupper() else []
+        result = [type_hint] if type_hint and type_hint not in generic_datatypes and type_hint[0].isupper() else []
 
     return result
 
 
-def add_reference_to_datatype(datatype: str, to_add_reference: str):
-    reference = f"[{to_add_reference}]({to_add_reference}{MARKDOWN_SUFFIX})"
-    length = len(to_add_reference)
+def add_markdown_reference_to_datatype(type_hint: str, referenced_datatype: str) -> str:
+    r"""Replaces all datatype occurrences in a type hint, with a markdown reference to a file with the same name as
+    `referenced_datatype`.
 
-    if len(datatype) == length:
+    Examples:
+        1. SomeModel -> [SomeModel](SomeModel.md)
+        2. Union[SomeModel, str] -> Union[[SomeModel](SomeModel.md), str]
+        3. dict[list[SomeModel], dict[int, Any]] -> dict[list[[SomeModel](SomeModel.md)], dict[int, Any]]
+
+    Args:
+        type_hint(str): Original type hint to process.
+        referenced_datatype(str): Data type to be referenced in markdown.
+
+    Returns:
+        str: Processed type hint.
+    """
+    reference = f"[{referenced_datatype}]({referenced_datatype}{MARKDOWN_SUFFIX})"
+    length = len(referenced_datatype)
+
+    if len(type_hint) == length:
         return reference
 
-    for index in [word.start() for word in re.finditer(to_add_reference, datatype)]:
-        if index == 0 and not datatype[length].isalpha():
-            return reference + datatype[length::]
-        elif index + length == len(datatype) and not datatype[index - 1].isalpha():
-            return datatype[:index] + reference
-        elif not datatype[index - 1].isalpha() and not datatype[index + length].isalpha():
-            return datatype[:index] + reference + datatype[index + length :]
-    return datatype
+    for index in [word.start() for word in re.finditer(referenced_datatype, type_hint)]:
+        if index == 0 and not type_hint[length].isalpha():
+            return reference + type_hint[length::]
+        elif index + length == len(type_hint) and not type_hint[index - 1].isalpha():
+            return type_hint[:index] + reference
+        elif not type_hint[index - 1].isalpha() and not type_hint[index + length].isalpha():
+            return type_hint[:index] + reference + type_hint[index + length:]
+    return type_hint
 
 
 def get_datatype_reference(datatype: str) -> typing.Union[None, str]:
+    r"""Gets the datatype markdown reference string if it has one.
+
+    Args:
+        datatype(str): Given datatype.
+
+    Returns:
+        str | None: Datatype string referencing a markdown file, or the datatype itself in case it has no documented
+            representation.
+    """
     if not datatype:
         return
 
@@ -133,13 +174,22 @@ def get_datatype_reference(datatype: str) -> typing.Union[None, str]:
 
     for _, type_hint in enumerate(processed_datatype):
         # TODO: Find a more decent way to add reference instead of string replacement.
+        # TODO: Keep track of parsed classes & aliases, and add reference if they exist.
 
-        datatype = add_reference_to_datatype(datatype, type_hint)
+        datatype = add_markdown_reference_to_datatype(datatype, type_hint)
 
     return datatype
 
 
-def extract_types(node) -> list[ast.Name]:
+def extract_types(node: ast.AST) -> list[ast.Name]:
+    r"""Extracts all type hints (datatypes) from an AST node.
+
+    Args:
+        node(ast.AST): Parsed `AST` node.
+
+    Returns:
+        list[ast.Name]: List of `ast.Name` nodes representing type hints.
+    """
     if isinstance(node, ast.Constant):
         return []
 
@@ -159,26 +209,72 @@ def extract_types(node) -> list[ast.Name]:
 
 
 def write_file(path: Path, content: str):
+    r"""Writes a text content into a file with a given path. A new file is created in case its non-existent.
+
+    Args:
+        path(Path): Path of file to write into.
+        content(str): Text content to write into a file.
+    """
     path.touch(exist_ok=True)
     with open(path, "w") as file:
         file.write(content)
 
 
-def header1(content: str):
-    return "# " + content
+def header1(text: str):
+    r"""Converts a given text into Markdown heading level 1.
+
+    Args:
+        text(str): Given text to convert.
+
+    Returns:
+        str: Text as a Markdown header.
+    """
+    return "# " + text
 
 
-def header2(content: str):
-    return "## " + content
+def header2(text: str):
+    r"""Converts a given text into Markdown heading level 2.
+
+    Args:
+        text(str): Given text to convert.
+
+    Returns:
+        str: Text as a Markdown header.
+    """
+    return "## " + text
 
 
-def header3(content: str):
-    return "### " + content
+def header3(text: str):
+    r"""Converts a given text into Markdown heading level 3.
+
+    Args:
+        text(str): Given text to convert.
+
+    Returns:
+        str: Text as a Markdown header.
+    """
+    return "### " + text
 
 
-def header4(content: str):
-    return "#### " + content
+def header4(text: str):
+    r"""Converts a given text into Markdown heading level 4.
+
+    Args:
+        text(str): Given text to convert.
+
+    Returns:
+        str: Text as a Markdown header.
+    """
+    return "#### " + text
 
 
 def bullet_points(points: list[str]):
+    r"""Formats a list of strings into a Markdown bullet points list.
+
+    Args:
+        points(list[str]): List of strings to format.
+
+    Returns:
+        str: Markdown formatted bullet points.
+    """
     return "\n".join([f"+ {point}" for point in points])

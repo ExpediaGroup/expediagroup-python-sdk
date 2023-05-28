@@ -16,6 +16,14 @@ from openworld.sdk.docsgen.docs import *
 
 
 def generate(namespace: str, output: Path, modules: list[Module]):
+    r"""Fetches parsed data into components, and generates library documentation using those components. Mainly, an
+    index component is generated, along with all the parsed modules documentation.
+
+    Args:
+        namespace(str): Namespace of the library.
+        output(Path): Output path to generate documentation into.
+        modules(list[Module]): A list of modules representing parsed data.
+    """
     output.mkdir(exist_ok=True)
     index_component = IndexComponent(namespace=namespace, modules=modules)
     classes_components = []

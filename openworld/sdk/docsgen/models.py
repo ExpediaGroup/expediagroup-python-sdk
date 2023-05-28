@@ -19,10 +19,20 @@ import astor
 import docstring_parser
 
 from openworld.sdk.docsgen import constant
-from openworld.sdk.docsgen.util import process_new_lines
+from openworld.sdk.docsgen.util import replace_new_lines_with_br_tag
 
 
-class Definition:
+class CodeRepresentationElement:
+    r"""A generic class that is a parent to all code representation classes.
+
+    Args:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+
+    Attributes:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+    """
     name: str
     docstrings: str
 
@@ -31,48 +41,117 @@ class Definition:
         self.docstrings = deepcopy(docstrings)
 
 
-class Attribute(Definition):
+class Attribute(CodeRepresentationElement):
+    r"""A representation of an attribute, which belongs to a class.
+
+    Args:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        type_hint(str): Attribute type hint.
+        optional(bool): True if attribute is nullable or not.
+
+    Attributes:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        type_hint(str): Attribute type hint.
+        optional(bool): True if attribute is nullable or not.
+    """
     type_hint: str
     optional: bool
 
     def __init__(self, name: str = "", docstrings: str = "", type_hint: str = "", optional: bool = False):
         super().__init__(name, docstrings)
-        self.docstrings = process_new_lines(self.docstrings)
+        self.docstrings = replace_new_lines_with_br_tag(self.docstrings)
         self.type_hint = deepcopy(type_hint)
         self.optional = deepcopy(optional)
 
     @staticmethod
     def from_(param_docstrings: docstring_parser.DocstringParam):
+        r"""A static method that creates an object of this class based on given arguments.
+
+        Args:
+            param_docstrings(docstring_parser.DocstringParam): Parsed docstrings of attribute.
+
+        Returns:
+            Attribute
+        """
         return Attribute(
-            name=param_docstrings.arg_name, docstrings=param_docstrings.description, type_hint=param_docstrings.type_name, optional=param_docstrings.is_optional
+            name=param_docstrings.arg_name, docstrings=param_docstrings.description,
+            type_hint=param_docstrings.type_name, optional=param_docstrings.is_optional
         )
 
 
 class Argument(Attribute):
+    r"""A representation of an attribute, which belongs to a class.
+
+    Args:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        type_hint(str): Attribute type hint.
+        optional(bool): True if attribute is nullable or not.
+
+    Attributes:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        type_hint(str): Attribute type hint.
+        optional(bool): True if attribute is nullable or not.
+    """
+
     def __init__(self, name: str = "", docstrings: str = "", type_hint: str = "", optional: bool = False):
-        super().__init__(name=name, docstrings=process_new_lines(docstrings), type_hint=type_hint, optional=optional)
+        super().__init__(name=name, docstrings=replace_new_lines_with_br_tag(docstrings), type_hint=type_hint, optional=optional)
 
     @staticmethod
     def from_(param_docstrings: docstring_parser.DocstringParam):
+        r"""A static method that creates an object of this class based on given arguments.
+
+        Args:
+            param_docstrings(docstring_parser.DocstringParam): Parsed docstrings of argument.
+
+        Returns:
+            Argument
+        """
         return Argument(
             name=param_docstrings.arg_name,
-            docstrings=process_new_lines(param_docstrings.description),
+            docstrings=replace_new_lines_with_br_tag(param_docstrings.description),
             type_hint=param_docstrings.type_name,
             optional=param_docstrings.is_optional,
         )
 
 
-class Method(Definition):
+class Method(CodeRepresentationElement):
+    r"""A representation of a method, which belongs to a class.
+
+    Args:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        arguments(list[Argument]): List of method arguments representation.
+        return_type(str): Return type of method.
+
+    Attributes:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        arguments(list[Argument]): List of method arguments representation.
+        return_type(str): Return type of method.
+    """
+
     arguments: list[Argument]
     return_type: str
 
     def __init__(self, name: str = "", docstrings: str = "", arguments: list[Argument] = [], return_type: str = ""):
-        super().__init__(name, process_new_lines(docstrings))
+        super().__init__(name, replace_new_lines_with_br_tag(docstrings))
         self.arguments = deepcopy(arguments)
         self.return_type = deepcopy(return_type)
 
     @staticmethod
     def from_function_def(definition: ast.FunctionDef):
+        r"""A static method that creates an object of this class based from a function definition ast node.
+
+        Args:
+            definition(ast.FunctionDef): Parsed ast node of the methods' definition.
+
+        Returns:
+            Method
+        """
         docstrings = docstring_parser.parse(ast.get_docstring(definition))
 
         description: str = "---"
@@ -81,7 +160,7 @@ class Method(Definition):
         elif docstrings.short_description:
             description = docstrings.short_description
 
-        description = process_new_lines(description)
+        description = replace_new_lines_with_br_tag(description)
 
         return Method(
             name=definition.name,
@@ -91,6 +170,14 @@ class Method(Definition):
 
     @staticmethod
     def from_class_def(definition: ast.ClassDef):
+        r"""A static method that creates an object of this class based from a class definition ast node.
+
+        Args:
+            definition(ast.FunctionDef): Parsed ast node of the classes' definition.
+
+        Returns:
+            list[Method]: List of methods representation parsed from a class.
+        """
         ignore_methods = ["__str__", "__dict__"]
 
         methods: list[Method] = []
@@ -106,7 +193,7 @@ class Method(Definition):
             elif docstrings.short_description:
                 method_docstrings = docstrings.short_description
 
-            method_docstrings = process_new_lines(method_docstrings)
+            method_docstrings = replace_new_lines_with_br_tag(method_docstrings)
 
             methods.append(
                 Method(
@@ -121,34 +208,72 @@ class Method(Definition):
 
 
 class Function(Method):
+    r"""A representation of a method, which belongs to a class.
+
+    Args:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        arguments(list[Argument]): List of method arguments representation.
+        return_type(str): Return type of method.
+
+    Attributes:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        arguments(list[Argument]): List of method arguments representation.
+        return_type(str): Return type of method.
+    """
     def __init__(self, name: str = "", docstrings: str = "", arguments: list[Argument] = [], return_type: str = ""):
-        super().__init__(name=name, docstrings=process_new_lines(docstrings), arguments=arguments, return_type=return_type)
+        super().__init__(name=name, docstrings=replace_new_lines_with_br_tag(docstrings), arguments=arguments,
+                         return_type=return_type)
 
 
-class Class(Definition):
+class Class(CodeRepresentationElement):
+    r"""A representation of a method, which belongs to a class.
+
+    Args:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        attributes(list[Attribute]): List of class attributes representation.
+        bases(list[str]): List of base classes.
+        methods(list[Method]): List of class methods.
+
+    Attributes:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        attributes(list[Attribute]): List of class attributes representation.
+        bases(list[str]): List of base classes.
+        methods(list[Method]): List of class methods.
+    """
+
     attributes: list[Attribute]
     methods: list[Method]
     bases: list[str]
 
-    def __init__(self, name: str = "", docstrings: str = str, attributes: list[Attribute] = [], methods: list[Method] = [], bases: list[str] = ["object"]):
+    def __init__(self, name: str = "", docstrings: str = str, attributes: list[Attribute] = [],
+                 methods: list[Method] = [], bases: list[str] = ["object"]):
         super().__init__(name=name, docstrings=docstrings)
         self.attributes = deepcopy(attributes)
         self.methods = deepcopy(methods)
         self.bases = deepcopy(bases)
 
     @staticmethod
-    def from_(definition: ast.ClassDef):
-        docstrings = docstring_parser.parse(ast.get_docstring(definition), docstring_parser.Style.GOOGLE)
+    def from_class_def(definition: ast.ClassDef):
+        r"""A static method that creates an object of this class based from a class definition ast node.
 
-        print(docstrings.meta)
+        Args:
+            definition(ast.FunctionDef): Parsed ast node of the classes' definition.
+
+        Returns:
+            Class: Representation of a parsed class.
+        """
+
+        docstrings = docstring_parser.parse(ast.get_docstring(definition), docstring_parser.Style.GOOGLE)
 
         description = constant.EMPTY_DESCRIPTION_DOCSTRING
         if docstrings.long_description:
             description = docstrings.long_description
         elif docstrings.short_description and docstrings.short_description != "None":
             description = docstrings.short_description
-
-        # description = process_new_lines(description)
 
         return Class(
             name=definition.name,
@@ -159,7 +284,19 @@ class Class(Definition):
         )
 
 
-class Alias(Definition):
+class Alias(CodeRepresentationElement):
+    r"""A representation of a type alias, which belongs to a module.
+
+    Args:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        one_of(list[str]): List of types this alias is union of.
+
+    Attributes:
+        name(str): Name of the element (method name, class name, ...etc).
+        docstrings(str): Parsed docstrings.
+        one_of(list[str]): List of types this alias is union of.
+    """
     one_of: list[str]
 
     def __init__(self, name: str = "", docstrings: str = "", one_of: list[str] = []):
@@ -168,20 +305,45 @@ class Alias(Definition):
 
     @staticmethod
     def from_assign(node: ast.Assign):
+        r"""A static method that creates an object of this class based from a class definition ast node.
+
+        Args:
+            node(ast.Assign): Parsed ast node of the assigns' definition.
+
+        Returns:
+            Alias: Representation of a parsed alias.
+        """
         text = astor.to_source(node)
         name, one_of = text.split("=")
 
-        return Alias(name=name.strip(), docstrings="", one_of=[model.strip() for model in one_of.removeprefix("Union[").removesuffix("]").split(",")])
+        return Alias(name=name.strip(), docstrings="",
+                     one_of=[model.strip() for model in one_of.removeprefix("Union[").removesuffix("]").split(",")])
 
 
 class Module:
+    r"""A representation of a module.
+
+    Args:
+        name(str): Name of the element (method name, class name, ...etc).
+        classes(list[Class]): List of classes in a module.
+        functions(list[Function]): List of functions in a module.
+        aliases(list[Alias]): List of aliases in a module.
+
+    Attributes:
+        name(str): Name of the element (method name, class name, ...etc).
+        classes(list[Class]): List of classes in a module.
+        functions(list[Function]): List of functions in a module.
+        aliases(list[Alias]): List of aliases in a module.
+        file(str): Markdown file of the rendered module.
+    """
     name: str
     classes: list[Class]
     functions: list[Function]
     aliases: list[Alias]
     file: str
 
-    def __init__(self, name: str = "", classes: list[Class] = [], functions: list[Function] = [], aliases: list[Alias] = []):
+    def __init__(self, name: str = "", classes: list[Class] = [], functions: list[Function] = [],
+                 aliases: list[Alias] = []):
         self.name = deepcopy(name)
         self.classes = deepcopy(classes)
         self.functions = deepcopy(functions)

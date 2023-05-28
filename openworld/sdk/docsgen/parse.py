@@ -22,11 +22,20 @@ from openworld.sdk.docsgen.models import *
 
 
 def parse_modules_paths(path: Path) -> list[Path]:
-    """Parses modules present in a given directory for one depth level.
+    """Parses modules paths that are present in a given directory for one depth level.
 
-    :param path: A path of where modules are present.
-    :type path: pathlib.Path
+    Args:
+        path(Path): A path of where modules are present.
+
+    Returns:
+        list[Path]: A list of paths of modules in library path.
+
+    Raises:
+        Exception: Raises an exception if the given path is not a directory.
     """
+
+    if not path.is_dir():
+        raise Exception(f"{path.absolute()} is not a directory!")
 
     modules_paths: list[Path] = list()
     for module in path.rglob("*.py"):
@@ -36,18 +45,19 @@ def parse_modules_paths(path: Path) -> list[Path]:
 
 
 def parse_module(definitions: list[ast.AST], name: str) -> Module:
-    """Parses classes and methods in an AST.
+    """Parses classes and methods in an AST node.
 
-    :param name: Name of module.
-    :type name: str
+    Args:
+        name(str): Name of module.
+        definitions(ast.AST): Root node in the parsed AST node.
 
-    :param definitions: Root node in the AST.
-    :type definitions: ast.AST
+    Returns:
+        Module: Module representation object of a parsed AST node.
     """
     module: Module = Module(name=name)
     for node in definitions:
         if isinstance(node, ast.ClassDef):
-            module.classes.append(Class.from_(node))
+            module.classes.append(Class.from_class_def(node))
 
         if isinstance(node, ast.FunctionDef):
             module.functions.append(Method.from_function_def(node))
@@ -66,6 +76,18 @@ def parse_module(definitions: list[ast.AST], name: str) -> Module:
 
 
 def parse_modules(modules_paths: list[Path]) -> list[Module]:
+    r"""Parses modules in a given path.
+
+    Args:
+        modules_paths(Path): Modules path used in parsing.
+
+    Notes:
+        * Any module (python file) is considered a module note in AST if it contains header comments (license or
+        something), otherwise it will parse class nodes directly.
+
+    Returns:
+        list[Module]: List of modules representation.
+    """
     modules: list[Module] = []
     for path in modules_paths:
         if path.name.removesuffix(PYTHON_SUFFIX) in IGNORE_MODULES:
@@ -82,4 +104,12 @@ def parse_modules(modules_paths: list[Path]) -> list[Module]:
 
 
 def parse(package_path: Path) -> list[Module]:
+    r"""Parses modules in a given package path.
+
+    Args:
+        package_path(Path): Package path to parse.
+
+    Returns:
+        list[Module]: List of parsed modules representation.
+    """
     return parse_modules(parse_modules_paths(package_path))
