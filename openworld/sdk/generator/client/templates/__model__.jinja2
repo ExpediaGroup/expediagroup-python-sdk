@@ -17,8 +17,6 @@ from pydantic import Extra
 from pydantic.generics import GenericModel
 
 
-T = TypeVar('T', bound=str)
-
 {% for model in models %}
 {% for decorator in model.decorators -%}
 {{ decorator }}
