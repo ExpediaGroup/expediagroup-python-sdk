@@ -18,8 +18,19 @@ from pathlib import Path
 from datamodel_code_generator.imports import Imports
 from datamodel_code_generator.model import DataModel
 from datamodel_code_generator.parser.base import sort_data_models
+from datamodel_code_generator.types import DataType
 from fastapi_code_generator.parser import OpenAPIParser
 from fastapi_code_generator.visitor import Visitor
+from pydantic import BaseModel, Extra, Field, parse_obj_as
+
+GENERIC_TYPES: list[str] = ["BaseModel", "Enum"]
+DISCRIMINATOR: str = "discriminator"
+
+
+class Discriminator(BaseModel, extra=Extra.forbid, smart_union=True):
+    property_name: str = Field(alias="propertyName")
+    mapping: dict[str, str]
+    owner: str = Field(default=None)
 
 
 @dataclasses.dataclass
@@ -34,6 +45,7 @@ class Alias:
     """
     parent_classname: str
     children_classnames: list[str]
+    order: int = 1
 
     def __str__(self):
         return f"{self.parent_classname} = Union[{','.join(self.children_classnames)}]"
@@ -62,27 +74,6 @@ def collect_imports(sorted_models: dict[str, DataModel], parser: OpenAPIParser) 
     return imports
 
 
-def parse_children(models: dict[str, DataModel]) -> dict[str, list[DataModel]]:
-    r"""Parses models that have parents other than `Enum` and `BaseModel`.
-
-    Args:
-        models(dict[str, DataModel]): All models parsed from the `OpenApiParser`.
-
-    Returns:
-        dict[str, list[DataModel]]: A dictionary of models which are children to other models.
-    """
-    parent_children: collections.defaultdict[str, list[DataModel]] = collections.defaultdict(list)
-    ignore_parents = ["BaseModel", "Enum"]
-    for model in models.values():
-        if model.base_class in ignore_parents:
-            continue
-
-        parent = models[model.base_class]
-        parent_children[parent.class_name].append(model)
-
-    return parent_children
-
-
 def parse_datamodels(parser: OpenAPIParser) -> collections.defaultdict[str, DataModel]:
     r"""Parses all models that are of type `DataModel`.
 
@@ -98,81 +89,120 @@ def parse_datamodels(parser: OpenAPIParser) -> collections.defaultdict[str, Data
     return models
 
 
-def has_type_attribute(model: DataModel) -> bool:
-    r"""Checks if a model has a `type` attribute.
+def parse_children_classnames(parent_classname: str, models: dict[str, DataModel]) -> list[str]:
+    r"""Parses children classnames of a given parent.
 
     Args:
-        model(DataModel): Model to be checked.
+        parent_classname(str): Parent model classname.
+        models(dict[str, DataModel]): A mapping for models, and their classnames as keys.
 
     Returns:
-        bool: rue if model has a `type` attribute, False otherwise.
+
     """
-    for field in model.fields:
-        if field.name == "type":
-            return True
-    return False
+    children = list(filter(lambda model: model.base_class == parent_classname, models.values()))
+    return [child.class_name for child in children]
 
 
-def parse_highest_ancestor(model: DataModel, models: dict[str, DataModel]) -> DataModel:
-    current_model = model
-    while current_model.base_class not in ["BaseModel", "Enum"]:
-        current_model = models[current_model.base_class]
-    return current_model
-
-
-def get_is_parent_model_helper(models: dict[str, DataModel]) -> dict[str, bool]:
-    ignore_parents = ["BaseModel", "Enum"]
-
-    return collections.defaultdict(
-        bool,
-        {model.base_class: (model.base_class not in ignore_parents) and has_type_attribute(parse_highest_ancestor(model, models)) for model in models.values()},
-    )
-
-
-def get_is_highest_parent_helper(models: dict[str, DataModel]) -> dict[str, bool]:
-    is_parent_model = get_is_parent_model_helper(models)
-
-    return collections.defaultdict(
-        bool, {model.class_name: not is_parent_model[model.base_class] and is_parent_model[model.class_name] for model in models.values()}
-    )
-
-
-def parse_descendants_classnames(highest_parent_classname: str, models: dict[str, DataModel]) -> list[str]:
-    children: list[str] = []
-
-    dfs_stack = [highest_parent_classname]
-    # Simple iterative depth-first search to get all descendants of a given parent.
-    while dfs_stack:
-        classname = dfs_stack.pop()
-
-        if classname != highest_parent_classname:
-            children.append(classname)
-
-        dfs_stack += [model.class_name for model in models.values() if model.base_class == classname]
-
-    return children
-
-
-def parse_aliases(models: dict[str, DataModel]) -> list[Alias]:
-    r"""Generates a list of aliases, sorted based on their dependency/inheritance tree.
+def parse_discriminators(parser: OpenAPIParser, models: dict[str, DataModel]) -> list[Discriminator]:
+    r"""Parses `Discriminator` objects from specs.
 
     Args:
-        processed_parent_children_classnames(dict[str, list[str]]): A mapping for processed parent models classnames,
-        and their children classnames.
+        parser(OpenAPIParser): The OpenApiParser which holds all the results.
+        models(dict[str, DataModel]): A mapping for models, and their classnames as keys.
+
+    Returns:
+
+    """
+    discriminators: list[Discriminator] = []
+
+    for model in models.values():
+        if not (model.reference and model.reference.path and parse_children_classnames(parent_classname=model.class_name, models=models)):
+            continue
+
+        raw_model = parser.get_ref_model(model.reference.path)
+
+        if not raw_model or DISCRIMINATOR not in raw_model.keys():
+            continue
+
+        discriminator: Discriminator = parse_obj_as(Discriminator, raw_model[DISCRIMINATOR])
+        for key, value in discriminator.mapping.items():
+            # This might happen in case a reference to the model in schemas section is
+            # used instead of the classname of the model itself.
+            # Example: `#/components/schemas/Hotel` instead of just `Hotel`.
+            if value.strip().startswith("#/"):
+                discriminator.mapping[key] = value.rsplit("/", 1).pop()
+
+        discriminator.owner = model.class_name
+
+        discriminators.append(discriminator)
+
+    return discriminators
+
+
+def apply_discriminators_to_models(discriminators: list[Discriminator], models: dict[str, DataModel]) -> None:
+    r"""Adds discriminator attributes & constraints to all models that inherit a discriminator from their parent.
+
+    Args:
+        discriminators(list[Discriminator]): List of parsed discriminator objects.
+        models(dict[str, DataModel]): A mapping for models, and their classnames as keys.
+    """
+    for discriminator in discriminators:
+        parent: DataModel = models[discriminator.owner]
+
+        for discriminator_value, discriminated_model_classname in discriminator.mapping.items():
+            discriminator_field = list(filter(lambda f: f.name == discriminator.property_name, parent.fields))
+
+            if len(discriminator_field) != 1:
+                continue
+
+            cloned_discriminator_field = discriminator_field.pop().copy()
+            literal = DataType(type=f"Literal['{discriminator_value}']")
+
+            cloned_discriminator_field.default = f"'{discriminator_value}'"
+            cloned_discriminator_field.required = True
+            cloned_discriminator_field.has_default = True
+            cloned_discriminator_field.data_type = DataType(data_types=[literal])
+
+            models[discriminated_model_classname].fields.append(cloned_discriminator_field)
+
+
+def parse_sorted_aliases(models: dict[str, DataModel], discriminators: list[Discriminator]) -> list[Alias]:
+    r"""Generates a list of aliases, sorted based on their dependency.
+
+    Args:
+        discriminators(list[Discriminator]): List of parsed discriminator objects.
+        models(dict[str, DataModel]): A mapping for models, and their classnames as keys.
 
     Returns:
         list[Alias]: A list of aliases, sorted based on their dependency/inheritance tree.
     """
     aliases: list[Alias] = []
-    is_highest_parent: dict[str, bool] = get_is_highest_parent_helper(models)
 
-    for key, value in is_highest_parent.items():
-        if not value:
-            continue
+    # A memo to record/remember the order of aliases
+    alias_order: dict[str, int] = collections.defaultdict(int)
+    current_order: int = 1
 
-        aliases.append(Alias(parent_classname=key, children_classnames=parse_descendants_classnames(key, models)))
+    for parent_classname in [discriminator.owner for discriminator in discriminators]:
+        # If the current parent being aliased has been encountered before (as a child),
+        # then the order of the current alias should come before any other alias that
+        # depends on it.
+        order = current_order if not alias_order[parent_classname] else min(current_order - 1, -current_order)
 
-    return aliases
+        alias: Alias = Alias(
+            parent_classname=parent_classname, children_classnames=parse_children_classnames(parent_classname=parent_classname, models=models), order=order
+        )
+        alias.children_classnames.append(f"{alias.parent_classname}Generic")
+
+        aliases.append(alias)
+
+        alias_order.update(
+            [(child_classname, alias.order) for child_classname in alias.children_classnames if not alias_order[child_classname]]
+            + [(parent_classname, alias.order)]
+        )
+
+        current_order += 1
+
+    return sorted(aliases, key=lambda alias_: alias_.order)
 
 
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
@@ -189,27 +219,18 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     _, sorted_models, __ = sort_data_models(unsorted_data_models=[result for result in parser.results if isinstance(result, DataModel)])
 
     models: dict[str, DataModel] = parse_datamodels(parser)
+    discriminators: list[Discriminator] = parse_discriminators(parser=parser, models=models)
 
-    aliases = parse_aliases(models)
+    apply_discriminators_to_models(discriminators=discriminators, models=models)
 
-    for alias in aliases:
-        print(alias.parent_classname, alias.children_classnames)
+    aliases: list[Alias] = parse_sorted_aliases(models=models, discriminators=discriminators)
+    is_aliased: collections.defaultdict[str, bool] = collections.defaultdict(bool, {alias.parent_classname: True for alias in aliases})
 
-    is_aliased = collections.defaultdict(bool, {alias.parent_classname: True for alias in aliases})
-
-    highest_parent: dict[str, str] = dict()
-    for alias in aliases:
-        for child in alias.children_classnames:
-            highest_parent[child] = alias.parent_classname
-    print(f"Parent Models Are: {get_is_parent_model_helper(models)}")
     return {
         "models": sorted_models.values(),
         "model_imports": collect_imports(sorted_models, parser),
         "aliases": aliases,
         "is_aliased": is_aliased,
-        "is_parent_model": get_is_parent_model_helper(models),
-        "is_highest_parent": get_is_highest_parent_helper(models),
-        "highest_parent": highest_parent,
     }
 
 
