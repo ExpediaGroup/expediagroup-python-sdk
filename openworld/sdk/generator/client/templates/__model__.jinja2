@@ -12,9 +12,8 @@
 {# See the License for the specific language governing permissions and#}
 {# limitations under the License.#}
 {{ model_imports }}
-from typing import Union, Literal, TypeVar, Generic
+from typing import Union, Literal
 from pydantic import Extra
-from pydantic.generics import GenericModel
 
 
 {% for model in models %}
