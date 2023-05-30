@@ -29,7 +29,7 @@ DISCRIMINATOR: str = "discriminator"
 
 class Discriminator(BaseModel, extra=Extra.forbid, smart_union=True):
     property_name: str = Field(alias="propertyName")
-    mapping: dict[str, str]
+    mapping: dict[str, str] = Field(default=None)
     owner: str = Field(default=None)
 
 
@@ -103,6 +103,27 @@ def parse_children_classnames(parent_classname: str, models: dict[str, DataModel
     return [child.class_name for child in children]
 
 
+def parse_raw_discriminator(owner: str, raw_discriminator: dict[str, str], models: dict[str, DataModel]) -> Discriminator:
+    r"""Parses discriminator object from its raw representation parsed from the spec.
+
+    Args:
+        owner(str): Owner model of the discriminator, aka parent.
+        raw_discriminator(dict[str, str]): Raw discriminator object.
+        models(dict[str, DataModel]): A mapping for models, and their classnames as keys.
+
+    Returns:
+
+    """
+    discriminator: Discriminator = parse_obj_as(Discriminator, {**raw_discriminator, "owner": owner})
+
+    if not discriminator.mapping:
+        discriminator.mapping = {
+            child_classname: child_classname for child_classname in parse_children_classnames(parent_classname=discriminator.owner, models=models)
+        }
+
+    return discriminator
+
+
 def parse_discriminators(parser: OpenAPIParser, models: dict[str, DataModel]) -> list[Discriminator]:
     r"""Parses `Discriminator` objects from specs.
 
@@ -124,7 +145,10 @@ def parse_discriminators(parser: OpenAPIParser, models: dict[str, DataModel]) ->
         if not raw_model or DISCRIMINATOR not in raw_model.keys():
             continue
 
-        discriminator: Discriminator = parse_obj_as(Discriminator, raw_model[DISCRIMINATOR])
+        discriminator: Discriminator = parse_raw_discriminator(owner=model.class_name, raw_discriminator=raw_model[DISCRIMINATOR], models=models)
+
+        print(discriminator)
+
         for key, value in discriminator.mapping.items():
             # This might happen in case a reference to the model in schemas section is
             # used instead of the classname of the model itself.
