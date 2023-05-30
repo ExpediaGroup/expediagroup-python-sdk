@@ -147,8 +147,6 @@ def parse_discriminators(parser: OpenAPIParser, models: dict[str, DataModel]) ->
 
         discriminator: Discriminator = parse_raw_discriminator(owner=model.class_name, raw_discriminator=raw_model[DISCRIMINATOR], models=models)
 
-        print(discriminator)
-
         for key, value in discriminator.mapping.items():
             # This might happen in case a reference to the model in schemas section is
             # used instead of the classname of the model itself.
