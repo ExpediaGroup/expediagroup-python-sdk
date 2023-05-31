@@ -14,14 +14,14 @@
 {{ model_imports }}
 from typing import Union, Literal
 from pydantic import Extra
+
+
 {% for model in models %}
-{% if is_aliased[model.class_name] %}
-{# Do nothing. #}
-{% else %}
 {% for decorator in model.decorators -%}
 {{ decorator }}
 {% endfor -%}
-class {{ model.class_name }}({% if is_aliased[model.base_class] %}BaseModel{% else %}{{ model.base_class }}{% endif %}, {% if model.base_class != 'Enum' %}smart_union=True, extra=Extra.forbid{% endif %}):{% if comment is defined %}  # {{ model.comment }}{% endif %}
+
+class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif %}({{ model.base_class }}{% if is_aliased[model.base_class] %}Generic{% endif %},{% if model.base_class != 'Enum' %} smart_union=True, extra=Extra.forbid,{% endif %}): {% if comment is defined %}  # {{ model.comment }}{% endif %}
     r"""pydantic model {{ model.class_name }}{%- if model.description %}: {{ model.description }}{%- endif %}
 {# comment for new line #}
 {%- if model.fields %}Attributes:
@@ -43,8 +43,7 @@ class {{ model.class_name }}({% if is_aliased[model.base_class] %}BaseModel{% el
     {% if field.name %}{{ field.name }}{% else %}__root__{% endif %}: {{ field.annotated }}
     {%- else %}
     {% if field.name %}{{ field.name }}{% else %}__root__{% endif %}: {{ field.type_hint }}
-    {%- endif %} = {% if field.default and 'Field' in field.default %}
-        {{ field.default.replace('max_items', 'maxItems').replace('min_items', 'minItems') }}
+    {%- endif %} = {% if field.default and 'Field' in field.default %}{{ field.default.replace('max_items', 'maxItems').replace('min_items', 'minItems') }}
     {% else %}{{ field.default }}{%- endif -%}
     {%- endif %}
     {%- if field.docstring %}
@@ -56,11 +55,12 @@ class {{ model.class_name }}({% if is_aliased[model.base_class] %}BaseModel{% el
     {{ model.method }}
 {%- endfor -%}
 {%- endfor -%}
-{% endif %}
 {% endfor %}
+
 {% for alias in aliases %}
 {{ alias.__str__() }}
 {% endfor %}
+
 {% for model in models %}
     {% if not is_aliased[model.class_name] and model.base_class != 'Enum' %}
 {{ model.class_name }}.update_forward_refs()
