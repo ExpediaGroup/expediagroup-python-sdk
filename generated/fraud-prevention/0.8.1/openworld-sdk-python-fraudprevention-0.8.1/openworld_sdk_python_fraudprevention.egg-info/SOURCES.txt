@@ -1,0 +1,9 @@
+setup.py
+openworld/sdk/fraudprevention/__init__.py
+openworld/sdk/fraudprevention/client.py
+openworld/sdk/fraudprevention/model.py
+openworld_sdk_python_fraudprevention.egg-info/PKG-INFO
+openworld_sdk_python_fraudprevention.egg-info/SOURCES.txt
+openworld_sdk_python_fraudprevention.egg-info/dependency_links.txt
+openworld_sdk_python_fraudprevention.egg-info/requires.txt
+openworld_sdk_python_fraudprevention.egg-info/top_level.txt
