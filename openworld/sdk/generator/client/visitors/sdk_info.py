@@ -27,7 +27,7 @@ def get_sdk(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     config.read(f"{Path(__file__).parent}/sdk.config")
 
     api = config["sdk"]["namespace"]
-    classname = "".join([word.capitalize() for word in re.findall(r"[a-zA-Z]+", api)])
+    classname = "".join([word.capitalize() for word in re.findall(r"[a-zA-Z0-9]+", api)])
     namespace = classname.lower()
     classname += "Client"
     version = config["sdk"]["version"]
