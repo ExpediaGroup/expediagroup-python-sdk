@@ -32,7 +32,7 @@ on:
         required: false
 jobs:
   download_specs:
-    uses: ./.github/workflows/generator-download-specs.yml
+    uses: ./.github/workflows/generator-download-specs.yaml
     with:
       url: ${{ github.event.inputs.specs_url }}
 
