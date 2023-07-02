@@ -44,6 +44,7 @@ jobs:
 
 
   generate_sdk:
+    needs: [ transform_specs ]
     uses: ./.github/workflows/generate-sdk.yaml
     with:
       version: ${{ github.event.inputs.version }}
