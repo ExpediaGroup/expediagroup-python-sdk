@@ -16,12 +16,12 @@ jobs:
           git config --global user.email "oss@expediagroup.com"
           git config --global user.name "Expedia Group Open Source"
           go install resenje.org/casbab/cmd/casbab@latest
-          key=$(`go env GOPATH`/bin/casbab kebab '${{github.event.inputs.name}}')
-          git checkout -b "$key/${{github.event.inputs.version}}"
+          git checkout -b "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
+          git add "${GITHUB_WORKSPACE}"/release/\*
           tar -xzf *.tar.gz
           rm *.tar.gz
-          mkdir -p  ${GITHUB_WORKSPACE}/generated/"$key/${{github.event.inputs.version}}"
-          mv *  ${GITHUB_WORKSPACE}/generated/"$key/${{github.event.inputs.version}}"
+          mkdir -p  ${GITHUB_WORKSPACE}/release/"${{github.event.inputs.name}}"
+          mv *  ${GITHUB_WORKSPACE}/release/"${{github.event.inputs.name}}"
           git add --all
           git commit -m "chore: Publish $key@v${{github.event.inputs.version}} generated SDK"
           git push --set-upstream origin "$key/${{github.event.inputs.version}}"

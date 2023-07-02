@@ -30,15 +30,28 @@ on:
         description: 'Release to test?'
         required: false
 jobs:
+  download_specs:
+    uses: ./.github/workflows/generator-download-specs.yml
+    with:
+      url: ${{ github.event.inputs.specs_url }}
+
+  transform_specs:
+    needs: [ download_specs ]
+    uses: ./.github/workflows/generator-transform-specs.yml
+    with:
+      configurations: -th -te -tt ${{ github.event.inputs.name }}
+
+
   generate_sdk:
     uses: ./.github/workflows/generate-sdk.yaml
     with:
       version: ${{ github.event.inputs.version }}
       name: ${{ github.event.inputs.name }}
-      fileAsBase64: ${{ github.event.inputs.fileAsBase64 }}
+
   commit_sdk:
     needs: [ generate_sdk ]
     uses: ./.github/workflows/commit-sdk.yaml
+
   publish_sdk:
     needs: [ generate_sdk ]
     uses: ./.github/workflows/publish-sdk.yaml

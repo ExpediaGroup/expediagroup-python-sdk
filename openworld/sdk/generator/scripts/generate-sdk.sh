@@ -53,6 +53,5 @@ while getopts ":n:v:i:" OPTION; do
 done; validate_arguments
 
 pip3 install -r client/requirements.txt &&\
-python3 scripts/prepare-spec.py -i "$input_spec" &&\
-scripts/generate-client.sh -i "$(pwd)/specs/spec.yaml" -v "$sdk_version" -n "$sdk_namespace" &&\
+scripts/generate-client.sh -i "$input_spec" -v "$sdk_version" -n "$sdk_namespace" &&\
 scripts/build-package.sh -n "$sdk_namespace"

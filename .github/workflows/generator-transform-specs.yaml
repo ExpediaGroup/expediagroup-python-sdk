@@ -1,0 +1,22 @@
+name: Transform Specs
+on:
+  workflow_call:
+    inputs:
+      configurations:
+        description: 'Spec Transformer CLI Configurations'
+        type: string
+        required: true
+
+jobs:
+  transform-specs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: raw-specs
+      - run: |
+          npx --yes -p @expediagroup/spec-transformer cli ${{ inputs.configurations }} -i raw-specs.yaml -o specs.yaml
+      - uses: actions/upload-artifact@v3
+        with:
+          name: specs
+          path: specs.yaml
