@@ -15,7 +15,7 @@ jobs:
         with:
           name: raw-specs
       - run: |
-          echo "$pwd"
+          pwd
           ls
           npx --yes -p @expediagroup/spec-transformer cli ${{ inputs.configurations }} -i raw-specs.yaml -o specs.yaml
       - uses: actions/upload-artifact@v3
