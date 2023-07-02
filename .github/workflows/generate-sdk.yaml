@@ -24,10 +24,6 @@ on:
         description: 'Generated SDK name'
         required: true
         type: string
-      fileAsBase64:
-        description: 'Generated SDK file as base64 encoded'
-        required: true
-        type: string
 jobs:
   generate:
     runs-on: ubuntu-latest
@@ -40,7 +36,7 @@ jobs:
         working-directory: openworld/sdk/generator
         run: |
           echo ${{ github.event.inputs.name }}
-          ./scripts/generate-sdk.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i "${{ inputs.fileAsBase64 }}"
+          ./scripts/generate-sdk.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i "${GITHUB_WORKSPACE}"/specs.yaml
       - uses: actions/upload-artifact@v3
         with:
           name: sdk
