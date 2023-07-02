@@ -38,7 +38,7 @@ jobs:
 
   transform_specs:
     needs: [ download_specs ]
-    uses: ./.github/workflows/generator-transform-specs.yml
+    uses: ./.github/workflows/generator-transform-specs.yaml
     with:
       configurations: -th -te -tt ${{ github.event.inputs.name }}
 
