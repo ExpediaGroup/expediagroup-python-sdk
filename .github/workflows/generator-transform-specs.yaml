@@ -14,7 +14,8 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: raw-specs
-      - run: |
+      - working-directory: openworld/sdk/generator
+        run: |
           pwd
           ls
           npx --yes -p @expediagroup/spec-transformer cli ${{ inputs.configurations }} -i raw-specs.yaml -o specs.yaml
