@@ -12,10 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: download_specs
-        working-directory: openworld/sdk/generator
         run: |
           curl -L ${{ inputs.url }} -o raw-specs.yaml
       - uses: actions/upload-artifact@v3
         with:
           name: raw-specs
-          path: raw-specs.yaml
+          path: openworld/sdk/generator/raw-specs.yaml
