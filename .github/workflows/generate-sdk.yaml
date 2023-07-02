@@ -32,6 +32,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+      - name: copy_specs
+        run: |
+          mv ./specs.yaml ./openworld/sdk/generator/specs.yaml
       - name: generate_sdk
         working-directory: openworld/sdk/generator
         run: |

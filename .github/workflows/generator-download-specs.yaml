@@ -17,4 +17,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: raw-specs
-          path: openworld/sdk/generator/raw-specs.yaml
+          path: raw-specs.yaml
