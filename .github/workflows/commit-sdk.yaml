@@ -17,6 +17,8 @@ jobs:
           git config --global user.name "Expedia Group Open Source"
           go install resenje.org/casbab/cmd/casbab@latest
           git checkout -b "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
+          rm -rf "${GITHUB_WORKSPACE}"/release
+          mkdir -p "${GITHUB_WORKSPACE}"/release/
           git add "${GITHUB_WORKSPACE}"/release/\*
           tar -xzf *.tar.gz
           rm *.tar.gz
