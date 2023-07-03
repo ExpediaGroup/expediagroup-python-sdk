@@ -50,9 +50,9 @@ jobs:
       version: ${{ github.event.inputs.version }}
       name: ${{ github.event.inputs.name }}
 
-  commit_sdk:
+  publish_sources:
     needs: [ generate_sdk ]
-    uses: ./.github/workflows/commit-sdk.yaml
+    uses: ./.github/workflows/generator-publish-sources.yaml
 
   publish_sdk:
     needs: [ generate_sdk ]
