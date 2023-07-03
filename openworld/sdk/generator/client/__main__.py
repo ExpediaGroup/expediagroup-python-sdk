@@ -161,5 +161,4 @@ def main(
 
 
 if __name__ == "__main__":
-    print(f"CUR DIR IS --- {getcwd()}")
     typer.run(main)
