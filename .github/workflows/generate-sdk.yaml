@@ -47,10 +47,14 @@ jobs:
           ls -l -a
 
       - name: generate_sdk
+        uses: actions/download-artifact@v3
+        with:
+          name: specs
+          path: openworld/sdk/generator
         working-directory: openworld/sdk/generator
         run: |
           echo ${{ github.event.inputs.name }}
-          ./scripts/generate-sdk.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i ./specs.yaml
+          ./scripts/generate-sdk.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i specs.yaml
       - uses: actions/upload-artifact@v3
         with:
           name: sdk
