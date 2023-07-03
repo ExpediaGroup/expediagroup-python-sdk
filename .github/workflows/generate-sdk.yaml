@@ -36,6 +36,16 @@ jobs:
         with:
           name: specs
           path: openworld/sdk/generator
+      - name: test_specs_existence
+        run: |
+          pwd
+          ls -l -a
+      - name: test_specs_existence2
+        working-directory: openworld/sdk/generator
+        run: |
+          pwd
+          ls -l -a
+
       - name: generate_sdk
         working-directory: openworld/sdk/generator
         run: |
