@@ -39,8 +39,6 @@ jobs:
       - name: generate_sdk
         working-directory: openworld/sdk/generator
         run: |
-          pwd
-          ls -l -a
           echo ${{ github.event.inputs.name }}
           ./scripts/generate-sdk.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i ./specs.yaml
       - uses: actions/upload-artifact@v3

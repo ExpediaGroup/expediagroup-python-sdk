@@ -16,8 +16,6 @@ jobs:
           git config --global user.email "oss@expediagroup.com"
           git config --global user.name "Expedia Group Open Source"
           go install resenje.org/casbab/cmd/casbab@latest
-          git checkout main
-          git pull
           git checkout -b "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           rm -rf "${GITHUB_WORKSPACE}"/release
           mkdir -p "${GITHUB_WORKSPACE}"/release/
