@@ -16,6 +16,8 @@ jobs:
           git config --global user.email "oss@expediagroup.com"
           git config --global user.name "Expedia Group Open Source"
           go install resenje.org/casbab/cmd/casbab@latest
+          git checkout main
+          git pull
           git checkout -b "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           rm -rf "${GITHUB_WORKSPACE}"/release
           mkdir -p "${GITHUB_WORKSPACE}"/release/
@@ -23,9 +25,7 @@ jobs:
           rm *.tar.gz
           mkdir -p  ${GITHUB_WORKSPACE}/release/"${{github.event.inputs.name}}"
           mv *  ${GITHUB_WORKSPACE}/release/"${{github.event.inputs.name}}"
-          ls -a -l
-          ls ${GITHUB_WORKSPACE}/release -a -l
-          git add --all
+          git add "${GITHUB_WORKSPACE}"/release/\*
           git commit -m "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
           git push --set-upstream origin "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           gh pr create -B main -H "${{github.event.inputs.name}}-${{github.event.inputs.version}}" --title 'chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK' --fill
