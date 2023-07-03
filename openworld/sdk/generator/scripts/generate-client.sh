@@ -59,7 +59,6 @@ namespace=$sdk_namespace\n\
 version=$sdk_version"\
 >./visitors/sdk.config &&\
 
-spec="$(realpath $input_spec)"
-python3 ./__main__.py -i "$spec" -t "./templates" -o "./sdk" -m "model.py" &&\
+python3 ./__main__.py -i "$input_spec" -t "./templates" -o "./sdk" -m "model.py" &&\
 autoflake --in-place --remove-all-unused-imports ./sdk/client.py &&\
 cd ..

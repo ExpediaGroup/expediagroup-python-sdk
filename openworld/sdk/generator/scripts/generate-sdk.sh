@@ -52,6 +52,8 @@ while getopts ":n:v:i:" OPTION; do
         esac
 done; validate_arguments
 
+echo "Input Spec = $input_spec"
+
 pip3 install -r client/requirements.txt &&\
 scripts/generate-client.sh -i "$input_spec" -v "$sdk_version" -n "$sdk_namespace" &&\
 scripts/build-package.sh -n "$sdk_namespace"
