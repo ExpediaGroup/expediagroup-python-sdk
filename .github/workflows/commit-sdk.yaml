@@ -1,33 +1,41 @@
-name: Commit SDK
+name: Generate and Publish Sources
 on:
   workflow_call:
+    inputs:
+      name:
+        description: 'SDK Name'
+        required: true
+        type: string
+      version:
+        description: 'SDK Version'
+        required: true
+        type: string
+
 jobs:
-  job:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
           name: sdk
-          path: sdk
-      - name: Commit
-        working-directory: ./sdk
+          path: openworld/sdk/generator
+      - uses: actions/download-artifact@v3
+        with:
+          name: specs
+          path: generator/sdk
+      - name: Publish Code
+        working-directory: openworld/sdk/generator
         run: |
-          ls -l -a
-          pwd
           git config --global user.email "oss@expediagroup.com"
           git config --global user.name "Expedia Group Open Source"
-          go install resenje.org/casbab/cmd/casbab@latest
+          rm -rf ../../release/"${{github.event.inputs.name}}"
+          mkdir -p ../../release/"${{github.event.inputs.name}}"
+          cp -r . "${{GITHUB_WORKSPACE}}"/release/"${{github.event.inputs.name}}"/
           git checkout main
           git pull
           git checkout -b "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
-          rm -rf "${GITHUB_WORKSPACE}"/release
-          mkdir -p "${GITHUB_WORKSPACE}"/release/
-          tar -xzf *.tar.gz
-          rm *.tar.gz
-          mkdir -p  ${GITHUB_WORKSPACE}/release/"${{github.event.inputs.name}}"
-          mv ./*  ${GITHUB_WORKSPACE}/release/"${{github.event.inputs.name}}"
-          git add "${GITHUB_WORKSPACE}"/release/\*
+          git add ../../release/\*
           git commit -m "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
           git push --set-upstream origin "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           gh pr create -B main -H "${{github.event.inputs.name}}-${{github.event.inputs.version}}" --title 'chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK' --fill
