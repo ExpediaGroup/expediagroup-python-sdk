@@ -13,6 +13,8 @@ jobs:
       - name: Commit
         working-directory: ./sdk
         run: |
+          ls -l -a
+          pwd
           git config --global user.email "oss@expediagroup.com"
           git config --global user.name "Expedia Group Open Source"
           go install resenje.org/casbab/cmd/casbab@latest
@@ -22,7 +24,7 @@ jobs:
           tar -xzf *.tar.gz
           rm *.tar.gz
           mkdir -p  ${GITHUB_WORKSPACE}/release/"${{github.event.inputs.name}}"
-          mv *  ${GITHUB_WORKSPACE}/release/"${{github.event.inputs.name}}"
+          mv ./*  ${GITHUB_WORKSPACE}/release/"${{github.event.inputs.name}}"
           git add "${GITHUB_WORKSPACE}"/release/\*
           git commit -m "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
           git push --set-upstream origin "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
