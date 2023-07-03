@@ -53,6 +53,9 @@ jobs:
   publish_sources:
     needs: [ generate_sdk ]
     uses: ./.github/workflows/generator-publish-sources.yaml
+    with:
+      version: ${{ github.event.inputs.version }}
+      name: ${{ github.event.inputs.name }}
 
   publish_sdk:
     needs: [ generate_sdk ]
