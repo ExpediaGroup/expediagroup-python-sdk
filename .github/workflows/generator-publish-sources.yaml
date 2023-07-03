@@ -23,7 +23,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: specs
-          path: generator/sdk
+          path: openworld/sdk/generator
       - name: Publish Code
         working-directory: openworld/sdk/generator
         run: |
