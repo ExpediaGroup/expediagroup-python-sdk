@@ -26,8 +26,9 @@ jobs:
           ls -a -l
           ls ${GITHUB_WORKSPACE}/release -a -l
           git add --all
-          git commit -m "chore: Publish $key@v${{github.event.inputs.version}} generated SDK"
-          git push --set-upstream origin "$key/${{github.event.inputs.version}}"
-          gh pr create -B main -H "$key/${{github.event.inputs.version}}" --title "Publish $key v${{github.event.inputs.version}} Generated SDK" --body "Publish $key v${{github.event.inputs.version}} generated SDK"
+          git commit -m "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
+          git push --set-upstream origin "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
+          git push --set-upstream origin "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
+          gh pr create -B main -H "${{github.event.inputs.name}}-${{github.event.inputs.version}}" --title 'chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK' --fill
         env:
           GH_TOKEN: ${{ github.token }}
