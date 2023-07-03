@@ -32,6 +32,7 @@ jobs:
           rm -rf ../../../release/"${{github.event.inputs.name}}"
           mkdir -p ../../../release/"${{github.event.inputs.name}}"
           cp -r . ../../../release/"${{github.event.inputs.name}}"/
+          git fetch --depth=1 origin main
           git checkout -b "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           git add ../../../release/\*
           git commit -m "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
