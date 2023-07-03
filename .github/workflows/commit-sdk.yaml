@@ -24,6 +24,8 @@ jobs:
           rm *.tar.gz
           mkdir -p  ${GITHUB_WORKSPACE}/release/"${{github.event.inputs.name}}"
           mv *  ${GITHUB_WORKSPACE}/release/"${{github.event.inputs.name}}"
+          ls -a -l
+          ls ${GITHUB_WORKSPACE}/release -a -l
           git add --all
           git commit -m "chore: Publish $key@v${{github.event.inputs.version}} generated SDK"
           git push --set-upstream origin "$key/${{github.event.inputs.version}}"
