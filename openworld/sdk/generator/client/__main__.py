@@ -11,8 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
+from os import getcwd
 from parser import OpenApiParser
 from pathlib import Path
 from typing import Optional
@@ -162,4 +161,5 @@ def main(
 
 
 if __name__ == "__main__":
+    print(f"CUR DIR IS --- {getcwd()}")
     typer.run(main)
