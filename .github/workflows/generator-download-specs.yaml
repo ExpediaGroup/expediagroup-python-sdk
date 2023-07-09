@@ -1,0 +1,20 @@
+name: Download API Specs
+on:
+  workflow_call:
+    inputs:
+      url:
+        description: 'URL to download API specs from'
+        required: true
+        type: string
+
+jobs:
+  download_specs:
+    runs-on: ubuntu-latest
+    steps:
+      - id: download_specs
+        run: |
+          curl -L ${{ inputs.url }} -o raw-specs.yaml
+      - uses: actions/upload-artifact@v3
+        with:
+          name: raw-specs
+          path: raw-specs.yaml
