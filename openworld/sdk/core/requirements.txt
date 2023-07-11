@@ -1,4 +1,4 @@
 uri~=2.0.1
 requests~=2.28.1
-pydantic==1.10.7
+pydantic==1.10.8
 urllib3==1.26.15
