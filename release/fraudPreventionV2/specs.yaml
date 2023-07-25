@@ -1795,7 +1795,7 @@ components:
 
             'brand' with 'DirectDebit' payment_type is an enum value with following:
 
-            * `EVL`
+            * `ELV`
 
             * `INTER_COMPANY`
           type: string
@@ -1845,7 +1845,7 @@ components:
             - WEB_MONEY
             - QIWI
             - BITCOIN
-            - EVL
+            - ELV
             - INTER_COMPANY
         method:
           $ref: "#/components/schemas/PaymentMethod"
