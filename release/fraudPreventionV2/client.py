@@ -35,7 +35,7 @@ class FraudPreventionV2Client:
         """
         python_version = platform.python_version()
         os_name, os_version, *_ = platform.platform().split('-')
-        sdk_metadata = f'open-world-sdk-python-fraudpreventionv2/1.3.0'
+        sdk_metadata = f'open-world-sdk-python-fraudpreventionv2/1.4.0'
 
         self.__api_client = ApiClient(client_config, _OpenWorldAuthClient)
 
