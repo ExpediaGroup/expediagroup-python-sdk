@@ -35,7 +35,7 @@ class FraudPreventionV2Client:
         """
         python_version = platform.python_version()
         os_name, os_version, *_ = platform.platform().split('-')
-        sdk_metadata = f'open-world-sdk-python-fraudpreventionv2/1.3.0'
+        sdk_metadata = f'open-world-sdk-python-fraudpreventionv2/1.4.0'
 
         self.__api_client = ApiClient(client_config, _OpenWorldAuthClient)
 
@@ -66,7 +66,7 @@ class FraudPreventionV2Client:
         query = {key: value for key, value in {}.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
-        request_url /= f'/fraud-prevention/v2/order/purchase/screen'
+        request_url /= f'/test/fraud-prevention/v2/order/purchase/screen'
         request_url.query.set(query)
         request_url.path.normalize()
 
@@ -120,7 +120,7 @@ class FraudPreventionV2Client:
         query = {key: value for key, value in {}.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
-        request_url /= f'/fraud-prevention/v2/order/purchase/update'
+        request_url /= f'/test/fraud-prevention/v2/order/purchase/update'
         request_url.query.set(query)
         request_url.path.normalize()
 

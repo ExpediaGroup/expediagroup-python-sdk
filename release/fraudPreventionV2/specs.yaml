@@ -8,11 +8,11 @@ info:
     email: RiskTechVerge@expedia.com
   x-eg-lifecycle: PLANNED
 servers:
-  - url: https://api.expediagroup.com/fraud-prevention/v2
+  - url: https://api.expediagroup.com/test/fraud-prevention/v2
 tags:
   - name: fraudPreventionV2
 paths:
-  /fraud-prevention/v2/order/purchase/screen:
+  /test/fraud-prevention/v2/order/purchase/screen:
     post:
       tags:
         - fraudPreventionV2
@@ -94,7 +94,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GatewayTimeoutError"
-  /fraud-prevention/v2/order/purchase/update:
+  /test/fraud-prevention/v2/order/purchase/update:
     post:
       tags:
         - fraudPreventionV2
@@ -1795,7 +1795,7 @@ components:
 
             'brand' with 'DirectDebit' payment_type is an enum value with following:
 
-            * `EVL`
+            * `ELV`
 
             * `INTER_COMPANY`
           type: string
@@ -1845,7 +1845,7 @@ components:
             - WEB_MONEY
             - QIWI
             - BITCOIN
-            - EVL
+            - ELV
             - INTER_COMPANY
         method:
           $ref: "#/components/schemas/PaymentMethod"
