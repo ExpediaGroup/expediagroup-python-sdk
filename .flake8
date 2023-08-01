@@ -20,6 +20,9 @@ ignore =
     I001
     W503
     F722
+    W505
+    F405
+    F541
 
 require-plugins =
     flake8-black
