@@ -1,8 +1,7 @@
+{{ imports }}
 import json
 import platform
 import pydantic.schema
-from .model import * # noqa
-from typing import * # noqa
 from openworld.sdk.core.client.api import ApiClient
 from openworld.sdk.core.constant import header
 from openworld.sdk.core.configuration.client_config import ClientConfig
@@ -20,7 +19,7 @@ class {{ classname }}:
         """ # noqa: E501
         python_version = platform.python_version()
         os_name, os_version, *_ = platform.platform().split('-')
-        sdk_metadata = f'open-world-sdk-python-{{ namespace }}/{{ version }}'
+        sdk_metadata = 'open-world-sdk-python-{{ namespace }}/{{ version }}'
 
         {% if api.lower() == "rapid" %}self.__api_client = ApiClient(client_config, _RapidAuthClient)
         {% else %}self.__api_client = ApiClient(client_config, _OpenWorldAuthClient)
@@ -47,12 +46,13 @@ Args:
         {% for arguemnt in operation.snake_case_arguments_list %}
             {% if arguemnt.in_.value == 'query' %}
             '{{ arguemnt.alias }}': json.loads(json.dumps({{ arguemnt.name.strip() }}, default=pydantic.schema.pydantic_encoder)),
+            {% set has_query_params = True %}
             {% endif %}
             {% endfor %}
         }.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
-        request_url /= f'{{operation.path}}'
+        request_url /= {% if has_query_params %}f{% endif %}'{{operation.path}}'
         request_url.query.set(query)
         request_url.path.normalize()
 
