@@ -16,14 +16,14 @@
 from setuptools import setup
 
 setup(
-    name='openworld-sdk-python-fraudpreventionv2',
-    version='1.4.0',
-    packages=['openworld.sdk.fraudpreventionv2'],
-    package_dir={'openworld-sdk-python-fraudpreventionv2': '.'},
-    license='Apache License, Version 2.0',
-    author='Expedia Group',
-    author_email='oss@expediagroup.com',
-    url='https://github.com/ExpediaGroup/openworld-sdk-python',
+    name="openworld-sdk-python-fraudpreventionv2",
+    version="0.4.4",
+    packages=["openworld.sdk.fraudpreventionv2"],
+    package_dir={"openworld-sdk-python-fraudpreventionv2": "."},
+    license="Apache License, Version 2.0",
+    author="Expedia Group",
+    author_email="oss@expediagroup.com",
+    url="https://github.com/ExpediaGroup/openworld-sdk-python",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python",
@@ -35,8 +35,8 @@ setup(
         "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: MIT License",
     ],
-    python_requires='>=3.8',
-    install_requires=['uri', 'furl', 'openworld-sdk-python-core', 'pydantic', 'pydantic[email]', 'email-validator'],
-    description='Open World F r a u d P r e v e n t i o n V 2 SDK for Python',
-    long_description='Open World F r a u d P r e v e n t i o n V 2 SDK for Python',
+    python_requires=">=3.8",
+    install_requires=["uri", "furl", "openworld-sdk-python-core", "pydantic", "pydantic[email]", "email-validator"],
+    description="Open World Fraud Prevention V2 SDK for Python",
+    long_description="Open World Fraud Prevention V2 SDK for Python",
 )
