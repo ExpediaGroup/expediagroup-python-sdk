@@ -60,4 +60,10 @@ version=$sdk_version"\
 >./visitors/sdk.config &&\
 python3 ./__main__.py -i "$input_spec" -t "./templates" -o "./sdk" -m "model.py" &&\
 autoflake --in-place --remove-all-unused-imports ./sdk/client.py &&\
-cd ..
+cd ../../../.. &&\
+ls &&\
+pwd &&\
+pip3 install -r requirements.txt &&\
+isort . &&\
+black . &&\
+cd - && cd ..

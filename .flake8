@@ -16,9 +16,11 @@ ignore =
     D401
     E126
     E203
-    I005
+    F722
     I001
+    I005
     W503
+    W505
 
 require-plugins =
     flake8-black
