@@ -28,7 +28,7 @@ def get_sdk(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
 
     classname = "".join(list(map(lambda s: s[0].upper() + s[1::] if len(s) > 1 else s[0].upper(), re.findall(r"[a-zA-Z0-9]+", config["sdk"]["namespace"]))))
 
-    api = "".join([" " + classname[index] if index and classname[index].upper() else classname[index] for index in range(len(classname))])
+    api = "".join([" " + classname[index] if index and classname[index].isupper() else classname[index] for index in range(len(classname))])
 
     namespace = classname.lower()
 
