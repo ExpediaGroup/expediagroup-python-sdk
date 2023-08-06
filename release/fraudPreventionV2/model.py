@@ -16,9 +16,9 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Literal, Optional, Union
+from typing import Any, List, Literal, Optional, Union
 
-from pydantic import BaseModel, EmailStr, Extra, Field, constr
+from pydantic import BaseModel, EmailStr, Extra, Field, confloat, conint, constr
 
 
 class Code(
@@ -38,18 +38,18 @@ class Code(
         GATEWAY_TIMEOUT(Any): --
         BAD_REQUEST(Any): --
 
-    """  # noqa: E501
-    UNAUTHORIZED: Any = "UNAUTHORIZED"
-    FORBIDDEN: Any = "FORBIDDEN"
-    NOT_FOUND: Any = "NOT_FOUND"
-    ORDER_PURCHASE_UPDATE_NOT_FOUND: Any = "ORDER_PURCHASE_UPDATE_NOT_FOUND"
-    TOO_MANY_REQUESTS: Any = "TOO_MANY_REQUESTS"
-    INTERNAL_SERVER_ERROR: Any = "INTERNAL_SERVER_ERROR"
-    BAD_GATEWAY: Any = "BAD_GATEWAY"
-    RETRYABLE_ORDER_PURCHASE_SCREEN_FAILURE: Any = "RETRYABLE_ORDER_PURCHASE_SCREEN_FAILURE"
-    RETRYABLE_ORDER_PURCHASE_UPDATE_FAILURE: Any = "RETRYABLE_ORDER_PURCHASE_UPDATE_FAILURE"
-    GATEWAY_TIMEOUT: Any = "GATEWAY_TIMEOUT"
-    BAD_REQUEST: Any = "BAD_REQUEST"
+    """
+    UNAUTHORIZED: Any = 'UNAUTHORIZED'
+    FORBIDDEN: Any = 'FORBIDDEN'
+    NOT_FOUND: Any = 'NOT_FOUND'
+    ORDER_PURCHASE_UPDATE_NOT_FOUND: Any = 'ORDER_PURCHASE_UPDATE_NOT_FOUND'
+    TOO_MANY_REQUESTS: Any = 'TOO_MANY_REQUESTS'
+    INTERNAL_SERVER_ERROR: Any = 'INTERNAL_SERVER_ERROR'
+    BAD_GATEWAY: Any = 'BAD_GATEWAY'
+    RETRYABLE_ORDER_PURCHASE_SCREEN_FAILURE: Any = 'RETRYABLE_ORDER_PURCHASE_SCREEN_FAILURE'
+    RETRYABLE_ORDER_PURCHASE_UPDATE_FAILURE: Any = 'RETRYABLE_ORDER_PURCHASE_UPDATE_FAILURE'
+    GATEWAY_TIMEOUT: Any = 'GATEWAY_TIMEOUT'
+    BAD_REQUEST: Any = 'BAD_REQUEST'
 
 
 class Error(
@@ -62,15 +62,15 @@ class Error(
         code(Code): Snake cased all caps error code interpreted from the HTTP status code that can programmatically be acted upon.
         message(str): A human-readable explanation of the error, specific to this error occurrence.
 
-    """  # noqa: E501
-    code: Code = Field(..., example="BAD_REQUEST")
+    """
+    code: Code = Field(..., example='BAD_REQUEST')
     """
     Snake cased all caps error code interpreted from the HTTP status code that can programmatically be acted upon.
-    """  # noqa: E501
-    message: str = Field(..., example="An input validation error was encountered. Please see causes for more details.")
+    """
+    message: str = Field(..., example='An input validation error was encountered. Please see causes for more details.')
     """
     A human-readable explanation of the error, specific to this error occurrence.
-    """  # noqa: E501
+    """
 
 
 class UnauthorizedError(
@@ -78,7 +78,7 @@ class UnauthorizedError(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model UnauthorizedError: Indicates that the token sent in the 'Authorization' header is either invalid or missing. Please check the value in the token field along with the token expiration time before retrying."""  # noqa: E501
+    r"""pydantic model UnauthorizedError: Indicates that the token sent in the 'Authorization' header is either invalid or missing. Please check the value in the token field along with the token expiration time before retrying."""
     pass
 
 
@@ -87,7 +87,7 @@ class ForbiddenError(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model ForbiddenError: Indicates that the API cannot fulfill the request because while the client is correctly authenticated, the client doesn't have the permission to execute the specified operation. This error type does not imply that the request is valid, or that the resource against which the operation being performed exists or satisfies other pre-conditions."""  # noqa: E501
+    r"""pydantic model ForbiddenError: Indicates that the API cannot fulfill the request because while the client is correctly authenticated, the client doesn't have the permission to execute the specified operation. This error type does not imply that the request is valid, or that the resource against which the operation being performed exists or satisfies other pre-conditions."""
     pass
 
 
@@ -96,7 +96,7 @@ class NotFoundError(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model NotFoundError: Indicates that the API cannot find the resource that is either being requested or against which the operation is being performed. Please check the request again to make sure that the request is valid."""  # noqa: E501
+    r"""pydantic model NotFoundError: Indicates that the API cannot find the resource that is either being requested or against which the operation is being performed. Please check the request again to make sure that the request is valid."""
     pass
 
 
@@ -105,7 +105,7 @@ class OrderPurchaseUpdateNotFoundError(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model OrderPurchaseUpdateNotFoundError: Indicates that the API cannot find the resource that is either being requested or against which the operation is being performed."""  # noqa: E501
+    r"""pydantic model OrderPurchaseUpdateNotFoundError: Indicates that the API cannot find the resource that is either being requested or against which the operation is being performed."""
     pass
 
 
@@ -114,7 +114,7 @@ class TooManyRequestsError(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model TooManyRequestsError: Indicates that the API cannot fulfill the request because server resources have been exhausted. Perhaps the client has sent too many requests in a given amount of time or has reached some specific quota. Please check the rate limits for the product and adjust as necessary before retries. If you believe the rate limit was incorrect or if you need a different rate limit, please reach out to the <support team> regarding the next steps."""  # noqa: E501
+    r"""pydantic model TooManyRequestsError: Indicates that the API cannot fulfill the request because server resources have been exhausted. Perhaps the client has sent too many requests in a given amount of time or has reached some specific quota. Please check the rate limits for the product and adjust as necessary before retries. If you believe the rate limit was incorrect or if you need a different rate limit, please reach out to the <support team> regarding the next steps."""
     pass
 
 
@@ -123,7 +123,7 @@ class InternalServerError(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model InternalServerError: Indicates that the API encountered an unexpected condition that prevented it from fulfilling the request. Sometimes used as a generic catch-allerror type when no other error types can be used. Retrying the same request will usually result in the same error. Please reach out to support team as next step for this error resolution."""  # noqa: E501
+    r"""pydantic model InternalServerError: Indicates that the API encountered an unexpected condition that prevented it from fulfilling the request. Sometimes used as a generic catch-allerror type when no other error types can be used. Retrying the same request will usually result in the same error. Please reach out to support team as next step for this error resolution."""
     pass
 
 
@@ -132,7 +132,7 @@ class BadGatewayError(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model BadGatewayError: Indicates that the server received an invalid response from the upstream server. Causes could be incorrectly configured target server at gateway, EOF exception, incorrectly configured keep-alive timeouts. Please reach out to support team as next step for this error resolution."""  # noqa: E501
+    r"""pydantic model BadGatewayError: Indicates that the server received an invalid response from the upstream server. Causes could be incorrectly configured target server at gateway, EOF exception, incorrectly configured keep-alive timeouts. Please reach out to support team as next step for this error resolution."""
     pass
 
 
@@ -145,7 +145,7 @@ class ServiceUnavailableError(
     There will be a Retry-After HTTP header in API response specifying how long to wait to retry the request. If there is no Retry-After HTTP header then retry can happen immediately. If the error persists after retrying with delay, please reach out to <support team>."
 
 
-    """  # noqa: E501
+    """
     pass
 
 
@@ -154,7 +154,7 @@ class GatewayTimeoutError(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model GatewayTimeoutError: Indicates that the API gateway has issues completing the request on time. Request can be retried if it is idempotent, If the issue persists, please reach out to support. For non-idempotent requests, please reach out to <support team> to know the status of your request before attempting retries."""  # noqa: E501
+    r"""pydantic model GatewayTimeoutError: Indicates that the API gateway has issues completing the request on time. Request can be retried if it is idempotent, If the issue persists, please reach out to support. For non-idempotent requests, please reach out to <support team> to know the status of your request before attempting retries."""
     pass
 
 
@@ -167,10 +167,10 @@ class Code1(
         INVALID_PARAM(Any): --
         INVALID_FORMAT(Any): --
 
-    """  # noqa: E501
-    MISSING_MANDATORY_PARAM: Any = "MISSING_MANDATORY_PARAM"
-    INVALID_PARAM: Any = "INVALID_PARAM"
-    INVALID_FORMAT: Any = "INVALID_FORMAT"
+    """
+    MISSING_MANDATORY_PARAM: Any = 'MISSING_MANDATORY_PARAM'
+    INVALID_PARAM: Any = 'INVALID_PARAM'
+    INVALID_FORMAT: Any = 'INVALID_FORMAT'
 
 
 class Cause(
@@ -184,13 +184,13 @@ class Cause(
         field(Optional[str], optional): A JSON Path expression indicating which field, in the request body, caused the error.
         message(Optional[str], optional): --
 
-    """  # noqa: E501
-    code: Optional[Code1] = Field(None, example="MISSING_MANDATORY_PARAM")
-    field: Optional[str] = Field(None, example="$.transaction.payments.brand")
+    """
+    code: Optional[Code1] = Field(None, example='MISSING_MANDATORY_PARAM')
+    field: Optional[str] = Field(None, example='$.transaction.payments.brand')
     """
     A JSON Path expression indicating which field, in the request body, caused the error.
-    """  # noqa: E501
-    message: Optional[str] = Field(None, example="The value of a field was missed or not valid.")
+    """
+    message: Optional[str] = Field(None, example='The value of a field was missed or not valid.')
 
 
 class BadRequestError(
@@ -200,10 +200,10 @@ class BadRequestError(
 ):
     r"""pydantic model BadRequestError: Indicates that a bad request occurred. Typically it is an invalid parameter.
     Attributes:
-        causes(Optional[list[Cause]], optional): --
+        causes(Optional[List[Cause]], optional): --
 
-    """  # noqa: E501
-    causes: Optional[list[Cause]] = None
+    """
+    causes: Optional[List[Cause]] = None
 
 
 class UpdateType(
@@ -217,12 +217,12 @@ class UpdateType(
         REFUND_UPDATE(Any): --
         PAYMENT_UPDATE(Any): --
 
-    """  # noqa: E501
-    ORDER_UPDATE: Any = "ORDER_UPDATE"
-    CHARGEBACK_FEEDBACK: Any = "CHARGEBACK_FEEDBACK"
-    INSULT_FEEDBACK: Any = "INSULT_FEEDBACK"
-    REFUND_UPDATE: Any = "REFUND_UPDATE"
-    PAYMENT_UPDATE: Any = "PAYMENT_UPDATE"
+    """
+    ORDER_UPDATE: Any = 'ORDER_UPDATE'
+    CHARGEBACK_FEEDBACK: Any = 'CHARGEBACK_FEEDBACK'
+    INSULT_FEEDBACK: Any = 'INSULT_FEEDBACK'
+    REFUND_UPDATE: Any = 'REFUND_UPDATE'
+    PAYMENT_UPDATE: Any = 'PAYMENT_UPDATE'
 
 
 class CancellationReason(
@@ -234,26 +234,26 @@ class CancellationReason(
     Attributes:
         primary_reason_code(Optional[constr(max_length=200)], optional): Primary cancellation reason code.
         sub_reason_code(Optional[constr(max_length=200)], optional): Substitute cancellation reason code.
-        primary_reason_description(constr(max_length=200)): Primary cancellation reason code. Required if `order_status = CANCELLED`.
+        primary_reason_description(Optional[constr(max_length=200)], optional): Primary cancellation reason code. Required if `order_status = CANCELLED`.
         sub_reason_description(Optional[constr(max_length=200)], optional): Substitute cancellation reason description.
 
-    """  # noqa: E501
+    """
     primary_reason_code: Optional[constr(max_length=200)] = None
     """
     Primary cancellation reason code.
-    """  # noqa: E501
+    """
     sub_reason_code: Optional[constr(max_length=200)] = None
     """
     Substitute cancellation reason code.
-    """  # noqa: E501
-    primary_reason_description: constr(max_length=200) = None
+    """
+    primary_reason_description: Optional[constr(max_length=200)] = None
     """
     Primary cancellation reason code. Required if `order_status = CANCELLED`.
-    """  # noqa: E501
+    """
     sub_reason_description: Optional[constr(max_length=200)] = None
     """
     Substitute cancellation reason description.
-    """  # noqa: E501
+    """
 
 
 class RefundStatus(
@@ -267,9 +267,9 @@ class RefundStatus(
         ISSUED(Any): --
         SETTLED(Any): --
 
-    """  # noqa: E501
-    ISSUED: Any = "ISSUED"
-    SETTLED: Any = "SETTLED"
+    """
+    ISSUED: Any = 'ISSUED'
+    SETTLED: Any = 'SETTLED'
 
 
 class ChargebackStatus(
@@ -283,9 +283,9 @@ class ChargebackStatus(
         RECEIVED(Any): --
         REVERSAL(Any): --
 
-    """  # noqa: E501
-    RECEIVED: Any = "RECEIVED"
-    REVERSAL: Any = "REVERSAL"
+    """
+    RECEIVED: Any = 'RECEIVED'
+    REVERSAL: Any = 'REVERSAL'
 
 
 class ChargebackReason(
@@ -296,9 +296,9 @@ class ChargebackReason(
         FRAUD(Any): --
         NON_FRAUD(Any): --
 
-    """  # noqa: E501
-    FRAUD: Any = "FRAUD"
-    NON_FRAUD: Any = "NON_FRAUD"
+    """
+    FRAUD: Any = 'FRAUD'
+    NON_FRAUD: Any = 'NON_FRAUD'
 
 
 class InsultDetail(
@@ -310,11 +310,11 @@ class InsultDetail(
     Attributes:
         insult_reported_date_time(Optional[datetime], optional): Date and time when the insult was reported to the partner, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
 
-    """  # noqa: E501
+    """
     insult_reported_date_time: Optional[datetime] = None
     """
     Date and time when the insult was reported to the partner, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
 
 
 class Status(
@@ -338,12 +338,12 @@ class Status(
         FAILED(Any): --
         CHANGE_FAILED(Any): --
 
-    """  # noqa: E501
-    COMPLETED: Any = "COMPLETED"
-    CHANGE_COMPLETED: Any = "CHANGE_COMPLETED"
-    CANCELLED: Any = "CANCELLED"
-    FAILED: Any = "FAILED"
-    CHANGE_FAILED: Any = "CHANGE_FAILED"
+    """
+    COMPLETED: Any = 'COMPLETED'
+    CHANGE_COMPLETED: Any = 'CHANGE_COMPLETED'
+    CANCELLED: Any = 'CANCELLED'
+    FAILED: Any = 'FAILED'
+    CHANGE_FAILED: Any = 'CHANGE_FAILED'
 
 
 class OrderPurchaseUpdateResponse(
@@ -355,11 +355,11 @@ class OrderPurchaseUpdateResponse(
     Attributes:
         risk_id(Optional[constr(max_length=200)], optional): Unique identifier of transaction that was updated.
 
-    """  # noqa: E501
-    risk_id: Optional[constr(max_length=200)] = Field(None, example="1234567")
+    """
+    risk_id: Optional[constr(max_length=200)] = Field(None, example='1234567')
     """
     Unique identifier of transaction that was updated.
-    """  # noqa: E501
+    """
 
 
 class FraudDecision(
@@ -371,10 +371,10 @@ class FraudDecision(
         REVIEW(Any): --
         REJECT(Any): --
 
-    """  # noqa: E501
-    ACCEPT: Any = "ACCEPT"
-    REVIEW: Any = "REVIEW"
-    REJECT: Any = "REJECT"
+    """
+    ACCEPT: Any = 'ACCEPT'
+    REVIEW: Any = 'REVIEW'
+    REJECT: Any = 'REJECT'
 
 
 class SiteInfo(
@@ -387,15 +387,15 @@ class SiteInfo(
         country_code(constr(regex=r'^[A-Z]{3}$')): The alpha-3 ISO code that represents a country name.
         agent_assisted(bool): Identifies if an agent assisted in booking travel for the customer. `False` if the order was directly booked by customer.
 
-    """  # noqa: E501
-    country_code: constr(regex=r"^[A-Z]{3}$") = Field(..., example="USA")
+    """
+    country_code: constr(regex=r'^[A-Z]{3}$') = Field(..., example='USA')
     """
     The alpha-3 ISO code that represents a country name.
-    """  # noqa: E501
+    """
     agent_assisted: bool = None
     """
     Identifies if an agent assisted in booking travel for the customer. `False` if the order was directly booked by customer.
-    """  # noqa: E501
+    """
 
 
 class DeviceDetails(
@@ -409,21 +409,21 @@ class DeviceDetails(
         device_box(constr(max_length=16000)): Device related information retrieved from TrustWidget.
         ip_address(constr(regex=r'^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$')): IP address of the device used for booking.
 
-    """  # noqa: E501
+    """
     source: Optional[constr(max_length=50)] = None
     """
     Source of the device_box. Default value is `TrustWidget`.
-    """  # noqa: E501
+    """
     device_box: constr(max_length=16000) = None
     """
     Device related information retrieved from TrustWidget.
-    """  # noqa: E501
+    """
     ip_address: constr(
-        regex=r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$"
-    ) = Field(..., example="192.168.32.48")
+        regex=r'^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$'
+    ) = Field(..., example='192.168.32.48')
     """
     IP address of the device used for booking.
-    """  # noqa: E501
+    """
 
 
 class CurrentOrderStatus(
@@ -437,9 +437,9 @@ class CurrentOrderStatus(
         IN_PROGRESS(Any): --
         COMPLETED(Any): --
 
-    """  # noqa: E501
-    IN_PROGRESS: Any = "IN_PROGRESS"
-    COMPLETED: Any = "COMPLETED"
+    """
+    IN_PROGRESS: Any = 'IN_PROGRESS'
+    COMPLETED: Any = 'COMPLETED'
 
 
 class OrderType(
@@ -455,9 +455,9 @@ class OrderType(
         CREATE(Any): --
         CHANGE(Any): --
 
-    """  # noqa: E501
-    CREATE: Any = "CREATE"
-    CHANGE: Any = "CHANGE"
+    """
+    CREATE: Any = 'CREATE'
+    CHANGE: Any = 'CHANGE'
 
 
 class AccountType(
@@ -473,9 +473,9 @@ class AccountType(
         GUEST(Any): --
         STANDARD(Any): --
 
-    """  # noqa: E501
-    GUEST: Any = "GUEST"
-    STANDARD: Any = "STANDARD"
+    """
+    GUEST: Any = 'GUEST'
+    STANDARD: Any = 'STANDARD'
 
 
 class AddressType(
@@ -486,9 +486,9 @@ class AddressType(
         HOME(Any): --
         WORK(Any): --
 
-    """  # noqa: E501
-    HOME: Any = "HOME"
-    WORK: Any = "WORK"
+    """
+    HOME: Any = 'HOME'
+    WORK: Any = 'WORK'
 
 
 class Address(
@@ -506,32 +506,32 @@ class Address(
         zip_code(Optional[constr(max_length=20)], optional): Zip code of the address provided.
         country_code(Optional[constr(regex=r'^[A-Z]{3}$')], optional): ISO alpha-3 country code of the address provided.
 
-    """  # noqa: E501
+    """
     address_type: Optional[AddressType] = None
     address_line1: Optional[constr(max_length=200)] = None
     """
     Address line 1 of the address provided.
-    """  # noqa: E501
+    """
     address_line2: Optional[constr(max_length=200)] = None
     """
     Address line 2 of the address provided.
-    """  # noqa: E501
+    """
     city: Optional[constr(max_length=200)] = None
     """
     City of the address provided.
-    """  # noqa: E501
-    state: Optional[constr(regex=r"^[A-Z]{2}$")] = None
+    """
+    state: Optional[constr(regex=r'^[A-Z]{2}$')] = None
     """
     The two-characters ISO code for the state or province of the address.
-    """  # noqa: E501
+    """
     zip_code: Optional[constr(max_length=20)] = None
     """
     Zip code of the address provided.
-    """  # noqa: E501
-    country_code: Optional[constr(regex=r"^[A-Z]{3}$")] = None
+    """
+    country_code: Optional[constr(regex=r'^[A-Z]{3}$')] = None
     """
     ISO alpha-3 country code of the address provided.
-    """  # noqa: E501
+    """
 
 
 class InventorySource(
@@ -545,9 +545,9 @@ class InventorySource(
         MERCHANT(Any): --
         AGENCY(Any): --
 
-    """  # noqa: E501
-    MERCHANT: Any = "MERCHANT"
-    AGENCY: Any = "AGENCY"
+    """
+    MERCHANT: Any = 'MERCHANT'
+    AGENCY: Any = 'AGENCY'
 
 
 class TravelersReference(
@@ -559,7 +559,7 @@ class TravelersReference(
     Attributes:
         __root__(constr(max_length=50)): --
 
-    """  # noqa: E501
+    """
     __root__: constr(max_length=50) = None
 
 
@@ -576,10 +576,10 @@ class RouteType(
         ONE_WAY(Any): --
         ROUND_TRIP(Any): --
 
-    """  # noqa: E501
-    MULTIPLE_DESTINATIONS: Any = "MULTIPLE_DESTINATIONS"
-    ONE_WAY: Any = "ONE_WAY"
-    ROUND_TRIP: Any = "ROUND_TRIP"
+    """
+    MULTIPLE_DESTINATIONS: Any = 'MULTIPLE_DESTINATIONS'
+    ONE_WAY: Any = 'ONE_WAY'
+    ROUND_TRIP: Any = 'ROUND_TRIP'
 
 
 class TransportationMethod(
@@ -603,14 +603,14 @@ class TransportationMethod(
         TRANSFER(Any): --
         OTHERS(Any): --
 
-    """  # noqa: E501
-    BUS: Any = "BUS"
-    FERRY: Any = "FERRY"
-    PUBLIC_TRANSPORT: Any = "PUBLIC_TRANSPORT"
-    RAIL: Any = "RAIL"
-    TRAM: Any = "TRAM"
-    TRANSFER: Any = "TRANSFER"
-    OTHERS: Any = "OTHERS"
+    """
+    BUS: Any = 'BUS'
+    FERRY: Any = 'FERRY'
+    PUBLIC_TRANSPORT: Any = 'PUBLIC_TRANSPORT'
+    RAIL: Any = 'RAIL'
+    TRAM: Any = 'TRAM'
+    TRANSFER: Any = 'TRANSFER'
+    OTHERS: Any = 'OTHERS'
 
 
 class OperatingCompany(
@@ -622,11 +622,11 @@ class OperatingCompany(
     Attributes:
         marketing_name(Optional[constr(max_length=200)], optional): The name used by the transportation carrier for marketing purposes in the travel segment. Example: ARX, AMTRAC, ARRIVA
 
-    """  # noqa: E501
+    """
     marketing_name: Optional[constr(max_length=200)] = None
     """
     The name used by the transportation carrier for marketing purposes in the travel segment. Example: ARX, AMTRAC, ARRIVA
-    """  # noqa: E501
+    """
 
 
 class Type(
@@ -637,9 +637,9 @@ class Type(
         STATION(Any): --
         CITY(Any): --
 
-    """  # noqa: E501
-    STATION: Any = "STATION"
-    CITY: Any = "CITY"
+    """
+    STATION: Any = 'STATION'
+    CITY: Any = 'CITY'
 
 
 class RailwayStationDetails(
@@ -655,24 +655,140 @@ class RailwayStationDetails(
         address(Address): --
         timezone(Optional[constr(max_length=200)], optional): The timezone associated with the location of the station, specifying the local time offset from Coordinated Universal Time (UTC).
 
-    """  # noqa: E501
-    name: constr(max_length=200) = Field(..., example="Grand Central Terminal")
+    """
+    name: constr(max_length=200) = Field(..., example='Grand Central Terminal')
     """
     The popularly known name or title by which the railway station is identified.
-    """  # noqa: E501
-    type: Optional[Type] = Field(None, example="STATION")
+    """
+    type: Optional[Type] = Field(None, example='STATION')
     """
     This attribute provides information about the specific classification assigned to the rail station. It helps differentiate between different types of stations, such as major stations (STATION) or stations located within a city (city).
-    """  # noqa: E501
-    station_code: constr(max_length=200) = Field(..., example="GCT")
+    """
+    station_code: constr(max_length=200) = Field(..., example='GCT')
     """
     The unique identifier or code assigned to an individual rail station or a pseudo-station representing all the stations within a specific city, from which rail travel originates.
-    """  # noqa: E501
+    """
     address: Address = None
-    timezone: Optional[constr(max_length=200)] = Field(None, example="America/New_York")
+    timezone: Optional[constr(max_length=200)] = Field(None, example='America/New_York')
     """
     The timezone associated with the location of the station, specifying the local time offset from Coordinated Universal Time (UTC).
-    """  # noqa: E501
+    """
+
+
+class Activity(
+    BaseModel,
+    smart_union=True,
+    extra=Extra.forbid,
+):
+    r"""pydantic model Activity: Provides essential details about a specific activity.
+    Attributes:
+        type(constr(max_length=200)): This field provides a categorization of the different types of activities available within the activity product. It is designed to accommodate the preferences of the API consumer, allowing them to assign a descriptive label or keyword that accurately represents the nature of each activity. Here are some suggested values for this field: | Adventures: This category includes activities such as hiking, zip-lining, rock climbing, bungee jumping, and other adventurous pursuits. | Air, Balloon & Helicopter Tours: This category offers activities like hot air balloon rides, helicopter tours, and aerial sightseeing experiences. | Cruises & Water Tours: This includes options such as boat cruises, yacht tours, river rafting, snorkeling, and diving expeditions. | Nightlife: This category encompasses activities like clubbing, pub crawls, live music events, and cultural performances. These activities predominantly occur during the evening or nighttime.
+        description(constr(max_length=200)): This field within the trip information provides additional details or a brief explanation about the specific trip or activity being described
+
+    """
+    type: constr(max_length=200) = Field(..., example='Balloon & Helicopter Tours')
+    """
+    This field provides a categorization of the different types of activities available within the activity product. It is designed to accommodate the preferences of the API consumer, allowing them to assign a descriptive label or keyword that accurately represents the nature of each activity. Here are some suggested values for this field: | Adventures: This category includes activities such as hiking, zip-lining, rock climbing, bungee jumping, and other adventurous pursuits. | Air, Balloon & Helicopter Tours: This category offers activities like hot air balloon rides, helicopter tours, and aerial sightseeing experiences. | Cruises & Water Tours: This includes options such as boat cruises, yacht tours, river rafting, snorkeling, and diving expeditions. | Nightlife: This category encompasses activities like clubbing, pub crawls, live music events, and cultural performances. These activities predominantly occur during the evening or nighttime.
+    """
+    description: constr(max_length=200) = Field(..., example='2-Day, 2 Day Ticket Weekend')
+    """
+    This field within the trip information provides additional details or a brief explanation about the specific trip or activity being described
+    """
+
+
+class Coordinates(
+    BaseModel,
+    smart_union=True,
+    extra=Extra.forbid,
+):
+    r"""pydantic model Coordinates: Group of attributes intended to hold information about location coordinates.
+    Attributes:
+        latitude(Optional[confloat(ge=-90.0, le=90.0)], optional): The latitude in degrees. It must be in the range [-90.0, +90.0].
+        longitude(Optional[confloat(ge=-180.0, le=180.0)], optional): The longitude in degrees. It must be in the range [-180.0, +180.0].
+
+    """
+    latitude: Optional[confloat(ge=-90.0, le=90.0)] = None
+    """
+    The latitude in degrees. It must be in the range [-90.0, +90.0].
+    """
+    longitude: Optional[confloat(ge=-180.0, le=180.0)] = None
+    """
+    The longitude in degrees. It must be in the range [-180.0, +180.0].
+    """
+
+
+class Type1(
+    Enum,
+):
+    r"""pydantic model Type1: This field indicates the nature or relationship of the vendor associated with a particular activity. | THIRD_PARTY: This value indicates that the vendor is an external entity or third-party provider. | DIRECT: This value signifies that the vendor is a direct entity or provider associated with the organization or platform offering the activity.
+    Attributes:
+        THIRD_PARTY(Any): --
+        DIRECT(Any): --
+
+    """
+    THIRD_PARTY: Any = 'THIRD_PARTY'
+    DIRECT: Any = 'DIRECT'
+
+
+class OperatingCompanyModel(
+    BaseModel,
+    smart_union=True,
+    extra=Extra.forbid,
+):
+    r"""pydantic model OperatingCompanyModel: This field helps to identify and understand the specific provider or operating company involved in offering the activity.
+    Attributes:
+        name(str): This field includes the provider's name.
+        type(Type1): This field indicates the nature or relationship of the vendor associated with a particular activity. | THIRD_PARTY: This value indicates that the vendor is an external entity or third-party provider. | DIRECT: This value signifies that the vendor is a direct entity or provider associated with the organization or platform offering the activity.
+
+    """
+    name: str = Field(..., example='VIATOR')
+    """
+    This field includes the provider's name.
+    """
+    type: Type1 = None
+    """
+    This field indicates the nature or relationship of the vendor associated with a particular activity. | THIRD_PARTY: This value indicates that the vendor is an external entity or third-party provider. | DIRECT: This value signifies that the vendor is a direct entity or provider associated with the organization or platform offering the activity.
+    """
+
+
+class Category(
+    Enum,
+):
+    r"""pydantic model Category: Describes the type or category of the ticket.
+    Attributes:
+        ADULT(Any): --
+        CHILD(Any): --
+        SENIOR(Any): --
+        STUDENT(Any): --
+        OTHER(Any): --
+
+    """
+    ADULT: Any = 'ADULT'
+    CHILD: Any = 'CHILD'
+    SENIOR: Any = 'SENIOR'
+    STUDENT: Any = 'STUDENT'
+    OTHER: Any = 'OTHER'
+
+
+class Ticket(
+    BaseModel,
+    smart_union=True,
+    extra=Extra.forbid,
+):
+    r"""pydantic model Ticket: This field provides information about the tickets related to the activity.
+    Attributes:
+        category(Category): Describes the type or category of the ticket.
+        quantity(conint(ge=1, le=30)): This field represents the count or number of a specific ticket type associated with an activity.
+
+    """
+    category: Category = None
+    """
+    Describes the type or category of the ticket.
+    """
+    quantity: conint(ge=1, le=30) = None
+    """
+    This field represents the count or number of a specific ticket type associated with an activity.
+    """
 
 
 class FlightType(
@@ -684,10 +800,10 @@ class FlightType(
         ONEWAY(Any): --
         MULTIPLE_DESTINATION(Any): --
 
-    """  # noqa: E501
-    ROUNDTRIP: Any = "ROUNDTRIP"
-    ONEWAY: Any = "ONEWAY"
-    MULTIPLE_DESTINATION: Any = "MULTIPLE_DESTINATION"
+    """
+    ROUNDTRIP: Any = 'ROUNDTRIP'
+    ONEWAY: Any = 'ONEWAY'
+    MULTIPLE_DESTINATION: Any = 'MULTIPLE_DESTINATION'
 
 
 class AirSegment(
@@ -703,27 +819,27 @@ class AirSegment(
         departure_time(Optional[datetime], optional): Local date and time of departure from departure location, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
         arrival_time(Optional[datetime], optional): Local date and time of arrival to destination location, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
 
-    """  # noqa: E501
+    """
     airline_code: constr(max_length=10) = None
     """
     Airline code of the trip segment
-    """  # noqa: E501
+    """
     departure_airport_code: constr(max_length=10) = None
     """
     Departure airport of the trip segment
-    """  # noqa: E501
+    """
     arrival_airport_code: constr(max_length=10) = None
     """
     Arrival airport of the trip segment
-    """  # noqa: E501
+    """
     departure_time: Optional[datetime] = None
     """
     Local date and time of departure from departure location, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
     arrival_time: Optional[datetime] = None
     """
     Local date and time of arrival to destination location, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
 
 
 class HotelAddress(
@@ -731,7 +847,7 @@ class HotelAddress(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model HotelAddress: Address of a hotel."""  # noqa: E501
+    r"""pydantic model HotelAddress: Address of a hotel."""
     pass
 
 
@@ -769,6 +885,42 @@ class Brand(
     * `POSTEPAY_VISA_ELECTRON`    : `VISA`
     * `PAYPAL`                    :
 
+    'brand' with 'Points' payment_type is an enum value with following:
+    * `EXPEDIA_REWARDS`
+    * `AMEX_POINTS`
+    * `BANK_OF_AMERICA_REWARDS`
+    * `DISCOVER_POINTS`
+    * `MASTER_CARD_POINTS`
+    * `CITI_THANK_YOU_POINTS`
+    * `MERRILL_LYNCH_REWARDS`
+    * `WELLS_FARGO_POINTS`
+    * `DELTA_SKY_MILES`
+    * `UNITED_POINTS`
+    * `DISCOVER_MILES`
+    * `ALASKA_MILES`
+    * `RBC_REWARDS`
+    * `BILT_REWARDS`
+    * `ORBUCKS`
+    * `CHEAP_CASH`
+    * `BONUS_PLUS`
+    * `ULTIMATE_REWARDS`
+
+    'brand' with 'GiftCard' payment_type is an enum value with following:
+    * `GIFT_CARD`
+
+    'brand' with 'InternetBankPayment' payment_type is an enum value with following:
+    * `IBP`
+    * `LOCAL_DEBIT_CARD`
+    * `SOFORT`
+    * `YANDEX`
+    * `WEB_MONEY`
+    * `QIWI`
+    * `BITCOIN`
+
+    'brand' with 'DirectDebit' payment_type is an enum value with following:
+    * `ELV`
+    * `INTER_COMPANY`
+
     Attributes:
         AMERICAN_EXPRESS(Any): --
         DINERS_CLUB_INTERNATIONAL(Any): --
@@ -789,27 +941,83 @@ class Brand(
         VISA_DANKORT(Any): --
         POSTEPAY_VISA_ELECTRON(Any): --
         PAYPAL(Any): --
+        EXPEDIA_REWARDS(Any): --
+        AMEX_POINTS(Any): --
+        BANK_OF_AMERICA_REWARDS(Any): --
+        DISCOVER_POINTS(Any): --
+        MASTER_CARD_POINTS(Any): --
+        CITI_THANK_YOU_POINTS(Any): --
+        MERRILL_LYNCH_REWARDS(Any): --
+        WELLS_FARGO_POINTS(Any): --
+        DELTA_SKY_MILES(Any): --
+        UNITED_POINTS(Any): --
+        DISCOVER_MILES(Any): --
+        ALASKA_MILES(Any): --
+        RBC_REWARDS(Any): --
+        BILT_REWARDS(Any): --
+        ORBUCKS(Any): --
+        CHEAP_CASH(Any): --
+        BONUS_PLUS(Any): --
+        ULTIMATE_REWARDS(Any): --
+        GIFT_CARD(Any): --
+        IBP(Any): --
+        LOCAL_DEBIT_CARD(Any): --
+        SOFORT(Any): --
+        YANDEX(Any): --
+        WEB_MONEY(Any): --
+        QIWI(Any): --
+        BITCOIN(Any): --
+        ELV(Any): --
+        INTER_COMPANY(Any): --
 
-    """  # noqa: E501
-    AMERICAN_EXPRESS: Any = "AMERICAN_EXPRESS"
-    DINERS_CLUB_INTERNATIONAL: Any = "DINERS_CLUB_INTERNATIONAL"
-    BC_CARD: Any = "BC_CARD"
-    DISCOVER: Any = "DISCOVER"
-    JCB: Any = "JCB"
-    MASTER_CARD: Any = "MASTER_CARD"
-    MAESTRO: Any = "MAESTRO"
-    POSTEPAY_MASTERCARD: Any = "POSTEPAY_MASTERCARD"
-    SOLO: Any = "SOLO"
-    SWITCH: Any = "SWITCH"
-    CHINA_UNION_PAY: Any = "CHINA_UNION_PAY"
-    VISA: Any = "VISA"
-    VISA_DELTA: Any = "VISA_DELTA"
-    VISA_ELECTRON: Any = "VISA_ELECTRON"
-    CARTA_SI: Any = "CARTA_SI"
-    CARTE_BLEUE: Any = "CARTE_BLEUE"
-    VISA_DANKORT: Any = "VISA_DANKORT"
-    POSTEPAY_VISA_ELECTRON: Any = "POSTEPAY_VISA_ELECTRON"
-    PAYPAL: Any = "PAYPAL"
+    """
+    AMERICAN_EXPRESS: Any = 'AMERICAN_EXPRESS'
+    DINERS_CLUB_INTERNATIONAL: Any = 'DINERS_CLUB_INTERNATIONAL'
+    BC_CARD: Any = 'BC_CARD'
+    DISCOVER: Any = 'DISCOVER'
+    JCB: Any = 'JCB'
+    MASTER_CARD: Any = 'MASTER_CARD'
+    MAESTRO: Any = 'MAESTRO'
+    POSTEPAY_MASTERCARD: Any = 'POSTEPAY_MASTERCARD'
+    SOLO: Any = 'SOLO'
+    SWITCH: Any = 'SWITCH'
+    CHINA_UNION_PAY: Any = 'CHINA_UNION_PAY'
+    VISA: Any = 'VISA'
+    VISA_DELTA: Any = 'VISA_DELTA'
+    VISA_ELECTRON: Any = 'VISA_ELECTRON'
+    CARTA_SI: Any = 'CARTA_SI'
+    CARTE_BLEUE: Any = 'CARTE_BLEUE'
+    VISA_DANKORT: Any = 'VISA_DANKORT'
+    POSTEPAY_VISA_ELECTRON: Any = 'POSTEPAY_VISA_ELECTRON'
+    PAYPAL: Any = 'PAYPAL'
+    EXPEDIA_REWARDS: Any = 'EXPEDIA_REWARDS'
+    AMEX_POINTS: Any = 'AMEX_POINTS'
+    BANK_OF_AMERICA_REWARDS: Any = 'BANK_OF_AMERICA_REWARDS'
+    DISCOVER_POINTS: Any = 'DISCOVER_POINTS'
+    MASTER_CARD_POINTS: Any = 'MASTER_CARD_POINTS'
+    CITI_THANK_YOU_POINTS: Any = 'CITI_THANK_YOU_POINTS'
+    MERRILL_LYNCH_REWARDS: Any = 'MERRILL_LYNCH_REWARDS'
+    WELLS_FARGO_POINTS: Any = 'WELLS_FARGO_POINTS'
+    DELTA_SKY_MILES: Any = 'DELTA_SKY_MILES'
+    UNITED_POINTS: Any = 'UNITED_POINTS'
+    DISCOVER_MILES: Any = 'DISCOVER_MILES'
+    ALASKA_MILES: Any = 'ALASKA_MILES'
+    RBC_REWARDS: Any = 'RBC_REWARDS'
+    BILT_REWARDS: Any = 'BILT_REWARDS'
+    ORBUCKS: Any = 'ORBUCKS'
+    CHEAP_CASH: Any = 'CHEAP_CASH'
+    BONUS_PLUS: Any = 'BONUS_PLUS'
+    ULTIMATE_REWARDS: Any = 'ULTIMATE_REWARDS'
+    GIFT_CARD: Any = 'GIFT_CARD'
+    IBP: Any = 'IBP'
+    LOCAL_DEBIT_CARD: Any = 'LOCAL_DEBIT_CARD'
+    SOFORT: Any = 'SOFORT'
+    YANDEX: Any = 'YANDEX'
+    WEB_MONEY: Any = 'WEB_MONEY'
+    QIWI: Any = 'QIWI'
+    BITCOIN: Any = 'BITCOIN'
+    ELV: Any = 'ELV'
+    INTER_COMPANY: Any = 'INTER_COMPANY'
 
 
 class PaymentThreeDSCriteria(
@@ -822,15 +1030,15 @@ class PaymentThreeDSCriteria(
         probable_flag(Optional[bool], optional): This is a flag passed that indicates that this transaction could potentially go through 3DS.
         transaction_model(Optional[constr(max_length=200)], optional): Model used to process payment transaction.
 
-    """  # noqa: E501
+    """
     probable_flag: Optional[bool] = None
     """
     This is a flag passed that indicates that this transaction could potentially go through 3DS.
-    """  # noqa: E501
+    """
     transaction_model: Optional[constr(max_length=200)] = None
     """
     Model used to process payment transaction.
-    """  # noqa: E501
+    """
 
 
 class PaymentReason(
@@ -850,12 +1058,12 @@ class PaymentReason(
         SUBSEQUENT(Any): --
         DEFERRED(Any): --
 
-    """  # noqa: E501
-    FULL: Any = "FULL"
-    DEPOSIT: Any = "DEPOSIT"
-    SCHEDULED: Any = "SCHEDULED"
-    SUBSEQUENT: Any = "SUBSEQUENT"
-    DEFERRED: Any = "DEFERRED"
+    """
+    FULL: Any = 'FULL'
+    DEPOSIT: Any = 'DEPOSIT'
+    SCHEDULED: Any = 'SCHEDULED'
+    SUBSEQUENT: Any = 'SUBSEQUENT'
+    DEFERRED: Any = 'DEFERRED'
 
 
 class VerificationType(
@@ -866,9 +1074,9 @@ class VerificationType(
         CVV(Any): --
         field_3DS(Any): --
 
-    """  # noqa: E501
-    CVV: Any = "CVV"
-    field_3DS: Any = "3DS"
+    """
+    CVV: Any = 'CVV'
+    field_3DS: Any = '3DS'
 
 
 class PaymentStatus(
@@ -879,24 +1087,30 @@ class PaymentStatus(
         COMPLETED(Any): --
         FAILED(Any): --
 
-    """  # noqa: E501
-    COMPLETED: Any = "COMPLETED"
-    FAILED: Any = "FAILED"
+    """
+    COMPLETED: Any = 'COMPLETED'
+    FAILED: Any = 'FAILED'
 
 
 class PaymentMethod(
     Enum,
 ):
-    r"""pydantic model PaymentMethod: The payment method used at the time of purchase for the transaction. Supported `method`'s are: `CREDIT_CARD`, `PAYPAL`, `POINTS`.
+    r"""pydantic model PaymentMethod: The payment method used at the time of purchase for the transaction. Supported `method`'s are: `CREDIT_CARD`, `PAYPAL`, `POINTS`, `GIFT_CARD`, `INTERNET_BANK_PAYMENT`, `DIRECT_DEBIT`.
     Attributes:
         CREDIT_CARD(Any): --
         PAYPAL(Any): --
         POINTS(Any): --
+        GIFT_CARD(Any): --
+        INTERNET_BANK_PAYMENT(Any): --
+        DIRECT_DEBIT(Any): --
 
-    """  # noqa: E501
-    CREDIT_CARD: Any = "CREDIT_CARD"
-    PAYPAL: Any = "PAYPAL"
-    POINTS: Any = "POINTS"
+    """
+    CREDIT_CARD: Any = 'CREDIT_CARD'
+    PAYPAL: Any = 'PAYPAL'
+    POINTS: Any = 'POINTS'
+    GIFT_CARD: Any = 'GIFT_CARD'
+    INTERNET_BANK_PAYMENT: Any = 'INTERNET_BANK_PAYMENT'
+    DIRECT_DEBIT: Any = 'DIRECT_DEBIT'
 
 
 class TravelProductType(
@@ -910,14 +1124,16 @@ class TravelProductType(
         INSURANCE(Any): --
         HOTEL(Any): --
         RAIL(Any): --
+        ACTIVITIES(Any): --
 
-    """  # noqa: E501
-    CRUISE: Any = "CRUISE"
-    AIR: Any = "AIR"
-    CAR: Any = "CAR"
-    INSURANCE: Any = "INSURANCE"
-    HOTEL: Any = "HOTEL"
-    RAIL: Any = "RAIL"
+    """
+    CRUISE: Any = 'CRUISE'
+    AIR: Any = 'AIR'
+    CAR: Any = 'CAR'
+    INSURANCE: Any = 'INSURANCE'
+    HOTEL: Any = 'HOTEL'
+    RAIL: Any = 'RAIL'
+    ACTIVITIES: Any = 'ACTIVITIES'
 
 
 class CardType(
@@ -965,17 +1181,17 @@ class CardType(
         CHINA_UNION_PAY(Any): --
         VISA(Any): --
 
-    """  # noqa: E501
-    AMERICAN_EXPRESS: Any = "AMERICAN_EXPRESS"
-    DINERS_CLUB: Any = "DINERS_CLUB"
-    DISCOVER: Any = "DISCOVER"
-    JCB: Any = "JCB"
-    MASTER_CARD: Any = "MASTER_CARD"
-    SOLO: Any = "SOLO"
-    SWITCH: Any = "SWITCH"
-    MAESTRO: Any = "MAESTRO"
-    CHINA_UNION_PAY: Any = "CHINA_UNION_PAY"
-    VISA: Any = "VISA"
+    """
+    AMERICAN_EXPRESS: Any = 'AMERICAN_EXPRESS'
+    DINERS_CLUB: Any = 'DINERS_CLUB'
+    DISCOVER: Any = 'DISCOVER'
+    JCB: Any = 'JCB'
+    MASTER_CARD: Any = 'MASTER_CARD'
+    SOLO: Any = 'SOLO'
+    SWITCH: Any = 'SWITCH'
+    MAESTRO: Any = 'MAESTRO'
+    CHINA_UNION_PAY: Any = 'CHINA_UNION_PAY'
+    VISA: Any = 'VISA'
 
 
 class Name(
@@ -991,27 +1207,27 @@ class Name(
         title(Optional[constr(max_length=200)], optional): Title of the person for name (e.g. Mr., Ms. etc).
         suffix(Optional[constr(max_length=50)], optional): Generational designations (e.g. Sr, Jr, III) or values that indicate the individual holds a position, educational degree, accreditation, office, or honor (e.g. PhD, CCNA, OBE).
 
-    """  # noqa: E501
+    """
     last_name: constr(max_length=200) = None
     """
     Surname, or last name, of the person.
-    """  # noqa: E501
+    """
     first_name: constr(max_length=200) = None
     """
     Given, or first name, of the person.
-    """  # noqa: E501
+    """
     middle_name: Optional[constr(max_length=200)] = None
     """
     Middle name of the person.
-    """  # noqa: E501
+    """
     title: Optional[constr(max_length=200)] = None
     """
     Title of the person for name (e.g. Mr., Ms. etc).
-    """  # noqa: E501
+    """
     suffix: Optional[constr(max_length=50)] = None
     """
     Generational designations (e.g. Sr, Jr, III) or values that indicate the individual holds a position, educational degree, accreditation, office, or honor (e.g. PhD, CCNA, OBE).
-    """  # noqa: E501
+    """
 
 
 class TelephoneType(
@@ -1025,12 +1241,12 @@ class TelephoneType(
         FAX(Any): --
         OTHER(Any): --
 
-    """  # noqa: E501
-    HOME: Any = "HOME"
-    MOBILE: Any = "MOBILE"
-    BUSINESS: Any = "BUSINESS"
-    FAX: Any = "FAX"
-    OTHER: Any = "OTHER"
+    """
+    HOME: Any = 'HOME'
+    MOBILE: Any = 'MOBILE'
+    BUSINESS: Any = 'BUSINESS'
+    FAX: Any = 'FAX'
+    OTHER: Any = 'OTHER'
 
 
 class TelephonePlatformType(
@@ -1042,10 +1258,10 @@ class TelephonePlatformType(
         LANDLINE(Any): --
         VOIP(Any): --
 
-    """  # noqa: E501
-    MOBILE: Any = "MOBILE"
-    LANDLINE: Any = "LANDLINE"
-    VOIP: Any = "VOIP"
+    """
+    MOBILE: Any = 'MOBILE'
+    LANDLINE: Any = 'LANDLINE'
+    VOIP: Any = 'VOIP'
 
 
 class Email(
@@ -1057,11 +1273,11 @@ class Email(
     Attributes:
         email_address(Optional[EmailStr], optional): Full email address including the alias, @ symbol, domain, and root domain.
 
-    """  # noqa: E501
+    """
     email_address: Optional[EmailStr] = None
     """
     Full email address including the alias, @ symbol, domain, and root domain.
-    """  # noqa: E501
+    """
 
 
 class Amount(
@@ -1074,15 +1290,15 @@ class Amount(
         value(float): The amount required in payment for the product/order in local currency (including any taxes and fees).
         currency_code(constr(regex=r'^[A-Z]{3}$', max_length=3)): The ISO  alpha-3 country code for the amount currency.
 
-    """  # noqa: E501
+    """
     value: float = None
     """
     The amount required in payment for the product/order in local currency (including any taxes and fees).
-    """  # noqa: E501
-    currency_code: constr(regex=r"^[A-Z]{3}$", max_length=3) = None
+    """
+    currency_code: constr(regex=r'^[A-Z]{3}$', max_length=3) = None
     """
     The ISO  alpha-3 country code for the amount currency.
-    """  # noqa: E501
+    """
 
 
 class OrderPurchaseUpdateRequestGeneric(
@@ -1101,12 +1317,12 @@ class OrderPurchaseUpdateRequestGeneric(
         type(UpdateType): --
         risk_id(constr(max_length=200)): The `risk_id` provided by Expedia's Fraud Prevention Service in the `OrderPurchaseScreenResponse`.
 
-    """  # noqa: E501
+    """
     type: UpdateType = None
-    risk_id: constr(max_length=200) = Field(..., example="123456789")
+    risk_id: constr(max_length=200) = Field(..., example='123456789')
     """
     The `risk_id` provided by Expedia's Fraud Prevention Service in the `OrderPurchaseScreenResponse`.
-    """  # noqa: E501
+    """
 
 
 class OrderUpdate(
@@ -1121,7 +1337,7 @@ class OrderUpdate(
         cancellation_reason(Optional[CancellationReason], optional): --
         type(Literal['ORDER_UPDATE']): --
 
-    """  # noqa: E501
+    """
     order_status: Status = None
     acquirer_reference_number: Optional[constr(max_length=200)] = None
     """
@@ -1130,9 +1346,9 @@ class OrderUpdate(
     Typically, merchants can get this number from their payment processors.
     This number is used when dealing with disputes/chargebacks on original transactions.
 
-    """  # noqa: E501
+    """
     cancellation_reason: Optional[CancellationReason] = None
-    type: Literal["ORDER_UPDATE"] = "ORDER_UPDATE"
+    type: Literal['ORDER_UPDATE'] = 'ORDER_UPDATE'
 
 
 class InsultFeedback(
@@ -1145,9 +1361,9 @@ class InsultFeedback(
         insult_detail(Optional[InsultDetail], optional): --
         type(Literal['INSULT_FEEDBACK']): --
 
-    """  # noqa: E501
+    """
     insult_detail: Optional[InsultDetail] = None
-    type: Literal["INSULT_FEEDBACK"] = "INSULT_FEEDBACK"
+    type: Literal['INSULT_FEEDBACK'] = 'INSULT_FEEDBACK'
 
 
 class RefundUpdateGeneric(
@@ -1160,15 +1376,15 @@ class RefundUpdateGeneric(
         refund_status(RefundStatus): Identifies the refund status. Possible values are: -`ISSUED` - The refund was issued. -`SETTLED` - The refund was settled.
         type(Literal['REFUND_UPDATE']): --
 
-    """  # noqa: E501
+    """
     refund_status: RefundStatus = None
     """
     Identifies the refund status. Possible values are:
     -`ISSUED` - The refund was issued.
     -`SETTLED` - The refund was settled.
 
-    """  # noqa: E501
-    type: Literal["REFUND_UPDATE"] = "REFUND_UPDATE"
+    """
+    type: Literal['REFUND_UPDATE'] = 'REFUND_UPDATE'
 
 
 class IssuedRefundUpdateDetails(
@@ -1181,11 +1397,11 @@ class IssuedRefundUpdateDetails(
         refund_issued_date_time(datetime): Date and time when the 3rd party payment processor confirmed that a previously submitted payment refund has issued at the participating financial institutions.
         refund_issued_amount(Amount): --
 
-    """  # noqa: E501
+    """
     refund_issued_date_time: datetime = None
     """
     Date and time when the 3rd party payment processor confirmed that a previously submitted payment refund has issued at the participating financial institutions.
-    """  # noqa: E501
+    """
     refund_issued_amount: Amount = None
 
 
@@ -1202,26 +1418,26 @@ class SettledRefundUpdateDetails(
         settlement_id(constr(max_length=200)): Unique settlement identifier specific to the payment processor for the settlement transaction generated for a previously submitted payment refund.
         refund_settled_amount(Amount): --
 
-    """  # noqa: E501
+    """
     refund_settlement_date_time: datetime = None
     """
     Date and time when the 3rd party payment processor confirmed that a previously submitted payment refund has settled at the participating financial institutions.
-    """  # noqa: E501
+    """
     refund_deposit_date_time: datetime = None
     """
     Date and time when the refund was deposited to the original form of payment.
-    """  # noqa: E501
+    """
     acquirer_reference_number: constr(max_length=200) = None
     """
     A unique number that tags a credit or debit card transaction when it goes from the merchant's bank through to the cardholder's bank.
     Typically, merchants can get this number from their payment processors.
     This number is used when dealing with disputes/chargebacks on original transactions.
 
-    """  # noqa: E501
+    """
     settlement_id: constr(max_length=200) = None
     """
     Unique settlement identifier specific to the payment processor for the settlement transaction generated for a previously submitted payment refund.
-    """  # noqa: E501
+    """
     refund_settled_amount: Amount = None
 
 
@@ -1235,12 +1451,12 @@ class PaymentUpdate(
         merchant_order_code(constr(max_length=200)): Reference code passed to acquiring bank at the time of payment. This code is the key ID that ties back to payments data at the payment level.
         type(Literal['PAYMENT_UPDATE']): --
 
-    """  # noqa: E501
+    """
     merchant_order_code: constr(max_length=200) = None
     """
     Reference code passed to acquiring bank at the time of payment. This code is the key ID that ties back to payments data at the payment level.
-    """  # noqa: E501
-    type: Literal["PAYMENT_UPDATE"] = "PAYMENT_UPDATE"
+    """
+    type: Literal['PAYMENT_UPDATE'] = 'PAYMENT_UPDATE'
 
 
 class ChargebackDetail(
@@ -1256,27 +1472,27 @@ class ChargebackDetail(
         bank_reason_code(Optional[constr(max_length=200)], optional): Unique code provided by the acquiring bank for the category of fraud.
         chargeback_reported_date_time(Optional[datetime], optional): Date and time when the chargeback was reported to the partner, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
 
-    """  # noqa: E501
+    """
     chargeback_status: ChargebackStatus = None
     """
     Identifies the chargeback status. Possible values are:
     -`RECEIVED` - The chargeback was received.
     -`REVERSAL` - The chargeback reversal was received.
 
-    """  # noqa: E501
+    """
     chargeback_reason: ChargebackReason = None
     """
     Reason for chargeback which can be `Fraud` or `Non Fraud`.
-    """  # noqa: E501
+    """
     chargeback_amount: Amount = None
     bank_reason_code: Optional[constr(max_length=200)] = None
     """
     Unique code provided by the acquiring bank for the category of fraud.
-    """  # noqa: E501
+    """
     chargeback_reported_date_time: Optional[datetime] = None
     """
     Date and time when the chargeback was reported to the partner, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
 
 
 class OrderPurchaseScreenResponse(
@@ -1289,11 +1505,11 @@ class OrderPurchaseScreenResponse(
         risk_id(Optional[constr(max_length=200)], optional): Unique identifier assigned to the transaction by Expedia's Fraud Prevention Service.
         decision(Optional[FraudDecision], optional): --
 
-    """  # noqa: E501
-    risk_id: Optional[constr(max_length=200)] = Field(None, example="1234567")
+    """
+    risk_id: Optional[constr(max_length=200)] = Field(None, example='1234567')
     """
     Unique identifier assigned to the transaction by Expedia's Fraud Prevention Service.
-    """  # noqa: E501
+    """
     decision: Optional[FraudDecision] = None
 
 
@@ -1309,15 +1525,16 @@ class TravelProductGeneric(
     * `INSURANCE`: `Insurance`
     * `HOTEL`: `Hotel`
     * `RAIL`: `Rail`
+    * `ACTIVITIES`: `Activities`
 
     Attributes:
         price(Amount): --
         type(TravelProductType): --
-        inventory_type(constr(max_length=30)): Type of inventory. Ensure attributes mentioned in dictionary below are set to corresponding values only. `inventory_type` has the following mapping with TravelProduct `type` attribute: *       inventory_type            :      type * ------------------------------------------------------ *  `Cruise`                       : `CRUISE` *  `Air`                          : `AIR` *  `Car`                          : `CAR` *  `Insurance`                    : `INSURANCE` *  `Hotel`                        : `HOTEL` *  `Rail`                         :  `RAIL`
+        inventory_type(constr(max_length=30)): Type of inventory. Ensure attributes mentioned in dictionary below are set to corresponding values only. `inventory_type` has the following mapping with TravelProduct `type` attribute: *       inventory_type            :      type * ------------------------------------------------------ *  `Cruise`                       : `CRUISE` *  `Air`                          : `AIR` *  `Car`                          : `CAR` *  `Insurance`                    : `INSURANCE` *  `Hotel`                        : `HOTEL` *  `Rail`                         :  `RAIL` *  `Activities`                   :  `ACTIVITIES`
         inventory_source(InventorySource): Identifies the business model through which the supply is being sold. Merchant/Agency. * `MERCHANT` is used when Partner is the merchant of record for this order. * `AGENCY` is used when this order is through an agency booking.
-        travelers_references(list[constr(max_length=50)]): List of travelerGuids who are part of the traveling party on the order for the product. Information for each product and its required travelers should be provided in the API request. If the product booking does not require accompanying quest information then that does not need to be provided in the API request. Example: * For Air products, all travelers' details are required to complete the booking. * For Hotel products, typically the details on the person checking-in is required. * For Car products, typically only the primary driver information is required. If multiple traveler details are in the itinerary, this structure allows to fill up traveler details once in the `travelers` section, and then associate individual products to the respective travelers. This association is made using `traveler_id` field. A GUID can be generated for each object in the `travelers` section. The same GUID can be provided in the `traveler_references` below. The `travelers` array should have at least one `traveler` object, and each `traveler` object should have a `traveler_id` which is not necessarily an account id. Example: *   Travelers * ------------ *  A - GUID1 *  B - GUID2 *  C - GUID3 * *   Products * ------------ * Air *   [GUID1, GUID2, GUID3] * Hotel *   [GUID1] * Car *   [GUID3] * Rail *   [GUID2] * Above example shows all three travelers will be associated with the Air product, * however, only Traveler A will be associated with the Hotel product, * and only Traveler C will be associated with the Car product. * Traveler B will be associated with the Rail product.
+        travelers_references(List[constr(max_length=50)]): List of travelerGuids who are part of the traveling party on the order for the product. Information for each product and its required travelers should be provided in the API request. If the product booking does not require accompanying quest information then that does not need to be provided in the API request. Example: * For Air products, all travelers' details are required to complete the booking. * For Hotel products, typically the details on the person checking-in is required. * For Car products, typically only the primary driver information is required. If multiple traveler details are in the itinerary, this structure allows to fill up traveler details once in the `travelers` section, and then associate individual products to the respective travelers. This association is made using `traveler_id` field. A GUID can be generated for each object in the `travelers` section. The same GUID can be provided in the `traveler_references` below. The `travelers` array should have at least one `traveler` object, and each `traveler` object should have a `traveler_id` which is not necessarily an account id. Example: *   Travelers * ------------ *  A - GUID1 *  B - GUID2 *  C - GUID3 * *   Products * ------------ * Air *   [GUID1, GUID2, GUID3] * Hotel *   [GUID1] * Car *   [GUID3] * Rail *   [GUID2] * Activities *   [GUID1] * The example above demonstrates the association of travelers with various products. * All three travelers (A, B, and C) are associated with the Air product. * Traveler A is associated with the Hotel and Activities products. * Traveler C is associated with the Car product. * Traveler B is associated with the Rail product.
 
-    """  # noqa: E501
+    """
     price: Amount = None
     type: TravelProductType = None
     inventory_type: constr(max_length=30) = None
@@ -1333,16 +1550,17 @@ class TravelProductGeneric(
     *  `Insurance`                    : `INSURANCE`
     *  `Hotel`                        : `HOTEL`
     *  `Rail`                         :  `RAIL`
+    *  `Activities`                   :  `ACTIVITIES`
 
-    """  # noqa: E501
+    """
     inventory_source: InventorySource = None
     """
     Identifies the business model through which the supply is being sold. Merchant/Agency.
     * `MERCHANT` is used when Partner is the merchant of record for this order.
     * `AGENCY` is used when this order is through an agency booking.
 
-    """  # noqa: E501
-    travelers_references: list[constr(max_length=50)] = Field(..., maxItems=40, minItems=1)
+    """
+    travelers_references: List[constr(max_length=50)] = Field(..., maxItems=40, minItems=1)
     """
     List of travelerGuids who are part of the traveling party on the order for the product.
     Information for each product and its required travelers should be provided in the API request.
@@ -1371,12 +1589,15 @@ class TravelProductGeneric(
     *   [GUID3]
     * Rail
     *   [GUID2]
-    * Above example shows all three travelers will be associated with the Air product,
-    * however, only Traveler A will be associated with the Hotel product,
-    * and only Traveler C will be associated with the Car product.
-    * Traveler B will be associated with the Rail product.
+    * Activities
+    *   [GUID1]
+    * The example above demonstrates the association of travelers with various products.
+    * All three travelers (A, B, and C) are associated with the Air product.
+    * Traveler A is associated with the Hotel and Activities products.
+    * Traveler C is associated with the Car product.
+    * Traveler B is associated with the Rail product.
 
-    """  # noqa: E501
+    """
 
 
 class RailSegments(
@@ -1393,15 +1614,15 @@ class RailSegments(
         transportation_method(TransportationMethod): This attribute represents the specific transportation method by which the passenger is traveling. It captures the mode of transportation used during the Rail product journey, Possible values are:     - `BUS` - The Rail product includes bus transportation for certain segments of the itinerary.     - `FERRY` - The Rail product involves ferry transportation as part of the journey.     - `PUBLIC_TRANSPORT` - The Rail product represents the use of public transportation modes for the journey.     - `TRAM` - The Rail product includes tram transportation as part of the journey.     - `RAIL` - The Rail product specifically utilizes train transportation for the journey.     - `TRANSFER` - The Rail product involves transfers between different modes of transportation.     - `OTHER` - The Rail product utilizes transportation methods not covered by the aforementioned categories.
         operating_company(Optional[OperatingCompany], optional): This attribute captures the name or identifier of the company responsible for operating the Rail product. It represents the specific operating entity, such as Amtrak, British Railways, or a bus company.
 
-    """  # noqa: E501
+    """
     departure_time: datetime = None
     """
     The local date and time of the scheduled departure from the departure station, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
     arrival_time: datetime = None
     """
     The local date and time of the scheduled arrival at the destination station, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
     departure_station: RailwayStationDetails = None
     arrival_station: RailwayStationDetails = None
     transportation_method: TransportationMethod = None
@@ -1415,11 +1636,50 @@ class RailSegments(
         - `TRANSFER` - The Rail product involves transfers between different modes of transportation.
         - `OTHER` - The Rail product utilizes transportation methods not covered by the aforementioned categories.
 
-    """  # noqa: E501
+    """
     operating_company: Optional[OperatingCompany] = None
     """
     This attribute captures the name or identifier of the company responsible for operating the Rail product. It represents the specific operating entity, such as Amtrak, British Railways, or a bus company.
-    """  # noqa: E501
+    """
+
+
+class Activities(
+    TravelProductGeneric,
+    smart_union=True,
+    extra=Extra.forbid,
+):
+    r"""pydantic model Activities
+    Attributes:
+        activity(Activity): --
+        operating_company(OperatingCompanyModel): --
+        is_coupon_required(Optional[bool], optional): A coupon is typically a document or electronic code that confirms your reservation or purchase for the activity. It serves as proof of payment and allows you to participate in the activity. This field indicates whether a coupon is necessary for this activity. | For example, let's consider two scenarios: | Activity: Adventure Park | is_coupon_required: false | In this case, the attribute is set to 'false,' indicating that no coupon is necessary. However, you might still need to purchase a ticket to gain entry to the adventure park. The ticket serves as proof of payment and grants you access to the park's activities and attractions. | Activity: Spa Package | is_coupon_required: true | Here, the attribute is set to 'true,' indicating that a coupon is required. To participate in the spa package, you would need to present the designated coupon at the spa. The coupon confirms your reservation, serves as proof of payment, and may entitle you to specific spa treatments or discounts.
+        location_coordinates(Optional[Coordinates], optional): --
+        start_time(datetime): The field represents the start time of a activity, using the ISO-8061 date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
+        end_time(datetime): The field represents the end time of a activity, using the ISO-8061 date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
+        ticket(List[Ticket]): This field provides information about the tickets available for the activity.
+        type(Literal['ACTIVITIES']): --
+
+    """
+    activity: Activity = None
+    operating_company: OperatingCompanyModel = None
+    is_coupon_required: Optional[bool] = None
+    """
+    A coupon is typically a document or electronic code that confirms your reservation or purchase for the activity. It serves as proof of payment and allows you to participate in the activity. This field indicates whether a coupon is necessary for this activity. | For example, let's consider two scenarios: | Activity: Adventure Park | is_coupon_required: false | In this case, the attribute is set to 'false,' indicating that no coupon is necessary. However, you might still need to purchase a ticket to gain entry to the adventure park. The ticket serves as proof of payment and grants you access to the park's activities and attractions. | Activity: Spa Package | is_coupon_required: true | Here, the attribute is set to 'true,' indicating that a coupon is required. To participate in the spa package, you would need to present the designated coupon at the spa. The coupon confirms your reservation, serves as proof of payment, and may entitle you to specific spa treatments or discounts.
+    """
+    location_coordinates: Optional[Coordinates] = None
+    start_time: datetime = None
+    """
+    The field represents the start time of a activity, using the ISO-8061 date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
+    """
+    end_time: datetime = None
+    """
+    The field represents the end time of a activity, using the ISO-8061 date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
+    """
+    ticket: List[Ticket] = Field(..., maxItems=40, minItems=1)
+    """
+    This field provides information about the tickets available for the activity.
+    """
+    type: Literal['ACTIVITIES'] = 'ACTIVITIES'
 
 
 class Air(
@@ -1431,38 +1691,38 @@ class Air(
     Attributes:
         departure_time(datetime): Local date and time of departure from original departure location, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
         arrival_time(datetime): Local date and time of arrival to final destination location, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-        air_segments(list[AirSegment]): Additional airline and flight details for each of the trip segments.
+        air_segments(List[AirSegment]): Additional airline and flight details for each of the trip segments.
         flight_type(Optional[FlightType], optional): Identifies the type of air trip based on the air destinations.
         passenger_name_record(Optional[constr(max_length=100)], optional): Airline booking confirmation code for the trip.
         global_distribution_system_type(Optional[constr(max_length=100)], optional): Associated with Passenger Name Record (PNR).
         type(Literal['AIR']): --
 
-    """  # noqa: E501
+    """
     departure_time: datetime = None
     """
     Local date and time of departure from original departure location, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
     arrival_time: datetime = None
     """
     Local date and time of arrival to final destination location, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
-    air_segments: list[AirSegment] = Field(..., maxItems=30, minItems=1)
+    """
+    air_segments: List[AirSegment] = Field(..., maxItems=30, minItems=1)
     """
     Additional airline and flight details for each of the trip segments.
-    """  # noqa: E501
+    """
     flight_type: Optional[FlightType] = None
     """
     Identifies the type of air trip based on the air destinations.
-    """  # noqa: E501
+    """
     passenger_name_record: Optional[constr(max_length=100)] = None
     """
     Airline booking confirmation code for the trip.
-    """  # noqa: E501
+    """
     global_distribution_system_type: Optional[constr(max_length=100)] = None
     """
     Associated with Passenger Name Record (PNR).
-    """  # noqa: E501
-    type: Literal["AIR"] = "AIR"
+    """
+    type: Literal['AIR'] = 'AIR'
 
 
 class Cruise(
@@ -1479,28 +1739,28 @@ class Cruise(
         ship_name(constr(max_length=200)): Name of the cruise ship.
         type(Literal['CRUISE']): --
 
-    """  # noqa: E501
+    """
     departure_time: datetime = None
     """
     Local date and time of departure from original departure location, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
     arrival_time: datetime = None
     """
     Local date and time of arrival from original arrival location, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
     embarkation_port: constr(max_length=200) = None
     """
     Location from where cruise will depart.
-    """  # noqa: E501
+    """
     disembarkation_port: constr(max_length=200) = None
     """
     The cruise's final destination.
-    """  # noqa: E501
+    """
     ship_name: constr(max_length=200) = None
     """
     Name of the cruise ship.
-    """  # noqa: E501
-    type: Literal["CRUISE"] = "CRUISE"
+    """
+    type: Literal['CRUISE'] = 'CRUISE'
 
 
 class Car(
@@ -1516,24 +1776,24 @@ class Car(
         return_time(datetime): Local date and time the automobile will be returned, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
         type(Literal['CAR']): --
 
-    """  # noqa: E501
+    """
     pick_up_location: constr(max_length=200) = None
     """
     Location where the automobile will be picked up.
-    """  # noqa: E501
+    """
     drop_off_location: constr(max_length=200) = None
     """
     Location at which the automobile will be returned.
-    """  # noqa: E501
+    """
     pickup_time: datetime = None
     """
     Local date and time the automobile will be picked-up, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
     return_time: datetime = None
     """
     Local date and time the automobile will be returned, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
-    type: Literal["CAR"] = "CAR"
+    """
+    type: Literal['CAR'] = 'CAR'
 
 
 class Hotel(
@@ -1552,33 +1812,33 @@ class Hotel(
         checkout_time(datetime): Local date and time of the hotel check-out, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
         type(Literal['HOTEL']): --
 
-    """  # noqa: E501
-    hotel_id: constr(max_length=200) = Field(..., example="8883333999221")
+    """
+    hotel_id: constr(max_length=200) = Field(..., example='8883333999221')
     """
     Unique hotel identifier assigned by the partner.
-    """  # noqa: E501
+    """
     price_withheld: Optional[bool] = None
     """
     Identifies if the product price was withheld from the customer during the booking process.
-    """  # noqa: E501
-    hotel_name: constr(max_length=200) = Field(..., example="Hotel Expedia")
+    """
+    hotel_name: constr(max_length=200) = Field(..., example='Hotel Expedia')
     """
     Name of the hotel.
-    """  # noqa: E501
+    """
     room_count: Optional[int] = None
     """
     Total number of rooms booked within the hotel product collection.
-    """  # noqa: E501
+    """
     address: HotelAddress = None
     checkin_time: datetime = None
     """
     Local date and time of the hotel check-in, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
     checkout_time: datetime = None
     """
     Local date and time of the hotel check-out, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
-    type: Literal["HOTEL"] = "HOTEL"
+    """
+    type: Literal['HOTEL'] = 'HOTEL'
 
 
 class PaymentOutcome(
@@ -1592,16 +1852,16 @@ class PaymentOutcome(
         code(Optional[constr(max_length=200)], optional): A mnemonic code for the payment processing.
         description(Optional[constr(max_length=200)], optional): A short description providing additional explanation regarding the mnemonic code.
 
-    """  # noqa: E501
+    """
     status: Optional[PaymentStatus] = None
     code: Optional[constr(max_length=200)] = None
     """
     A mnemonic code for the payment processing.
-    """  # noqa: E501
+    """
     description: Optional[constr(max_length=200)] = None
     """
     A short description providing additional explanation regarding the mnemonic code.
-    """  # noqa: E501
+    """
 
 
 class Insurance(
@@ -1613,8 +1873,8 @@ class Insurance(
     Attributes:
         type(Literal['INSURANCE']): --
 
-    """  # noqa: E501
-    type: Literal["INSURANCE"] = "INSURANCE"
+    """
+    type: Literal['INSURANCE'] = 'INSURANCE'
 
 
 class Telephone(
@@ -1634,37 +1894,37 @@ class Telephone(
         last_verified_date_time(Optional[datetime], optional): Local date and time user validated possession of their phone number via a text or voice multi factor authentication challenge, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
         verified_flag(Optional[bool], optional): Flag indicating whether user passed validation of possession of their phone number via a text or voice multi factor authentication challenge.
 
-    """  # noqa: E501
+    """
     type: Optional[TelephoneType] = None
     platform_type: Optional[TelephonePlatformType] = None
-    country_access_code: constr(regex=r"^[0-9]{1,3}$", max_length=3) = Field(..., example="1")
+    country_access_code: constr(regex=r'^[0-9]{1,3}$', max_length=3) = Field(..., example='1')
     """
     Numeric digit between 1 to 3 characters used to represent the country code for international dialing.  Does not include symbols, spaces, or leading zeros.
-    """  # noqa: E501
-    area_code: constr(regex=r"^[0-9]{1,20}$", max_length=20) = Field(..., example="1")
+    """
+    area_code: constr(regex=r'^[0-9]{1,20}$', max_length=20) = Field(..., example='1')
     """
     A number prefixed to an individual telephone number: used in making long-distance calls.  Does not include symbols, spaces, or leading zeros.
-    """  # noqa: E501
-    phone_number: constr(regex=r"^[0-9]{1,50}$", max_length=50) = Field(..., example="1234567")
+    """
+    phone_number: constr(regex=r'^[0-9]{1,50}$', max_length=50) = Field(..., example='1234567')
     """
     A number that is dialed on a telephone, without the country or area codes, to reach a particular person, business, etc.  Does not include symbols, spaces, or leading zeros.
-    """  # noqa: E501
-    extension_number: Optional[constr(regex=r"^[0-9]{1,20}$", max_length=20)] = Field(None, example="89")
+    """
+    extension_number: Optional[constr(regex=r'^[0-9]{1,20}$', max_length=20)] = Field(None, example='89')
     """
     The number used to reach an individual once a phone connection is established.  Does not include symbols, spaces, or leading zeros.
-    """  # noqa: E501
+    """
     preference_rank: Optional[float] = None
     """
     Ranking of order of user preference for contact via text (if type is Mobile) or voice.  `0` means no preference.  `1` is the primary phone, `2` is the secondary phone, etc.
-    """  # noqa: E501
+    """
     last_verified_date_time: Optional[datetime] = None
     """
     Local date and time user validated possession of their phone number via a text or voice multi factor authentication challenge, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
     verified_flag: Optional[bool] = None
     """
     Flag indicating whether user passed validation of possession of their phone number via a text or voice multi factor authentication challenge.
-    """  # noqa: E501
+    """
 
 
 class ChargebackFeedback(
@@ -1677,9 +1937,9 @@ class ChargebackFeedback(
         chargeback_detail(Optional[ChargebackDetail], optional): --
         type(Literal['CHARGEBACK_FEEDBACK']): --
 
-    """  # noqa: E501
+    """
     chargeback_detail: Optional[ChargebackDetail] = None
-    type: Literal["CHARGEBACK_FEEDBACK"] = "CHARGEBACK_FEEDBACK"
+    type: Literal['CHARGEBACK_FEEDBACK'] = 'CHARGEBACK_FEEDBACK'
 
 
 class IssuedRefundUpdate(
@@ -1692,15 +1952,15 @@ class IssuedRefundUpdate(
         refund_details(Optional[IssuedRefundUpdateDetails], optional): --
         refund_status(Literal['ISSUED']): Identifies the refund status. Possible values are: -`ISSUED` - The refund was issued. -`SETTLED` - The refund was settled.
 
-    """  # noqa: E501
+    """
     refund_details: Optional[IssuedRefundUpdateDetails] = None
-    refund_status: Literal["ISSUED"] = "ISSUED"
+    refund_status: Literal['ISSUED'] = 'ISSUED'
     """
     Identifies the refund status. Possible values are:
     -`ISSUED` - The refund was issued.
     -`SETTLED` - The refund was settled.
 
-    """  # noqa: E501
+    """
 
 
 class SettledRefundUpdate(
@@ -1713,15 +1973,15 @@ class SettledRefundUpdate(
         refund_details(Optional[SettledRefundUpdateDetails], optional): --
         refund_status(Literal['SETTLED']): Identifies the refund status. Possible values are: -`ISSUED` - The refund was issued. -`SETTLED` - The refund was settled.
 
-    """  # noqa: E501
+    """
     refund_details: Optional[SettledRefundUpdateDetails] = None
-    refund_status: Literal["SETTLED"] = "SETTLED"
+    refund_status: Literal['SETTLED'] = 'SETTLED'
     """
     Identifies the refund status. Possible values are:
     -`ISSUED` - The refund was issued.
     -`SETTLED` - The refund was settled.
 
-    """  # noqa: E501
+    """
 
 
 class CustomerAccount(
@@ -1735,16 +1995,16 @@ class CustomerAccount(
         account_type(AccountType): Identifies if the customer account is known to the client. Possible values are:  -`GUEST` - Applicable if the partner maintains record to distinguish whether the transaction was booked via a guest account.  -`STANDARD` - Default account type.
         name(Name): --
         email_address(EmailStr): Email address for the account owner.
-        telephones(Optional[list[Telephone]], optional): --
+        telephones(Optional[List[Telephone]], optional): --
         address(Optional[Address], optional): --
         registered_time(Optional[datetime], optional): The local date and time that the customer first registered on the client site, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
 
-    """  # noqa: E501
+    """
     user_id: Optional[str] = None
     """
     Unique account identifier provided by the partner's Identity Provider/System assigned to the account owner by the partner. `user_id` is specific to the partner namespace. Used to track repeat purchases by the same user.
-    """  # noqa: E501
-    account_type: AccountType = Field(..., example="STANDARD")
+    """
+    account_type: AccountType = Field(..., example='STANDARD')
     """
     Identifies if the customer account is known to the client. Possible values are:
 
@@ -1752,18 +2012,18 @@ class CustomerAccount(
 
     -`STANDARD` - Default account type.
 
-    """  # noqa: E501
+    """
     name: Name = None
     email_address: EmailStr = None
     """
     Email address for the account owner.
-    """  # noqa: E501
-    telephones: Optional[list[Telephone]] = None
+    """
+    telephones: Optional[List[Telephone]] = None
     address: Optional[Address] = None
     registered_time: Optional[datetime] = None
     """
     The local date and time that the customer first registered on the client site, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
 
 
 class Traveler(
@@ -1775,40 +2035,40 @@ class Traveler(
     Attributes:
         traveler_name(Name): --
         email_address(Optional[EmailStr], optional): Email address associated with the traveler as supplied by the partner system.
-        telephones(Optional[list[Telephone]], optional): --
+        telephones(Optional[List[Telephone]], optional): --
         primary(bool): Indicator for one of the travelers who is the primary traveler. One traveler in each itinerary item must be listed as primary. By default, for a single traveler this should be set to `true`.
         age(Optional[float], optional): Age of the traveler.
         birth_date(Optional[datetime], optional): Date of birth for traveler, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
         citizenship_country_code(Optional[constr(regex=r'^[A-Z]{3}$', min_length=3, max_length=3)], optional): The alpha-3 ISO country code of the traveler's nationality.
         traveler_id(Optional[constr(max_length=100)], optional): A unique identifier for travelers in the transaction.
 
-    """  # noqa: E501
+    """
     traveler_name: Name = None
     email_address: Optional[EmailStr] = None
     """
     Email address associated with the traveler as supplied by the partner system.
-    """  # noqa: E501
-    telephones: Optional[list[Telephone]] = Field(None, maxItems=250, minItems=1)
+    """
+    telephones: Optional[List[Telephone]] = Field(None, maxItems=250, minItems=1)
     primary: bool = None
     """
     Indicator for one of the travelers who is the primary traveler. One traveler in each itinerary item must be listed as primary. By default, for a single traveler this should be set to `true`.
-    """  # noqa: E501
+    """
     age: Optional[float] = None
     """
     Age of the traveler.
-    """  # noqa: E501
+    """
     birth_date: Optional[datetime] = None
     """
     Date of birth for traveler, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
-    citizenship_country_code: Optional[constr(regex=r"^[A-Z]{3}$", min_length=3, max_length=3)] = None
+    """
+    citizenship_country_code: Optional[constr(regex=r'^[A-Z]{3}$', min_length=3, max_length=3)] = None
     """
     The alpha-3 ISO country code of the traveler's nationality.
-    """  # noqa: E501
+    """
     traveler_id: Optional[constr(max_length=100)] = None
     """
     A unique identifier for travelers in the transaction.
-    """  # noqa: E501
+    """
 
 
 class Rail(
@@ -1819,10 +2079,10 @@ class Rail(
     r"""pydantic model Rail
     Attributes:
         route_type(RouteType): The type of route or itinerary for the Rail product, indicating the travel arrangement and pattern. Possible values are: - `MULTIPLE_DESTINATIONS` - The Rail product includes multiple destinations in its itinerary. - `ONE_WAY` - The Rail product represents a one-way journey. - `ROUNDTRIP` - The Rail product represents a roundtrip journey.
-        rail_segments(list[RailSegments]): --
+        rail_segments(List[RailSegments]): --
         type(Literal['RAIL']): --
 
-    """  # noqa: E501
+    """
     route_type: RouteType = None
     """
     The type of route or itinerary for the Rail product, indicating the travel arrangement and pattern. Possible values are:
@@ -1830,9 +2090,9 @@ class Rail(
     - `ONE_WAY` - The Rail product represents a one-way journey.
     - `ROUNDTRIP` - The Rail product represents a roundtrip journey.
 
-    """  # noqa: E501
-    rail_segments: list[RailSegments] = Field(..., maxItems=20, minItems=1)
-    type: Literal["RAIL"] = "RAIL"
+    """
+    rail_segments: List[RailSegments] = Field(..., maxItems=20, minItems=1)
+    type: Literal['RAIL'] = 'RAIL'
 
 
 class PaymentOperation(
@@ -1846,7 +2106,7 @@ class PaymentOperation(
         amount(Optional[Amount], optional): --
         outcome(Optional[PaymentOutcome], optional): --
 
-    """  # noqa: E501
+    """
     id: Optional[constr(max_length=200)] = None
     amount: Optional[Amount] = None
     outcome: Optional[PaymentOutcome] = None
@@ -1861,7 +2121,7 @@ class Verify(
     Attributes:
         type(Optional[VerificationType], optional): --
 
-    """  # noqa: E501
+    """
     type: Optional[VerificationType] = None
 
 
@@ -1870,7 +2130,7 @@ class Authorize(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model Authorize: Authorize operation on the payment. An authorize operation represents placing the funds on hold with the specified form of payment."""  # noqa: E501
+    r"""pydantic model Authorize: Authorize operation on the payment. An authorize operation represents placing the funds on hold with the specified form of payment."""
     pass
 
 
@@ -1879,7 +2139,7 @@ class AuthorizeReversal(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model AuthorizeReversal: Authorize Reversal operation on the payment. An authorize reversal operation represents a notification received usually from a 3rd party payment processor to indicate that an authorization hold should be released as a result of a sale being partially or completely cancelled."""  # noqa: E501
+    r"""pydantic model AuthorizeReversal: Authorize Reversal operation on the payment. An authorize reversal operation represents a notification received usually from a 3rd party payment processor to indicate that an authorization hold should be released as a result of a sale being partially or completely cancelled."""
     pass
 
 
@@ -1888,7 +2148,7 @@ class Capture(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model Capture: Capture operation on the payment. A capture operation represents a notification received usually from a 3rd party payment processor to indicate that the funds placed on hold will be captured and the funds transfer process will occur from the customer's funds to the merchant's funds."""  # noqa: E501
+    r"""pydantic model Capture: Capture operation on the payment. A capture operation represents a notification received usually from a 3rd party payment processor to indicate that the funds placed on hold will be captured and the funds transfer process will occur from the customer's funds to the merchant's funds."""
     pass
 
 
@@ -1897,7 +2157,7 @@ class Refund(
     smart_union=True,
     extra=Extra.forbid,
 ):
-    r"""pydantic model Refund: Refund operation on the payment. A refund operation represents the intent to refund a previous charge."""  # noqa: E501
+    r"""pydantic model Refund: Refund operation on the payment. A refund operation represents the intent to refund a previous charge."""
     pass
 
 
@@ -1923,14 +2183,14 @@ class Operations(
         authorize(Optional[Authorize], optional): --
         authorize_reversal(Optional[AuthorizeReversal], optional): --
         capture(Optional[Capture], optional): --
-        refunds(Optional[list[Refund]], optional): --
+        refunds(Optional[List[Refund]], optional): --
 
-    """  # noqa: E501
+    """
     verify: Optional[Verify] = None
     authorize: Optional[Authorize] = None
     authorize_reversal: Optional[AuthorizeReversal] = None
     capture: Optional[Capture] = None
-    refunds: Optional[list[Refund]] = Field(None, maxItems=20)
+    refunds: Optional[List[Refund]] = Field(None, maxItems=20)
 
 
 class PaymentGeneric(
@@ -1942,9 +2202,12 @@ class PaymentGeneric(
     * `CREDIT_CARD`: `CreditCard`
     * `PAYPAL`: `PayPal`
     * `POINTS`: `Points`
+    * `GIFT_CARD`: `GiftCard`
+    * `INTERNET_BANK_PAYMENT`: `InternetBankPayment`
+    * `DIRECT_DEBIT`: `DirectDebit`
 
     Attributes:
-        brand(Brand): The `brand` field value is the payment brand used for payment on this transaction. For credit card payment method ensure attributes mentioned in dictionary below are set to corresponding values only. Ensure to comply with the naming standards provided in below dictionary. For example, some Payment processors use “Japan Credit Bureau” but “JCB” should be used when calling Fraud API. Incorrect `brand` - `card_type` combination will result in data quality issues and result in degraded risk recommendation. 'brand' is an enum value with the following mapping with CreditCard 'card_type' attribute: *       brand                 :      card_type * ------------------------------------------------------- * `AMERICAN_EXPRESS`          : `AMERICAN_EXPRESS` * `DINERS_CLUB_INTERNATIONAL` : `DINERS_CLUB` * `BC_CARD`                   : `DINERS_CLUB` * `DISCOVER`                  : `DISCOVER` * `BC_CARD`                   : `DISCOVER` * `DINERS_CLUB_INTERNATIONAL` : `DISCOVER` * `JCB`                       : `DISCOVER` * `JCB`                       : `JCB` * `MASTER_CARD`               : `MASTER_CARD` * `MAESTRO`                   : `MASTER_CARD` * `POSTEPAY_MASTERCARD`       : `MASTER_CARD` * `SOLO`                      : `SOLO` * `SWITCH`                    : `SWITCH` * `MAESTRO`                   : `MAESTRO` * `CHINA_UNION_PAY`           : `CHINA_UNION_PAY` * `VISA`                      : `VISA` * `VISA_DELTA`                : `VISA` * `VISA_ELECTRON`             : `VISA` * `CARTA_SI`                  : `VISA` * `CARTE_BLEUE`               : `VISA` * `VISA_DANKORT`              : `VISA` * `POSTEPAY_VISA_ELECTRON`    : `VISA` * `PAYPAL`                    :
+        brand(Brand): The `brand` field value is the payment brand used for payment on this transaction. For credit card payment method ensure attributes mentioned in dictionary below are set to corresponding values only. Ensure to comply with the naming standards provided in below dictionary. For example, some Payment processors use “Japan Credit Bureau” but “JCB” should be used when calling Fraud API. Incorrect `brand` - `card_type` combination will result in data quality issues and result in degraded risk recommendation. 'brand' is an enum value with the following mapping with CreditCard 'card_type' attribute: *       brand                 :      card_type * ------------------------------------------------------- * `AMERICAN_EXPRESS`          : `AMERICAN_EXPRESS` * `DINERS_CLUB_INTERNATIONAL` : `DINERS_CLUB` * `BC_CARD`                   : `DINERS_CLUB` * `DISCOVER`                  : `DISCOVER` * `BC_CARD`                   : `DISCOVER` * `DINERS_CLUB_INTERNATIONAL` : `DISCOVER` * `JCB`                       : `DISCOVER` * `JCB`                       : `JCB` * `MASTER_CARD`               : `MASTER_CARD` * `MAESTRO`                   : `MASTER_CARD` * `POSTEPAY_MASTERCARD`       : `MASTER_CARD` * `SOLO`                      : `SOLO` * `SWITCH`                    : `SWITCH` * `MAESTRO`                   : `MAESTRO` * `CHINA_UNION_PAY`           : `CHINA_UNION_PAY` * `VISA`                      : `VISA` * `VISA_DELTA`                : `VISA` * `VISA_ELECTRON`             : `VISA` * `CARTA_SI`                  : `VISA` * `CARTE_BLEUE`               : `VISA` * `VISA_DANKORT`              : `VISA` * `POSTEPAY_VISA_ELECTRON`    : `VISA` * `PAYPAL`                    :  'brand' with 'Points' payment_type is an enum value with following: * `EXPEDIA_REWARDS` * `AMEX_POINTS` * `BANK_OF_AMERICA_REWARDS` * `DISCOVER_POINTS` * `MASTER_CARD_POINTS` * `CITI_THANK_YOU_POINTS` * `MERRILL_LYNCH_REWARDS` * `WELLS_FARGO_POINTS` * `DELTA_SKY_MILES` * `UNITED_POINTS` * `DISCOVER_MILES` * `ALASKA_MILES` * `RBC_REWARDS` * `BILT_REWARDS` * `ORBUCKS` * `CHEAP_CASH` * `BONUS_PLUS` * `ULTIMATE_REWARDS`  'brand' with 'GiftCard' payment_type is an enum value with following: * `GIFT_CARD`  'brand' with 'InternetBankPayment' payment_type is an enum value with following: * `IBP` * `LOCAL_DEBIT_CARD` * `SOFORT` * `YANDEX` * `WEB_MONEY` * `QIWI` * `BITCOIN`  'brand' with 'DirectDebit' payment_type is an enum value with following: * `ELV` * `INTER_COMPANY`
         method(PaymentMethod): --
         reason(Optional[PaymentReason], optional): --
         billing_name(Name): --
@@ -1955,7 +2218,7 @@ class PaymentGeneric(
         three_digits_secure_criteria(Optional[PaymentThreeDSCriteria], optional): --
         operations(Optional[Operations], optional): --
 
-    """  # noqa: E501
+    """
     brand: Brand = None
     """
     The `brand` field value is the payment brand used for payment on this transaction.
@@ -1989,7 +2252,43 @@ class PaymentGeneric(
     * `POSTEPAY_VISA_ELECTRON`    : `VISA`
     * `PAYPAL`                    :
 
-    """  # noqa: E501
+    'brand' with 'Points' payment_type is an enum value with following:
+    * `EXPEDIA_REWARDS`
+    * `AMEX_POINTS`
+    * `BANK_OF_AMERICA_REWARDS`
+    * `DISCOVER_POINTS`
+    * `MASTER_CARD_POINTS`
+    * `CITI_THANK_YOU_POINTS`
+    * `MERRILL_LYNCH_REWARDS`
+    * `WELLS_FARGO_POINTS`
+    * `DELTA_SKY_MILES`
+    * `UNITED_POINTS`
+    * `DISCOVER_MILES`
+    * `ALASKA_MILES`
+    * `RBC_REWARDS`
+    * `BILT_REWARDS`
+    * `ORBUCKS`
+    * `CHEAP_CASH`
+    * `BONUS_PLUS`
+    * `ULTIMATE_REWARDS`
+
+    'brand' with 'GiftCard' payment_type is an enum value with following:
+    * `GIFT_CARD`
+
+    'brand' with 'InternetBankPayment' payment_type is an enum value with following:
+    * `IBP`
+    * `LOCAL_DEBIT_CARD`
+    * `SOFORT`
+    * `YANDEX`
+    * `WEB_MONEY`
+    * `QIWI`
+    * `BITCOIN`
+
+    'brand' with 'DirectDebit' payment_type is an enum value with following:
+    * `ELV`
+    * `INTER_COMPANY`
+
+    """
     method: PaymentMethod = None
     reason: Optional[PaymentReason] = None
     billing_name: Name = None
@@ -1997,7 +2296,7 @@ class PaymentGeneric(
     billing_email_address: EmailStr = None
     """
     Email address associated with the payment.
-    """  # noqa: E501
+    """
     authorized_amount: Optional[Amount] = None
     verified_amount: Optional[Amount] = None
     three_digits_secure_criteria: Optional[PaymentThreeDSCriteria] = None
@@ -2013,18 +2312,18 @@ class CreditCard(
     Attributes:
         card_type(CardType): The 'card_type' field value is an enum value which is associated with the payment method of the specific payment instrument. For credit card payment method ensure attributes mentioned in dictionary below are set to corresponding values only. Ensure to comply with the naming standards provided in below dictionary. For example, some Payment processors use “Japan Credit Bureau” but “JCB” should be used when calling Fraud API. Incorrect `card_type` - `brand` combination will result in data quality issues and result in degraded risk recommendation. 'card_type' is an enum value with the following mapping with Payment `brand` attribute: *       card_type            :          brand * -------------------------------------------------------- * `AMERICAN_EXPRESS`         : `AMERICAN_EXPRESS` * `DINERS_CLUB`              : `DINERS_CLUB_INTERNATIONAL` * `DINERS_CLUB`              : `BC_CARD` * `DISCOVER`                 : `DISCOVER` * `DISCOVER`                 : `BC_CARD` * `DISCOVER`                 : `DINERS_CLUB_INTERNATIONAL` * `DISCOVER`                 : `JCB` * `JCB`                      : `JCB` * `MASTER_CARD`              : `MASTER_CARD` * `MASTER_CARD`              : `MAESTRO` * `MASTER_CARD`              : `POSTEPAY_MASTERCARD` * `SOLO`                     : `SOLO` * `SWITCH`                   : `SWITCH` * `MAESTRO`                  : `MAESTRO` * `CHINA_UNION_PAY`          : `CHINA_UNION_PAY` * `VISA`                     : `VISA` * `VISA`                     : `VISA_DELTA` * `VISA`                     : `VISA_ELECTRON` * `VISA`                     : `CARTA_SI` * `VISA`                     : `CARTE_BLEUE` * `VISA`                     : `VISA_DANKORT` * `VISA`                     : `POSTEPAY_VISA_ELECTRON`
         card_number(constr(max_length=200)): All the digits (unencrypted) of the credit card number associated with the payment.
-        expiry_date(Optional[datetime], optional): Expiration date of the credit card used for payment, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+        expiry_date(datetime): Expiration date of the credit card used for payment, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
         electronic_commerce_indicator(Optional[constr(max_length=200)], optional): Electronic Commerce Indicator, a two or three digit number usually returned by a 3rd party payment processor in regards to the authentication used when gathering the cardholder's payment credentials.
         virtual_credit_card_flag(Optional[bool], optional): A flag to indicate that the bank card being used for the charge is a virtual credit card.
         wallet_type(Optional[constr(max_length=200)], optional): If a virtual/digital form of payment was used, the type of digital wallet should be specified here. Possible `wallet_type`'s include: `Google` or `ApplePay`.
         card_avs_response(Optional[constr(max_length=50)], optional): A field used to confirm if the address provided at the time of purchase matches what the bank has on file for the Credit Card.
         card_cvv_response(Optional[constr(max_length=20)], optional): A field used to confirm the Card Verification Value on the Credit Card matches the Credit Card used at the time of purchase.
-        telephones(Optional[list[Telephone]], optional): Telephone(s) associated with card holder and credit card.
+        telephones(List[Telephone]): Telephone(s) associated with card holder and credit card.
         merchant_order_code(Optional[constr(max_length=200)], optional): Reference code passed to acquiring bank at the time of payment. This code is the key ID that ties back to payments data at the payment level.
         card_authentication_failure_count(Optional[int], optional): Total authentication failure count for given card.
         method(Literal['CREDIT_CARD']): --
 
-    """  # noqa: E501
+    """
     card_type: CardType = None
     """
     The 'card_type' field value is an enum value which is associated with the payment method of the specific payment instrument.
@@ -2057,48 +2356,48 @@ class CreditCard(
     * `VISA`                     : `VISA_DANKORT`
     * `VISA`                     : `POSTEPAY_VISA_ELECTRON`
 
-    """  # noqa: E501
+    """
     card_number: constr(max_length=200) = None
     """
     All the digits (unencrypted) of the credit card number associated with the payment.
-    """  # noqa: E501
-    expiry_date: Optional[datetime] = None
+    """
+    expiry_date: datetime = None
     """
     Expiration date of the credit card used for payment, in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
-    """  # noqa: E501
+    """
     electronic_commerce_indicator: Optional[constr(max_length=200)] = None
     """
     Electronic Commerce Indicator, a two or three digit number usually returned by a 3rd party payment processor in regards to the authentication used when gathering the cardholder's payment credentials.
-    """  # noqa: E501
+    """
     virtual_credit_card_flag: Optional[bool] = None
     """
     A flag to indicate that the bank card being used for the charge is a virtual credit card.
-    """  # noqa: E501
+    """
     wallet_type: Optional[constr(max_length=200)] = None
     """
     If a virtual/digital form of payment was used, the type of digital wallet should be specified here. Possible `wallet_type`'s include: `Google` or `ApplePay`.
-    """  # noqa: E501
+    """
     card_avs_response: Optional[constr(max_length=50)] = None
     """
     A field used to confirm if the address provided at the time of purchase matches what the bank has on file for the Credit Card.
-    """  # noqa: E501
+    """
     card_cvv_response: Optional[constr(max_length=20)] = None
     """
     A field used to confirm the Card Verification Value on the Credit Card matches the Credit Card used at the time of purchase.
-    """  # noqa: E501
-    telephones: Optional[list[Telephone]] = Field(None, maxItems=20, minItems=1)
+    """
+    telephones: List[Telephone] = Field(..., maxItems=20, minItems=1)
     """
     Telephone(s) associated with card holder and credit card.
-    """  # noqa: E501
+    """
     merchant_order_code: Optional[constr(max_length=200)] = None
     """
     Reference code passed to acquiring bank at the time of payment. This code is the key ID that ties back to payments data at the payment level.
-    """  # noqa: E501
+    """
     card_authentication_failure_count: Optional[int] = None
     """
     Total authentication failure count for given card.
-    """  # noqa: E501
-    method: Literal["CREDIT_CARD"] = "CREDIT_CARD"
+    """
+    method: Literal['CREDIT_CARD'] = 'CREDIT_CARD'
 
 
 class PayPal(
@@ -2113,20 +2412,20 @@ class PayPal(
         merchant_order_code(Optional[constr(max_length=200)], optional): Reference code passed to acquiring bank at the time of payment. This code is the key ID that ties back to payments data at the payment level.
         method(Literal['PAYPAL']): --
 
-    """  # noqa: E501
+    """
     payer_id: constr(max_length=200) = None
     """
     Unique PayPal Customer Account identification number.
-    """  # noqa: E501
+    """
     transaction_id: constr(max_length=200) = None
     """
     Unique transaction number to identify Auth calls at PayPal.
-    """  # noqa: E501
+    """
     merchant_order_code: Optional[constr(max_length=200)] = None
     """
     Reference code passed to acquiring bank at the time of payment. This code is the key ID that ties back to payments data at the payment level.
-    """  # noqa: E501
-    method: Literal["PAYPAL"] = "PAYPAL"
+    """
+    method: Literal['PAYPAL'] = 'PAYPAL'
 
 
 class Points(
@@ -2136,10 +2435,99 @@ class Points(
 ):
     r"""pydantic model Points
     Attributes:
+        account_id(constr(max_length=200)): Points account id.
         method(Literal['POINTS']): --
 
-    """  # noqa: E501
-    method: Literal["POINTS"] = "POINTS"
+    """
+    account_id: constr(max_length=200) = None
+    """
+    Points account id.
+    """
+    method: Literal['POINTS'] = 'POINTS'
+
+
+class GiftCard(
+    PaymentGeneric,
+    smart_union=True,
+    extra=Extra.forbid,
+):
+    r"""pydantic model GiftCard
+    Attributes:
+        card_number(constr(regex=r'^[0-9A-Za-z]{4,16}$', max_length=16)): Gift card number.
+        card_holder_name(constr(max_length=200)): The name of gift card holder.
+        pin(constr(regex=r'^[0-9]{4,8}$', max_length=8)): The PIN of gift card.
+        method(Literal['GIFT_CARD']): --
+
+    """
+    card_number: constr(regex=r'^[0-9A-Za-z]{4,16}$', max_length=16) = Field(..., example='123456ABCDabcd')
+    """
+    Gift card number.
+    """
+    card_holder_name: constr(max_length=200) = None
+    """
+    The name of gift card holder.
+    """
+    pin: constr(regex=r'^[0-9]{4,8}$', max_length=8) = Field(..., example='123456')
+    """
+    The PIN of gift card.
+    """
+    method: Literal['GIFT_CARD'] = 'GIFT_CARD'
+
+
+class InternetBankPayment(
+    PaymentGeneric,
+    smart_union=True,
+    extra=Extra.forbid,
+):
+    r"""pydantic model InternetBankPayment
+    Attributes:
+        bank_id(constr(max_length=15)): The bank_id provided by the internet bank payment(IBP) provider (DRWP aka NetGiro) for the bank used for processing the payment.
+        bank_branch_code(constr(max_length=15)): A code that identifies the bank branch for internet bank payment(IBP).
+        telephones(List[Telephone]): Telephone(s) associated with internet bank payment(IBP) provider.
+        method(Literal['INTERNET_BANK_PAYMENT']): --
+
+    """
+    bank_id: constr(max_length=15) = None
+    """
+    The bank_id provided by the internet bank payment(IBP) provider (DRWP aka NetGiro) for the bank used for processing the payment.
+    """
+    bank_branch_code: constr(max_length=15) = None
+    """
+    A code that identifies the bank branch for internet bank payment(IBP).
+    """
+    telephones: List[Telephone] = Field(..., maxItems=20, minItems=1)
+    """
+    Telephone(s) associated with internet bank payment(IBP) provider.
+    """
+    method: Literal['INTERNET_BANK_PAYMENT'] = 'INTERNET_BANK_PAYMENT'
+
+
+class DirectDebit(
+    PaymentGeneric,
+    smart_union=True,
+    extra=Extra.forbid,
+):
+    r"""pydantic model DirectDebit
+    Attributes:
+        routing_number(constr(max_length=15)): A code that identifies the financial institution for a specific bank account.
+        account_number(constr(max_length=100)): Cleartext (unencrypted) DirectDebit bank account number associated with the payment instrument.
+        telephones(List[Telephone]): Telephone(s) associated with direct debit payment provider.
+        method(Literal['DIRECT_DEBIT']): --
+
+    """
+    routing_number: constr(max_length=15) = Field(..., example='100000000')
+    """
+    A code that identifies the financial institution for a specific bank account.
+    """
+    account_number: constr(max_length=100) = None
+    """
+    Cleartext (unencrypted) DirectDebit bank account number associated with the payment instrument.
+    """
+    telephones: List[Telephone] = Field(..., maxItems=20, minItems=1)
+    """
+    Telephone(s) associated with direct debit payment provider.
+    """
+    method: Literal['DIRECT_DEBIT'] = 'DIRECT_DEBIT'
 
 
 class TransactionDetails(
@@ -2152,23 +2540,23 @@ class TransactionDetails(
         order_id(constr(max_length=50)): Unique identifier assigned to the order by the partner. `order_id` is specific to the partner namespace.
         current_order_status(CurrentOrderStatus): Status of the order: * `IN_PROGRESS` is used when order has not processed fully. For example, inventory has not yet been reserved, or payment has not yet been settled. * `COMPLETED` is used when an order has been processed fully. For example, inventory has been reserved, and the payment has been settled.
         order_type(OrderType): Type of order. Possible `order_types`.  `CREATE` - Initial type of a brand new order.  `CHANGE` - If a `OrderPurchaseScreenRequest` has already been submitted for the initial booking with `order_type = CREATE`, but has now been modified and partner wishes to resubmit for Fraud screening then the `order_type = CHANGE`. Examples of changes that are supported are changes made to `check-in/checkout dates` or `price of a TravelProduct`.
-        travel_products(list[TravelProduct]): --
-        travelers(list[Traveler]): Individuals who are part of the travel party for the order. At minimum there must be at least `1` traveler.
-        payments(list[Payment]): List of the form(s) of payment being used to purchase the order.  One or more forms of payment can be used within an order. Information gathered will be specific to the form of payment.
+        travel_products(List[TravelProduct]): --
+        travelers(List[Traveler]): Individuals who are part of the travel party for the order. At minimum there must be at least `1` traveler.
+        payments(List[Payment]): List of the form(s) of payment being used to purchase the order.  One or more forms of payment can be used within an order. Information gathered will be specific to the form of payment.
 
-    """  # noqa: E501
-    order_id: constr(max_length=50) = Field(..., example="1000000234")
+    """
+    order_id: constr(max_length=50) = Field(..., example='1000000234')
     """
     Unique identifier assigned to the order by the partner. `order_id` is specific to the partner namespace.
-    """  # noqa: E501
+    """
     current_order_status: CurrentOrderStatus = None
     """
     Status of the order:
     * `IN_PROGRESS` is used when order has not processed fully. For example, inventory has not yet been reserved, or payment has not yet been settled.
     * `COMPLETED` is used when an order has been processed fully. For example, inventory has been reserved, and the payment has been settled.
 
-    """  # noqa: E501
-    order_type: OrderType = Field(..., example="CREATE")
+    """
+    order_type: OrderType = Field(..., example='CREATE')
     """
     Type of order. Possible `order_types`.
 
@@ -2176,16 +2564,16 @@ class TransactionDetails(
 
     `CHANGE` - If a `OrderPurchaseScreenRequest` has already been submitted for the initial booking with `order_type = CREATE`, but has now been modified and partner wishes to resubmit for Fraud screening then the `order_type = CHANGE`. Examples of changes that are supported are changes made to `check-in/checkout dates` or `price of a TravelProduct`.
 
-    """  # noqa: E501
-    travel_products: list[TravelProduct] = Field(..., maxItems=20, minItems=1)
-    travelers: list[Traveler] = Field(..., maxItems=30, minItems=1)
+    """
+    travel_products: List[TravelProduct] = Field(..., maxItems=20, minItems=1)
+    travelers: List[Traveler] = Field(..., maxItems=30, minItems=1)
     """
     Individuals who are part of the travel party for the order. At minimum there must be at least `1` traveler.
-    """  # noqa: E501
-    payments: list[Payment] = Field(..., maxItems=30, minItems=1)
+    """
+    payments: List[Payment] = Field(..., maxItems=30, minItems=1)
     """
     List of the form(s) of payment being used to purchase the order.  One or more forms of payment can be used within an order. Information gathered will be specific to the form of payment.
-    """  # noqa: E501
+    """
 
 
 class OrderPurchaseTransaction(
@@ -2200,7 +2588,7 @@ class OrderPurchaseTransaction(
         customer_account(CustomerAccount): --
         transaction_details(TransactionDetails): --
 
-    """  # noqa: E501
+    """
     site_info: SiteInfo = None
     device_details: DeviceDetails = None
     customer_account: CustomerAccount = None
@@ -2216,7 +2604,7 @@ class OrderPurchaseScreenRequest(
     Attributes:
         transaction(Optional[OrderPurchaseTransaction], optional): --
 
-    """  # noqa: E501
+    """
     transaction: Optional[OrderPurchaseTransaction] = None
 
 
@@ -2224,9 +2612,9 @@ RefundUpdate = Union[IssuedRefundUpdate, SettledRefundUpdate, RefundUpdateGeneri
 
 OrderPurchaseUpdateRequest = Union[OrderUpdate, ChargebackFeedback, InsultFeedback, RefundUpdate, PaymentUpdate, OrderPurchaseUpdateRequestGeneric]
 
-TravelProduct = Union[Rail, Air, Cruise, Car, Hotel, Insurance, TravelProductGeneric]
+TravelProduct = Union[Rail, Activities, Air, Cruise, Car, Hotel, Insurance, TravelProductGeneric]
 
-Payment = Union[CreditCard, PayPal, Points, PaymentGeneric]
+Payment = Union[CreditCard, PayPal, Points, GiftCard, InternetBankPayment, DirectDebit, PaymentGeneric]
 
 
 Error.update_forward_refs()
@@ -2292,6 +2680,18 @@ OperatingCompany.update_forward_refs()
 RailwayStationDetails.update_forward_refs()
 
 
+Activity.update_forward_refs()
+
+
+Coordinates.update_forward_refs()
+
+
+OperatingCompanyModel.update_forward_refs()
+
+
+Ticket.update_forward_refs()
+
+
 AirSegment.update_forward_refs()
 
 
@@ -2332,6 +2732,9 @@ OrderPurchaseScreenResponse.update_forward_refs()
 
 
 RailSegments.update_forward_refs()
+
+
+Activities.update_forward_refs()
 
 
 Air.update_forward_refs()
@@ -2401,6 +2804,15 @@ PayPal.update_forward_refs()
 
 
 Points.update_forward_refs()
+
+
+GiftCard.update_forward_refs()
+
+
+InternetBankPayment.update_forward_refs()
+
+
+DirectDebit.update_forward_refs()
 
 
 TransactionDetails.update_forward_refs()

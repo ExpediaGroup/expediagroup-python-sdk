@@ -33,12 +33,15 @@ jobs:
           mkdir -p ../../../../release/"${{github.event.inputs.name}}"
           tar -xzf *.tar.gz
           rm *.tar.gz
-          find ./ -name __init__.py -exec rm {} "{0}" \;
           find ./ -name \*.py -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/ \;
           find ./ -name \*.yaml -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/ \;
           git fetch --depth=1 origin main
           git checkout -b "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           git add ../../../../release/\*
+          cd ../../../..
+          pip install -r requirements.txt
+          black .
+          cd -
           git commit -m "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
           git push --set-upstream origin "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           gh pr create -B main -H "${{github.event.inputs.name}}-${{github.event.inputs.version}}" --title 'chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK' --fill
