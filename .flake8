@@ -9,6 +9,9 @@ statistics = True
 count = True
 pep585-activation = always
 
+per-file-ignores =
+    release/*: E501, W505, F722
+
 ignore =
     B008
     D10
@@ -16,12 +19,9 @@ ignore =
     D401
     E126
     E203
-    F722
     I001
     I005
-    W391
     W503
-    W505
 
 require-plugins =
     flake8-black
