@@ -33,7 +33,6 @@ jobs:
           mkdir -p ../../../../release/"${{github.event.inputs.name}}"
           tar -xzf *.tar.gz
           rm *.tar.gz
-          find ./ -name __init__.py -exec rm {} "{0}" \;
           find ./ -name \*.py -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/ \;
           find ./ -name \*.yaml -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/ \;
           git fetch --depth=1 origin main
