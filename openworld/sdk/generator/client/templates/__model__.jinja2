@@ -31,7 +31,7 @@ class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif
     {# comment for new line #}
     {%- endfor -%}
 {%- endif %}
-    """ # noqa: E501
+    """
 {%- if not model.fields %}
     pass
 {%- endif %}
@@ -49,7 +49,7 @@ class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif
     {%- if field.docstring %}
     """
     {{ field.docstring | indent(4) }}
-    """ # noqa: E501
+    """
     {%- endif %}
 {%- for method in methods -%}
     {{ model.method }}

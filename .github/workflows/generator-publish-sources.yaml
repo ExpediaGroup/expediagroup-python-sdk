@@ -38,6 +38,10 @@ jobs:
           git fetch --depth=1 origin main
           git checkout -b "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           git add ../../../../release/\*
+          cd ../../../..
+          pip install -r requirements.txt
+          black .
+          cd -
           git commit -m "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
           git push --set-upstream origin "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           gh pr create -B main -H "${{github.event.inputs.name}}-${{github.event.inputs.version}}" --title 'chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK' --fill
