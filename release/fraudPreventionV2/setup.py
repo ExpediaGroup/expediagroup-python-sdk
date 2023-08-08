@@ -17,7 +17,7 @@ from setuptools import setup
 
 setup(
     name="openworld-sdk-python-fraudpreventionv2",
-    version="1.2.3",
+    version="1.2.4",
     packages=["openworld.sdk.fraudpreventionv2"],
     package_dir={"openworld-sdk-python-fraudpreventionv2": "."},
     license="Apache License, Version 2.0",
