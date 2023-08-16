@@ -23,22 +23,41 @@ on:
       name:
         description: 'Generated SDK name'
         required: true
-      fileAsBase64:
-        description: 'Generated SDK file as base64 encoded'
+      specs_url:
+        description: 'URL to download API specs from'
         required: true
+        type: string
       test:
         description: 'Release to test?'
         required: false
 jobs:
+  download_specs:
+    uses: ./.github/workflows/generator-download-specs.yaml
+    with:
+      url: ${{ github.event.inputs.specs_url }}
+
+  transform_specs:
+    needs: [ download_specs ]
+    uses: ./.github/workflows/generator-transform-specs.yaml
+    with:
+      configurations: -th -te -tt ${{ github.event.inputs.name }}
+
+
   generate_sdk:
+    needs: [ transform_specs ]
     uses: ./.github/workflows/generate-sdk.yaml
     with:
       version: ${{ github.event.inputs.version }}
       name: ${{ github.event.inputs.name }}
-      fileAsBase64: ${{ github.event.inputs.fileAsBase64 }}
-  commit_sdk:
+
+  publish_sources:
+    if: github.event.inputs.test == ''
     needs: [ generate_sdk ]
-    uses: ./.github/workflows/commit-sdk.yaml
+    uses: ./.github/workflows/generator-publish-sources.yaml
+    with:
+      version: ${{ github.event.inputs.version }}
+      name: ${{ github.event.inputs.name }}
+
   publish_sdk:
     needs: [ generate_sdk ]
     uses: ./.github/workflows/publish-sdk.yaml
