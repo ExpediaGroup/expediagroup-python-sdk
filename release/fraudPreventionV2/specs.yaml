@@ -1,0 +1,2480 @@
+openapi: 3.0.0
+info:
+  title: Fraud Prevention Service
+  version: v2
+  description: Fraud & Risk APIs to detect fraud
+  contact:
+    name: Risk Tech Verge
+    email: RiskTechVerge@expedia.com
+  x-eg-lifecycle: PLANNED
+servers:
+  - url: https://api.expediagroup.com/fraud-prevention/v2
+tags:
+  - name: fraudPreventionV2
+paths:
+  /fraud-prevention/v2/order/purchase/screen:
+    post:
+      tags:
+        - fraudPreventionV2
+      description: "The Order Purchase API gives a Fraud recommendation for a
+        transaction. A recommendation can be Accept, Reject, or Review. A
+        transaction is marked as Review whenever there are insufficient signals
+        to recommend Accept or Reject. These incidents are manually reviewed,
+        and a corrected recommendation is made asynchronously. "
+      summary: Run fraud screening for one transaction
+      operationId: screen
+      security:
+        - orderPurchaseScreenAuth:
+            - fraudandrisk.stub.order-purchase-screen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderPurchaseScreenRequest"
+      responses:
+        "200":
+          description: The OrderPurchaseScreenRequest was successfully received and the
+            order screening is complete.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderPurchaseScreenResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "429":
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TooManyRequestsError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+        "502":
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadGatewayError"
+        "503":
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceUnavailableError"
+        "504":
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GatewayTimeoutError"
+  /fraud-prevention/v2/order/purchase/update:
+    post:
+      tags:
+        - fraudPreventionV2
+      description: >
+        The Order Purchase Update API is called when the status of the order has
+        changed.
+
+
+        For example, if the customer cancels the reservation, changes reservation in any way, or adds additional products or travelers to the reservation, the Order Purchase Update API is called to notify Expedia Group about the change.
+
+
+        The Order Purchase Update API is also called when the merchant cancels or changes an order based on a Fraud recommendation.
+      summary: Send an update for a transaction
+      operationId: update
+      security:
+        - orderPurchaseUpdateAuth:
+            - fraudandrisk.stub.order-purchase-update
+      requestBody:
+        required: true
+        description: >
+          An OrderPurchaseUpdate request may be of one of the following types
+          `ORDER_UPDATE`, `CHARGEBACK_FEEDBACK`, `INSULT_FEEDBACK`,
+          `REFUND_UPDATE`, `PAYMENT_UPDATE`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderPurchaseUpdateRequest"
+            examples:
+              OrderUpdate:
+                summary: Sample OrderUpdate Request
+                value:
+                  type: ORDER_UPDATE
+                  risk_id: "1234324324"
+                  acquirer_reference_number: "12345"
+                  order_status: COMPLETED
+                  cancellation_reason:
+                    primary_reason_description: string
+              ChargebackFeedback:
+                summary: Sample ChargebackFeedback Request
+                value:
+                  type: CHARGEBACK_FEEDBACK
+                  risk_id: "1234324324"
+                  chargeback_detail:
+                    chargeback_status: RECEIVED
+                    chargeback_reason: FRAUD
+                    chargeback_amount:
+                      value: 123.45
+                      currency_code: USD
+              InsultFeedback:
+                summary: Sample InsultFeedback Request
+                value:
+                  type: INSULT_FEEDBACK
+                  risk_id: "1234324324"
+              RefundUpdate:
+                summary: Sample RefundUpdate Request
+                value:
+                  type: REFUND_UPDATE
+                  risk_id: "1234324324"
+                  refund_status: SETTLED
+                  refund_details:
+                    acquirer_reference_number: "12345"
+                    refund_deposit_date_time: 2022-07-24T01:01:01.111Z
+                    refund_settlement_date_time: 2022-07-24T01:01:01.111Z
+                    settlement_id: "12345"
+                    refund_settled_amount:
+                      value: 123.32
+                      currency_code: USD
+              PaymentUpdate:
+                summary: Sample PaymentUpdate Request
+                value:
+                  type: PAYMENT_UPDATE
+                  risk_id: "1234324324"
+                  merchant_order_code: "12345"
+      responses:
+        "200":
+          description: The OrderUpdateRequest was successful.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderPurchaseUpdateResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenError"
+        "404":
+          description: Order Purchase Update Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderPurchaseUpdateNotFoundError"
+        "429":
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TooManyRequestsError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+        "502":
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadGatewayError"
+        "503":
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceUnavailableError"
+        "504":
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GatewayTimeoutError"
+components:
+  schemas:
+    Error:
+      description: The object used to describe an error, containing both
+        human-readable and machine-readable information.
+      type: object
+      properties:
+        code:
+          description: Snake cased all caps error code interpreted from the HTTP status
+            code that can programmatically be acted upon.
+          type: string
+          example: BAD_REQUEST
+          enum:
+            - UNAUTHORIZED
+            - FORBIDDEN
+            - NOT_FOUND
+            - ORDER_PURCHASE_UPDATE_NOT_FOUND
+            - TOO_MANY_REQUESTS
+            - INTERNAL_SERVER_ERROR
+            - BAD_GATEWAY
+            - RETRYABLE_ORDER_PURCHASE_SCREEN_FAILURE
+            - RETRYABLE_ORDER_PURCHASE_UPDATE_FAILURE
+            - GATEWAY_TIMEOUT
+            - BAD_REQUEST
+        message:
+          description: A human-readable explanation of the error, specific to this error
+            occurrence.
+          type: string
+          example: An input validation error was encountered. Please see causes for more
+            details.
+      required:
+        - code
+        - message
+    UnauthorizedError:
+      description: Indicates that the token sent in the 'Authorization' header is
+        either invalid or missing. Please check the value in the token field
+        along with the token expiration time before retrying.
+      example:
+        code: UNAUTHORIZED
+        message: Invalid EG token provided. Please provide a valid token in the
+          Authorization header.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+    ForbiddenError:
+      description: Indicates that the API cannot fulfill the request because while the
+        client is correctly authenticated, the client doesn't have the
+        permission to execute the specified operation. This error type does not
+        imply that the request is valid, or that the resource against which the
+        operation being performed exists or satisfies other pre-conditions.
+      example:
+        code: FORBIDDEN
+        message: Insufficient permissions to perform the request.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+    NotFoundError:
+      description: Indicates that the API cannot find the resource that is either
+        being requested or against which the operation is being performed.
+        Please check the request again to make sure that the request is valid.
+      example:
+        code: NOT_FOUND
+        message: The requested resource does not exist.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+    OrderPurchaseUpdateNotFoundError:
+      description: Indicates that the API cannot find the resource that is either
+        being requested or against which the operation is being performed.
+      example:
+        code: ORDER_PURCHASE_UPDATE_NOT_FOUND
+        message: The request failed because the Order Screen event for this booking is
+          missing. Please send a new Order Screen event again.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+    TooManyRequestsError:
+      description: Indicates that the API cannot fulfill the request because server
+        resources have been exhausted. Perhaps the client has sent too many
+        requests in a given amount of time or has reached some specific quota.
+        Please check the rate limits for the product and adjust as necessary
+        before retries. If you believe the rate limit was incorrect or if you
+        need a different rate limit, please reach out to the <support team>
+        regarding the next steps.
+      example:
+        code: TOO_MANY_REQUESTS
+        message: The request failed because the server resources for this client have
+          been exhausted.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+    InternalServerError:
+      description: Indicates that the API encountered an unexpected condition that
+        prevented it from fulfilling the request. Sometimes used as a generic
+        catch-allerror type when no other error types can be used. Retrying the
+        same request will usually result in the same error. Please reach out to
+        support team as next step for this error resolution.
+      example:
+        code: INTERNAL_SERVER_ERROR
+        message: The server encountered an internal error.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+    BadGatewayError:
+      description: Indicates that the server received an invalid response from the
+        upstream server. Causes could be incorrectly configured target server at
+        gateway, EOF exception, incorrectly configured keep-alive timeouts.
+        Please reach out to support team as next step for this error resolution.
+      example:
+        code: BAD_GATEWAY
+        message: The server received an invalid response from an upstream server.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+    ServiceUnavailableError:
+      description: >
+        Indicates that the API is either down for maintenance or overloaded and
+        cannot fulfill the request at the current time. This is a temporary
+        error and retrying the same request after a certain delay could
+        eventually result in success.
+
+        There will be a Retry-After HTTP header in API response specifying how long to wait to retry the request. If there is no Retry-After HTTP header then retry can happen immediately. If the error persists after retrying with delay, please reach out to <support team>."
+      example:
+        code: RETRYABLE_ORDER_PURCHASE_SCREEN_FAILURE
+        message: A temporary internal error occurred. You can safely retry your call
+          using the same order details.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+    GatewayTimeoutError:
+      description: Indicates that the API gateway has issues completing the request on
+        time. Request can be retried if it is idempotent, If the issue persists,
+        please reach out to support. For non-idempotent requests, please reach
+        out to <support team> to know the status of your request before
+        attempting retries.
+      example:
+        code: GATEWAY_TIMEOUT
+        message: The server timed out while trying to complete the request.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+    BadRequestError:
+      description: Indicates that a bad request occurred. Typically it is an invalid
+        parameter.
+      example:
+        code: BAD_REQUEST
+        message: An input validation error was encountered. Please see causes for more
+          details.
+        causes:
+          code: MISSING_MANDATORY_PARAM
+          field: $.transaction.payments.brand
+          message: The value of a field was missed or not valid.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+        - type: object
+          properties:
+            causes:
+              type: array
+              items:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: MISSING_MANDATORY_PARAM
+                    enum:
+                      - MISSING_MANDATORY_PARAM
+                      - INVALID_PARAM
+                      - INVALID_FORMAT
+                  field:
+                    type: string
+                    description: A JSON Path expression indicating which field, in the request body,
+                      caused the error.
+                    example: $.transaction.payments.brand
+                  message:
+                    type: string
+                    example: The value of a field was missed or not valid.
+    OrderPurchaseUpdateRequest:
+      title: OrderPurchaseUpdateRequest
+      description: >
+        The `type` field value is used as a discriminator, with the following
+        mapping:
+
+        * `ORDER_UPDATE`: `OrderUpdate`
+
+        * `CHARGEBACK_FEEDBACK`: `ChargebackFeedback`
+
+        * `INSULT_FEEDBACK`: `InsultFeedback`
+
+        * `REFUND_UPDATE`: `RefundUpdate`
+
+        * `PAYMENT_UPDATE`: `PaymentUpdate`
+      type: object
+      required:
+        - risk_id
+        - type
+      properties:
+        type:
+          $ref: "#/components/schemas/UpdateType"
+        risk_id:
+          description: The `risk_id` provided by Expedia's Fraud Prevention Service in the
+            `OrderPurchaseScreenResponse`.
+          type: string
+          maxLength: 200
+          example: "123456789"
+      discriminator:
+        propertyName: type
+        mapping:
+          ORDER_UPDATE: OrderUpdate
+          CHARGEBACK_FEEDBACK: ChargebackFeedback
+          INSULT_FEEDBACK: InsultFeedback
+          REFUND_UPDATE: RefundUpdate
+          PAYMENT_UPDATE: PaymentUpdate
+    UpdateType:
+      title: UpdateType
+      description: Transaction type associated with the update event.
+      type: string
+      enum:
+        - ORDER_UPDATE
+        - CHARGEBACK_FEEDBACK
+        - INSULT_FEEDBACK
+        - REFUND_UPDATE
+        - PAYMENT_UPDATE
+    OrderUpdate:
+      title: OrderUpdate
+      description: Order related data that should be updated.
+      allOf:
+        - $ref: "#/components/schemas/OrderPurchaseUpdateRequest"
+        - type: object
+          required:
+            - order_status
+          properties:
+            order_status:
+              $ref: "#/components/schemas/Status"
+            acquirer_reference_number:
+              description: >
+                A unique number that tags a credit or debit card transaction
+                when it goes from the merchant's bank through to the
+                cardholder's bank.
+
+                `acquirer_reference_number` is a required field only if `order_status` = `COMPLETED`
+
+                Typically, merchants can get this number from their payment processors.
+
+                This number is used when dealing with disputes/chargebacks on original transactions.
+              type: string
+              maxLength: 200
+            cancellation_reason:
+              $ref: "#/components/schemas/CancellationReason"
+    CancellationReason:
+      title: CancellationReason
+      description: Reason of order update cancellation.
+      type: object
+      properties:
+        primary_reason_code:
+          description: Primary cancellation reason code.
+          type: string
+          maxLength: 200
+        sub_reason_code:
+          description: Substitute cancellation reason code.
+          type: string
+          maxLength: 200
+        primary_reason_description:
+          description: Primary cancellation reason code. Required if `order_status =
+            CANCELLED`.
+          type: string
+          maxLength: 200
+        sub_reason_description:
+          description: Substitute cancellation reason description.
+          type: string
+          maxLength: 200
+    ChargebackFeedback:
+      title: ChargebackFeedback
+      description: Feedback from EG external partners if they receive a chargeback for
+        a false negative recommendation from Fraud Prevention system.
+      allOf:
+        - $ref: "#/components/schemas/OrderPurchaseUpdateRequest"
+        - type: object
+          properties:
+            chargeback_detail:
+              $ref: "#/components/schemas/ChargebackDetail"
+    InsultFeedback:
+      title: InsultFeedback
+      description: Feedback from EG external partners regarding a false positive
+        recommendation that from Fraud Prevention system gave for their
+        customer.
+      allOf:
+        - $ref: "#/components/schemas/OrderPurchaseUpdateRequest"
+        - type: object
+          properties:
+            insult_detail:
+              $ref: "#/components/schemas/InsultDetail"
+    RefundUpdate:
+      title: RefundUpdate
+      description: Refund related data. Update should be sent when refund is issued or
+        settled. Amounts should include all fees and taxes.
+      discriminator:
+        propertyName: refund_status
+        mapping:
+          ISSUED: IssuedRefundUpdate
+          SETTLED: SettledRefundUpdate
+      allOf:
+        - $ref: "#/components/schemas/OrderPurchaseUpdateRequest"
+        - type: object
+          required:
+            - refund_status
+          properties:
+            refund_status:
+              description: |
+                Identifies the refund status. Possible values are:
+                -`ISSUED` - The refund was issued.
+                -`SETTLED` - The refund was settled.
+              type: string
+              enum:
+                - ISSUED
+                - SETTLED
+    IssuedRefundUpdate:
+      title: IssuedRefundUpdate
+      description: Data related to the issued refund that should be updated.
+      allOf:
+        - $ref: "#/components/schemas/RefundUpdate"
+        - type: object
+          required:
+            - refund_status
+          properties:
+            refund_details:
+              $ref: "#/components/schemas/IssuedRefundUpdateDetails"
+    SettledRefundUpdate:
+      title: SettledRefundUpdate
+      description: Data related to the settled refund that should be updated.
+      allOf:
+        - $ref: "#/components/schemas/RefundUpdate"
+        - type: object
+          required:
+            - refund_status
+          properties:
+            refund_details:
+              $ref: "#/components/schemas/SettledRefundUpdateDetails"
+    IssuedRefundUpdateDetails:
+      title: IssuedRefundUpdateDetails
+      description: Data that describes issued refund that should be updated.
+      type: object
+      required:
+        - refund_issued_date_time
+        - refund_issued_amount
+      properties:
+        refund_issued_date_time:
+          description: Date and time when the 3rd party payment processor confirmed that a
+            previously submitted payment refund has issued at the participating
+            financial institutions.
+          type: string
+          format: date-time
+        refund_issued_amount:
+          $ref: "#/components/schemas/Amount"
+    SettledRefundUpdateDetails:
+      title: SettledRefundUpdateDetails
+      description: Data that describes settled refund that should be updated.
+      type: object
+      required:
+        - refund_settlement_date_time
+        - refund_deposit_date_time
+        - acquirer_reference_number
+        - settlement_id
+        - refund_settled_amount
+      properties:
+        refund_settlement_date_time:
+          description: Date and time when the 3rd party payment processor confirmed that a
+            previously submitted payment refund has settled at the participating
+            financial institutions.
+          type: string
+          format: date-time
+        refund_deposit_date_time:
+          description: Date and time when the refund was deposited to the original form of
+            payment.
+          type: string
+          format: date-time
+        acquirer_reference_number:
+          description: >
+            A unique number that tags a credit or debit card transaction when it
+            goes from the merchant's bank through to the cardholder's bank.
+
+            Typically, merchants can get this number from their payment processors.
+
+            This number is used when dealing with disputes/chargebacks on original transactions.
+          type: string
+          maxLength: 200
+        settlement_id:
+          description: Unique settlement identifier specific to the payment processor for
+            the settlement transaction generated for a previously submitted
+            payment refund.
+          type: string
+          maxLength: 200
+        refund_settled_amount:
+          $ref: "#/components/schemas/Amount"
+    PaymentUpdate:
+      title: PaymentUpdate
+      description: Payment related data that should be updated.
+      allOf:
+        - $ref: "#/components/schemas/OrderPurchaseUpdateRequest"
+        - type: object
+          required:
+            - merchant_order_code
+          properties:
+            merchant_order_code:
+              description: Reference code passed to acquiring bank at the time of payment.
+                This code is the key ID that ties back to payments data at the
+                payment level.
+              type: string
+              maxLength: 200
+    ChargebackDetail:
+      title: ChargebackDetail
+      type: object
+      description: Details related to the chargeback.
+      required:
+        - chargeback_status
+        - chargeback_reason
+        - chargeback_amount
+      properties:
+        chargeback_status:
+          type: string
+          enum:
+            - RECEIVED
+            - REVERSAL
+          description: |
+            Identifies the chargeback status. Possible values are:
+            -`RECEIVED` - The chargeback was received.
+            -`REVERSAL` - The chargeback reversal was received.
+        chargeback_reason:
+          type: string
+          enum:
+            - FRAUD
+            - NON_FRAUD
+          description: Reason for chargeback which can be `Fraud` or `Non Fraud`.
+        chargeback_amount:
+          $ref: "#/components/schemas/Amount"
+        bank_reason_code:
+          type: string
+          description: Unique code provided by the acquiring bank for the category of fraud.
+          maxLength: 200
+        chargeback_reported_date_time:
+          type: string
+          format: date-time
+          description: Date and time when the chargeback was reported to the partner, in
+            ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+    InsultDetail:
+      title: InsultDetail
+      type: object
+      description: Details related to the insult.
+      properties:
+        insult_reported_date_time:
+          type: string
+          format: date-time
+          description: Date and time when the insult was reported to the partner, in
+            ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+    Status:
+      title: Status
+      description: >
+        Defines the current state of the Order.
+
+        Generally, OrderPurchaseScreenRequest is followed by an OrderUpdate reflecting the change in current order status. From `IN_PROGRESS` to any of below possible values:
+
+        * `COMPLETED` is used when the order has been processed fully. For example, inventory has been reserved, and the payment has been settled.
+
+        * `CHANGE_COMPLETED` is like `COMPLETED` but on a changed order.
+
+        * `CANCELLED` is used when the order is cancelled. This could be acustomer initiated cancel or based on Fraud recommendation.
+
+        * `FAILED` is used when order failed due to any errors on Partner system. This could be followed by another OrderUpdate call with any `order_status` once the order is recovered, abandoned, or cancelled.
+
+        * `CHANGE_FAILED` is like `FAILED` but on a changed order.
+
+        *
+
+        * `CHANGE_COMPLETED` or `CHANGE_FAILED` are applicable if OrderPurchaseScreen Fraud API was called via a change in order which is through `transaction.transaction_details.order_type` = `CHANGE`
+
+        * `COMPLETED` or `CANCELLED` order status indicates the completion of lifecycle on an order.
+      type: string
+      enum:
+        - COMPLETED
+        - CHANGE_COMPLETED
+        - CANCELLED
+        - FAILED
+        - CHANGE_FAILED
+      maxLength: 200
+    OrderPurchaseUpdateResponse:
+      title: OrderPurchaseUpdateResponse
+      type: object
+      properties:
+        risk_id:
+          type: string
+          description: Unique identifier of transaction that was updated.
+          maxLength: 200
+          example: "1234567"
+    OrderPurchaseScreenRequest:
+      title: OrderPurchaseScreenRequest
+      type: object
+      properties:
+        transaction:
+          $ref: "#/components/schemas/OrderPurchaseTransaction"
+    OrderPurchaseTransaction:
+      title: OrderPurchaseTransaction
+      type: object
+      required:
+        - site_info
+        - device_details
+        - customer_account
+        - transaction_details
+      properties:
+        site_info:
+          $ref: "#/components/schemas/SiteInfo"
+        device_details:
+          $ref: "#/components/schemas/DeviceDetails"
+        customer_account:
+          $ref: "#/components/schemas/CustomerAccount"
+        transaction_details:
+          $ref: "#/components/schemas/TransactionDetails"
+    OrderPurchaseScreenResponse:
+      title: OrderPurchaseScreenResponse
+      type: object
+      properties:
+        risk_id:
+          type: string
+          description: Unique identifier assigned to the transaction by Expedia's Fraud
+            Prevention Service.
+          maxLength: 200
+          example: "1234567"
+        decision:
+          $ref: "#/components/schemas/FraudDecision"
+    FraudDecision:
+      title: FraudDecision
+      type: string
+      enum:
+        - ACCEPT
+        - REVIEW
+        - REJECT
+    SiteInfo:
+      title: SiteInfo
+      type: object
+      required:
+        - country_code
+        - agent_assisted
+      properties:
+        country_code:
+          description: The alpha-3 ISO code that represents a country name.
+          pattern: ^[A-Z]{3}$
+          type: string
+          example: USA
+        agent_assisted:
+          description: Identifies if an agent assisted in booking travel for the customer.
+            `False` if the order was directly booked by customer.
+          type: boolean
+    DeviceDetails:
+      title: DeviceDetails
+      required:
+        - device_box
+        - ip_address
+      type: object
+      properties:
+        source:
+          type: string
+          maxLength: 50
+          description: Source of the device_box. Default value is `TrustWidget`.
+        device_box:
+          type: string
+          maxLength: 16000
+          description: Device related information retrieved from TrustWidget.
+        ip_address:
+          type: string
+          description: IP address of the device used for booking.
+          pattern: ^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$
+          example: 192.168.32.48
+    TransactionDetails:
+      title: TransactionDetails
+      required:
+        - order_id
+        - current_order_status
+        - order_type
+        - travel_products
+        - travelers
+        - payments
+      type: object
+      properties:
+        order_id:
+          description: Unique identifier assigned to the order by the partner. `order_id`
+            is specific to the partner namespace.
+          type: string
+          maxLength: 50
+          example: "1000000234"
+        current_order_status:
+          description: >
+            Status of the order:
+
+            * `IN_PROGRESS` is used when order has not processed fully. For example, inventory has not yet been reserved, or payment has not yet been settled.
+
+            * `COMPLETED` is used when an order has been processed fully. For example, inventory has been reserved, and the payment has been settled.
+          type: string
+          enum:
+            - IN_PROGRESS
+            - COMPLETED
+        order_type:
+          description: >
+            Type of order. Possible `order_types`.
+
+
+            `CREATE` - Initial type of a brand new order.
+
+
+            `CHANGE` - If a `OrderPurchaseScreenRequest` has already been submitted for the initial booking with `order_type = CREATE`, but has now been modified and partner wishes to resubmit for Fraud screening then the `order_type = CHANGE`. Examples of changes that are supported are changes made to `check-in/checkout dates` or `price of a TravelProduct`.
+          type: string
+          enum:
+            - CREATE
+            - CHANGE
+          example: CREATE
+        travel_products:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/TravelProduct"
+        travelers:
+          description: Individuals who are part of the travel party for the order. At
+            minimum there must be at least `1` traveler.
+          type: array
+          items:
+            $ref: "#/components/schemas/Traveler"
+          minItems: 1
+          maxItems: 30
+        payments:
+          description: List of the form(s) of payment being used to purchase the
+            order.  One or more forms of payment can be used within an order.
+            Information gathered will be specific to the form of payment.
+          type: array
+          items:
+            $ref: "#/components/schemas/Payment"
+          minItems: 1
+          maxItems: 30
+    CustomerAccount:
+      title: CustomerAccount
+      required:
+        - account_type
+        - name
+        - email_address
+      type: object
+      properties:
+        user_id:
+          description: Unique account identifier provided by the partner's Identity
+            Provider/System assigned to the account owner by the partner.
+            `user_id` is specific to the partner namespace. Used to track repeat
+            purchases by the same user.
+          type: string
+        account_type:
+          description: >
+            Identifies if the customer account is known to the client. Possible
+            values are:
+
+
+            -`GUEST` - Applicable if the partner maintains record to distinguish whether the transaction was booked via a guest account.
+
+
+            -`STANDARD` - Default account type.
+          type: string
+          enum:
+            - GUEST
+            - STANDARD
+          example: STANDARD
+        name:
+          $ref: "#/components/schemas/Name"
+        email_address:
+          description: Email address for the account owner.
+          type: string
+          format: email
+        telephones:
+          type: array
+          items:
+            $ref: "#/components/schemas/Telephone"
+        address:
+          allOf:
+            - $ref: "#/components/schemas/Address"
+            - required:
+                - address_line1
+                - city
+                - state
+                - zip_code
+                - country_code
+        registered_time:
+          description: The local date and time that the customer first registered on the
+            client site, in ISO-8061 date and time format
+            `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          type: string
+          format: date-time
+          maxLength: 50
+    Traveler:
+      title: Traveler
+      type: object
+      required:
+        - traveler_name
+        - primary
+      properties:
+        traveler_name:
+          $ref: "#/components/schemas/Name"
+        email_address:
+          description: Email address associated with the traveler as supplied by the
+            partner system.
+          type: string
+          format: email
+          maxLength: 200
+        telephones:
+          type: array
+          items:
+            $ref: "#/components/schemas/Telephone"
+          minItems: 1
+          maxItems: 250
+        primary:
+          description: Indicator for one of the travelers who is the primary traveler. One
+            traveler in each itinerary item must be listed as primary. By
+            default, for a single traveler this should be set to `true`.
+          type: boolean
+        age:
+          description: Age of the traveler.
+          type: number
+        birth_date:
+          description: Date of birth for traveler, in ISO-8061 date and time format
+            `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          type: string
+          format: date-time
+          maxLength: 50
+        citizenship_country_code:
+          description: The alpha-3 ISO country code of the traveler's nationality.
+          type: string
+          pattern: ^[A-Z]{3}$
+          minLength: 3
+          maxLength: 3
+        traveler_id:
+          description: A unique identifier for travelers in the transaction.
+          type: string
+          maxLength: 100
+    Address:
+      title: Address
+      type: object
+      properties:
+        address_type:
+          type: string
+          enum:
+            - HOME
+            - WORK
+        address_line1:
+          description: Address line 1 of the address provided.
+          type: string
+          maxLength: 200
+        address_line2:
+          description: Address line 2 of the address provided.
+          type: string
+          maxLength: 200
+        city:
+          description: City of the address provided.
+          type: string
+          maxLength: 200
+        state:
+          description: The two-characters ISO code for the state or province of the address.
+          type: string
+          pattern: ^[A-Z]{2}$
+        zip_code:
+          description: Zip code of the address provided.
+          type: string
+          maxLength: 20
+        country_code:
+          description: ISO alpha-3 country code of the address provided.
+          pattern: ^[A-Z]{3}$
+          type: string
+    TravelProduct:
+      title: TravelProduct
+      description: >
+        The `type` field value is used as a discriminator, with the following
+        mapping:
+
+        * `CRUISE`: `Cruise`
+
+        * `AIR`: `Air`
+
+        * `CAR`: `Car`
+
+        * `INSURANCE`: `Insurance`
+
+        * `HOTEL`: `Hotel`
+
+        * `RAIL`: `Rail`
+
+        * `ACTIVITIES`: `Activities`
+      required:
+        - price
+        - type
+        - inventory_type
+        - inventory_source
+        - travelers_references
+      type: object
+      discriminator:
+        propertyName: type
+        mapping:
+          CRUISE: "#/components/schemas/Cruise"
+          AIR: "#/components/schemas/Air"
+          CAR: "#/components/schemas/Car"
+          INSURANCE: "#/components/schemas/Insurance"
+          HOTEL: "#/components/schemas/Hotel"
+          RAIL: "#/components/schemas/Rail"
+          ACTIVITIES: "#/components/schemas/Activities"
+      properties:
+        price:
+          $ref: "#/components/schemas/Amount"
+        type:
+          $ref: "#/components/schemas/TravelProductType"
+        inventory_type:
+          description: >
+            Type of inventory.
+
+            Ensure attributes mentioned in dictionary below are set to corresponding values only.
+
+            `inventory_type` has the following mapping with TravelProduct `type` attribute:
+
+            *       inventory_type            :      type
+
+            * ------------------------------------------------------
+
+            *  `Cruise`                       : `CRUISE`
+
+            *  `Air`                          : `AIR`
+
+            *  `Car`                          : `CAR`
+
+            *  `Insurance`                    : `INSURANCE`
+
+            *  `Hotel`                        : `HOTEL`
+
+            *  `Rail`                         :  `RAIL`
+
+            *  `Activities`                   :  `ACTIVITIES`
+          type: string
+          maxLength: 30
+        inventory_source:
+          description: >
+            Identifies the business model through which the supply is being
+            sold. Merchant/Agency.
+
+            * `MERCHANT` is used when Partner is the merchant of record for this order.
+
+            * `AGENCY` is used when this order is through an agency booking.
+          type: string
+          enum:
+            - MERCHANT
+            - AGENCY
+        travelers_references:
+          description: >
+            List of travelerGuids who are part of the traveling party on the
+            order for the product.
+
+            Information for each product and its required travelers should be provided in the API request.
+
+            If the product booking does not require accompanying quest information then that does not need to be provided in the API request.
+
+            Example:
+
+            * For Air products, all travelers' details are required to complete the booking.
+
+            * For Hotel products, typically the details on the person checking-in is required.
+
+            * For Car products, typically only the primary driver information is required.
+
+            If multiple traveler details are in the itinerary, this structure allows to fill up traveler details once in the `travelers` section, and then associate individual products to the respective travelers.
+
+            This association is made using `traveler_id` field. A GUID can be generated for each object in the `travelers` section. The same GUID can be provided in the `traveler_references` below.
+
+            The `travelers` array should have at least one `traveler` object, and each `traveler` object should have a `traveler_id` which is not necessarily an account id.
+
+            Example:
+
+            *   Travelers
+
+            * ------------
+
+            *  A - GUID1
+
+            *  B - GUID2
+
+            *  C - GUID3
+
+            *
+
+            *   Products
+
+            * ------------
+
+            * Air
+
+            *   [GUID1, GUID2, GUID3]
+
+            * Hotel
+
+            *   [GUID1]
+
+            * Car
+
+            *   [GUID3]
+
+            * Rail
+
+            *   [GUID2]
+
+            * Activities
+
+            *   [GUID1]
+
+            * The example above demonstrates the association of travelers with various products.
+
+            * All three travelers (A, B, and C) are associated with the Air product.
+
+            * Traveler A is associated with the Hotel and Activities products.
+
+            * Traveler C is associated with the Car product.
+
+            * Traveler B is associated with the Rail product.
+          type: array
+          minItems: 1
+          maxItems: 40
+          items:
+            type: string
+            maxLength: 50
+    Rail:
+      title: Rail
+      allOf:
+        - $ref: "#/components/schemas/TravelProduct"
+        - type: object
+          required:
+            - type
+            - route_type
+            - rail_segments
+          properties:
+            route_type:
+              description: >
+                The type of route or itinerary for the Rail product, indicating
+                the travel arrangement and pattern. Possible values are:
+
+                - `MULTIPLE_DESTINATIONS` - The Rail product includes multiple destinations in its itinerary.
+
+                - `ONE_WAY` - The Rail product represents a one-way journey.
+
+                - `ROUNDTRIP` - The Rail product represents a roundtrip journey.
+              type: string
+              enum:
+                - MULTIPLE_DESTINATIONS
+                - ONE_WAY
+                - ROUND_TRIP
+            rail_segments:
+              type: array
+              minItems: 1
+              maxItems: 20
+              items:
+                $ref: "#/components/schemas/RailSegments"
+    RailSegments:
+      title: RailSegments
+      type: object
+      required:
+        - departure_time
+        - arrival_time
+        - departure_station
+        - arrival_station
+        - transportation_method
+      properties:
+        departure_time:
+          description: The local date and time of the scheduled departure from the
+            departure station, in ISO-8061 date and time format
+            `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          type: string
+          format: date-time
+          maxLength: 50
+        arrival_time:
+          description: The local date and time of the scheduled arrival at the destination
+            station, in ISO-8061 date and time format
+            `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          type: string
+          format: date-time
+          maxLength: 50
+        departure_station:
+          $ref: "#/components/schemas/RailwayStationDetails"
+        arrival_station:
+          $ref: "#/components/schemas/RailwayStationDetails"
+        transportation_method:
+          description: >
+            This attribute represents the specific transportation method by
+            which the passenger is traveling. It captures the mode of
+            transportation used during the Rail product journey, Possible values
+            are:
+                - `BUS` - The Rail product includes bus transportation for certain segments of the itinerary.
+                - `FERRY` - The Rail product involves ferry transportation as part of the journey.
+                - `PUBLIC_TRANSPORT` - The Rail product represents the use of public transportation modes for the journey.
+                - `TRAM` - The Rail product includes tram transportation as part of the journey.
+                - `RAIL` - The Rail product specifically utilizes train transportation for the journey.
+                - `TRANSFER` - The Rail product involves transfers between different modes of transportation.
+                - `OTHER` - The Rail product utilizes transportation methods not covered by the aforementioned categories.
+          type: string
+          enum:
+            - BUS
+            - FERRY
+            - PUBLIC_TRANSPORT
+            - RAIL
+            - TRAM
+            - TRANSFER
+            - OTHERS
+        operating_company:
+          description: This attribute captures the name or identifier of the company
+            responsible for operating the Rail product. It represents the
+            specific operating entity, such as Amtrak, British Railways, or a
+            bus company.
+          type: object
+          properties:
+            marketing_name:
+              description: "The name used by the transportation carrier for marketing purposes
+                in the travel segment. Example: ARX, AMTRAC, ARRIVA"
+              type: string
+              maxLength: 200
+    RailwayStationDetails:
+      title: RailwayStationDetails
+      type: object
+      required:
+        - name
+        - station_code
+        - address
+      properties:
+        name:
+          description: The popularly known name or title by which the railway station is
+            identified.
+          type: string
+          maxLength: 200
+          example: Grand Central Terminal
+        type:
+          description: This attribute provides information about the specific
+            classification assigned to the rail station. It helps differentiate
+            between different types of stations, such as major stations
+            (STATION) or stations located within a city (city).
+          type: string
+          enum:
+            - STATION
+            - CITY
+          example: STATION
+        station_code:
+          description: The unique identifier or code assigned to an individual rail
+            station or a pseudo-station representing all the stations within a
+            specific city, from which rail travel originates.
+          type: string
+          maxLength: 200
+          example: GCT
+        address:
+          $ref: "#/components/schemas/Address"
+        timezone:
+          description: The timezone associated with the location of the station,
+            specifying the local time offset from Coordinated Universal Time
+            (UTC).
+          type: string
+          maxLength: 200
+          example: America/New_York
+    Activities:
+      title: Activities
+      allOf:
+        - $ref: "#/components/schemas/TravelProduct"
+        - type: object
+          required:
+            - activity
+            - operating_company
+            - start_time
+            - end_time
+            - ticket
+          properties:
+            activity:
+              $ref: "#/components/schemas/Activity"
+            operating_company:
+              $ref: "#/components/schemas/OperatingCompany"
+            is_coupon_required:
+              description: "A coupon is typically a document or electronic code that confirms
+                your reservation or purchase for the activity. It serves as
+                proof of payment and allows you to participate in the activity.
+                This field indicates whether a coupon is necessary for this
+                activity. | For example, let's consider two scenarios: |
+                Activity: Adventure Park | is_coupon_required: false | In this
+                case, the attribute is set to 'false,' indicating that no coupon
+                is necessary. However, you might still need to purchase a ticket
+                to gain entry to the adventure park. The ticket serves as proof
+                of payment and grants you access to the park's activities and
+                attractions. | Activity: Spa Package | is_coupon_required: true
+                | Here, the attribute is set to 'true,' indicating that a coupon
+                is required. To participate in the spa package, you would need
+                to present the designated coupon at the spa. The coupon confirms
+                your reservation, serves as proof of payment, and may entitle
+                you to specific spa treatments or discounts."
+              type: boolean
+            location_coordinates:
+              $ref: "#/components/schemas/Coordinates"
+            start_time:
+              description: The field represents the start time of a activity, using the
+                ISO-8061 date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
+              type: string
+              format: date-time
+              maxLength: 50
+            end_time:
+              description: The field represents the end time of a activity, using the ISO-8061
+                date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
+              type: string
+              format: date-time
+              maxLength: 50
+            ticket:
+              description: This field provides information about the tickets available for the
+                activity.
+              type: array
+              items:
+                $ref: "#/components/schemas/Ticket"
+              minItems: 1
+              maxItems: 40
+    Activity:
+      title: Activity
+      description: Provides essential details about a specific activity.
+      type: object
+      required:
+        - type
+        - description
+      properties:
+        type:
+          description: "This field provides a categorization of the different types of
+            activities available within the activity product. It is designed to
+            accommodate the preferences of the API consumer, allowing them to
+            assign a descriptive label or keyword that accurately represents the
+            nature of each activity. Here are some suggested values for this
+            field: | Adventures: This category includes activities such as
+            hiking, zip-lining, rock climbing, bungee jumping, and other
+            adventurous pursuits. | Air, Balloon & Helicopter Tours: This
+            category offers activities like hot air balloon rides, helicopter
+            tours, and aerial sightseeing experiences. | Cruises & Water Tours:
+            This includes options such as boat cruises, yacht tours, river
+            rafting, snorkeling, and diving expeditions. | Nightlife: This
+            category encompasses activities like clubbing, pub crawls, live
+            music events, and cultural performances. These activities
+            predominantly occur during the evening or nighttime."
+          type: string
+          maxLength: 200
+          example: Balloon & Helicopter Tours
+        description:
+          description: This field within the trip information provides additional details
+            or a brief explanation about the specific trip or activity being
+            described
+          type: string
+          maxLength: 200
+          example: 2-Day, 2 Day Ticket Weekend
+    Coordinates:
+      title: Coordinates
+      type: object
+      description: Group of attributes intended to hold information about location
+        coordinates.
+      properties:
+        latitude:
+          type: number
+          description: The latitude in degrees. It must be in the range [-90.0, +90.0].
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          description: The longitude in degrees. It must be in the range [-180.0, +180.0].
+          minimum: -180
+          maximum: 180
+    OperatingCompany:
+      title: OperatingCompany
+      description: This field helps to identify and understand the specific provider
+        or operating company involved in offering the activity.
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          description: This field includes the provider's name.
+          type: string
+          example: VIATOR
+        type:
+          description: "This field indicates the nature or relationship of the vendor
+            associated with a particular activity. | THIRD_PARTY: This value
+            indicates that the vendor is an external entity or third-party
+            provider. | DIRECT: This value signifies that the vendor is a direct
+            entity or provider associated with the organization or platform
+            offering the activity."
+          type: string
+          enum:
+            - THIRD_PARTY
+            - DIRECT
+    Ticket:
+      title: Ticket
+      description: This field provides information about the tickets related to the
+        activity.
+      type: object
+      required:
+        - category
+        - quantity
+      properties:
+        category:
+          type: string
+          description: Describes the type or category of the ticket.
+          enum:
+            - ADULT
+            - CHILD
+            - SENIOR
+            - STUDENT
+            - OTHER
+        quantity:
+          description: This field represents the count or number of a specific ticket type
+            associated with an activity.
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 30
+    Air:
+      title: Air
+      allOf:
+        - $ref: "#/components/schemas/TravelProduct"
+        - type: object
+          required:
+            - type
+            - departure_time
+            - arrival_time
+            - air_segments
+          properties:
+            departure_time:
+              description: Local date and time of departure from original departure location,
+                in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+              type: string
+              format: date-time
+              maxLength: 50
+            arrival_time:
+              description: Local date and time of arrival to final destination location, in
+                ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+              type: string
+              format: date-time
+              maxLength: 50
+            air_segments:
+              description: Additional airline and flight details for each of the trip
+                segments.
+              type: array
+              minItems: 1
+              items:
+                $ref: "#/components/schemas/AirSegment"
+              maxItems: 30
+            flight_type:
+              description: Identifies the type of air trip based on the air destinations.
+              type: string
+              enum:
+                - ROUNDTRIP
+                - ONEWAY
+                - MULTIPLE_DESTINATION
+            passenger_name_record:
+              description: Airline booking confirmation code for the trip.
+              type: string
+              maxLength: 100
+            global_distribution_system_type:
+              description: Associated with Passenger Name Record (PNR).
+              type: string
+              maxLength: 100
+    AirSegment:
+      title: AirSegment
+      type: object
+      required:
+        - airline_code
+        - departure_airport_code
+        - arrival_airport_code
+      properties:
+        airline_code:
+          description: Airline code of the trip segment
+          type: string
+          maxLength: 10
+        departure_airport_code:
+          description: Departure airport of the trip segment
+          type: string
+          maxLength: 10
+        arrival_airport_code:
+          description: Arrival airport of the trip segment
+          type: string
+          maxLength: 10
+        departure_time:
+          description: Local date and time of departure from departure location, in
+            ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          type: string
+          format: date-time
+          maxLength: 50
+        arrival_time:
+          description: Local date and time of arrival to destination location, in ISO-8061
+            date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          type: string
+          format: date-time
+          maxLength: 50
+    Cruise:
+      title: Cruise
+      allOf:
+        - $ref: "#/components/schemas/TravelProduct"
+        - type: object
+          required:
+            - type
+            - departure_time
+            - arrival_time
+            - embarkation_port
+            - disembarkation_port
+            - ship_name
+          properties:
+            departure_time:
+              description: Local date and time of departure from original departure location,
+                in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+              type: string
+              format: date-time
+              maxLength: 50
+            arrival_time:
+              description: Local date and time of arrival from original arrival location, in
+                ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+              type: string
+              format: date-time
+              maxLength: 50
+            embarkation_port:
+              description: Location from where cruise will depart.
+              type: string
+              maxLength: 200
+            disembarkation_port:
+              description: The cruise's final destination.
+              type: string
+              maxLength: 200
+            ship_name:
+              description: Name of the cruise ship.
+              type: string
+              maxLength: 200
+    Car:
+      title: Car
+      allOf:
+        - $ref: "#/components/schemas/TravelProduct"
+        - type: object
+          required:
+            - type
+            - pick_up_location
+            - drop_off_location
+            - pickup_time
+            - return_time
+          properties:
+            pick_up_location:
+              description: Location where the automobile will be picked up.
+              type: string
+              maxLength: 200
+            drop_off_location:
+              description: Location at which the automobile will be returned.
+              type: string
+              maxLength: 200
+            pickup_time:
+              description: Local date and time the automobile will be picked-up, in ISO-8061
+                date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+              type: string
+              format: date-time
+              maxLength: 50
+            return_time:
+              description: Local date and time the automobile will be returned, in ISO-8061
+                date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+              type: string
+              format: date-time
+              maxLength: 50
+    Hotel:
+      title: Hotel
+      allOf:
+        - $ref: "#/components/schemas/TravelProduct"
+        - type: object
+          required:
+            - type
+            - hotel_id
+            - hotel_name
+            - address
+            - checkin_time
+            - checkout_time
+          properties:
+            hotel_id:
+              description: Unique hotel identifier assigned by the partner.
+              type: string
+              maxLength: 200
+              example: "8883333999221"
+            price_withheld:
+              description: Identifies if the product price was withheld from the customer
+                during the booking process.
+              type: boolean
+            hotel_name:
+              description: Name of the hotel.
+              type: string
+              maxLength: 200
+              example: Hotel Expedia
+            room_count:
+              description: Total number of rooms booked within the hotel product collection.
+              type: integer
+              format: int32
+            address:
+              $ref: "#/components/schemas/HotelAddress"
+            checkin_time:
+              description: Local date and time of the hotel check-in, in ISO-8061 date and
+                time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+              type: string
+              format: date-time
+              maxLength: 50
+            checkout_time:
+              description: Local date and time of the hotel check-out, in ISO-8061 date and
+                time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+              type: string
+              format: date-time
+              maxLength: 50
+    HotelAddress:
+      description: Address of a hotel.
+      allOf:
+        - $ref: "#/components/schemas/Address"
+        - required:
+            - address_line1
+            - city
+            - state
+            - zip_code
+            - country_code
+    Payment:
+      title: Payment
+      description: >
+        The `method` field value is used as a discriminator, with the following
+        mapping:
+
+        * `CREDIT_CARD`: `CreditCard`
+
+        * `PAYPAL`: `PayPal`
+
+        * `POINTS`: `Points`
+
+        * `GIFT_CARD`: `GiftCard`
+
+        * `INTERNET_BANK_PAYMENT`: `InternetBankPayment`
+
+        * `DIRECT_DEBIT`: `DirectDebit`
+      type: object
+      required:
+        - brand
+        - method
+        - billing_name
+        - billing_email_address
+        - billing_address
+      discriminator:
+        propertyName: method
+        mapping:
+          CREDIT_CARD: "#/components/schemas/CreditCard"
+          PAYPAL: "#/components/schemas/PayPal"
+          POINTS: "#/components/schemas/Points"
+          GIFT_CARD: "#/components/schemas/GiftCard"
+          INTERNET_BANK_PAYMENT: "#/components/schemas/InternetBankPayment"
+          DIRECT_DEBIT: "#/components/schemas/DirectDebit"
+      properties:
+        brand:
+          description: >
+            The `brand` field value is the payment brand used for payment on
+            this transaction.
+
+            For credit card payment method ensure attributes mentioned in dictionary below are set to corresponding values only.
+
+            Ensure to comply with the naming standards provided in below dictionary. For example, some Payment processors use “Japan Credit Bureau” but “JCB” should be used when calling Fraud API.
+
+            Incorrect `brand` - `card_type` combination will result in data quality issues and result in degraded risk recommendation.
+
+            'brand' is an enum value with the following mapping with CreditCard 'card_type' attribute:
+
+            *       brand                 :      card_type
+
+            * -------------------------------------------------------
+
+            * `AMERICAN_EXPRESS`          : `AMERICAN_EXPRESS`
+
+            * `DINERS_CLUB_INTERNATIONAL` : `DINERS_CLUB`
+
+            * `BC_CARD`                   : `DINERS_CLUB`
+
+            * `DISCOVER`                  : `DISCOVER`
+
+            * `BC_CARD`                   : `DISCOVER`
+
+            * `DINERS_CLUB_INTERNATIONAL` : `DISCOVER`
+
+            * `JCB`                       : `DISCOVER`
+
+            * `JCB`                       : `JCB`
+
+            * `MASTER_CARD`               : `MASTER_CARD`
+
+            * `MAESTRO`                   : `MASTER_CARD`
+
+            * `POSTEPAY_MASTERCARD`       : `MASTER_CARD`
+
+            * `SOLO`                      : `SOLO`
+
+            * `SWITCH`                    : `SWITCH`
+
+            * `MAESTRO`                   : `MAESTRO`
+
+            * `CHINA_UNION_PAY`           : `CHINA_UNION_PAY`
+
+            * `VISA`                      : `VISA`
+
+            * `VISA_DELTA`                : `VISA`
+
+            * `VISA_ELECTRON`             : `VISA`
+
+            * `CARTA_SI`                  : `VISA`
+
+            * `CARTE_BLEUE`               : `VISA`
+
+            * `VISA_DANKORT`              : `VISA`
+
+            * `POSTEPAY_VISA_ELECTRON`    : `VISA`
+
+            * `PAYPAL`                    :
+
+
+            'brand' with 'Points' payment_type is an enum value with following:
+
+            * `EXPEDIA_REWARDS`
+
+            * `AMEX_POINTS`
+
+            * `BANK_OF_AMERICA_REWARDS`
+
+            * `DISCOVER_POINTS`
+
+            * `MASTER_CARD_POINTS`
+
+            * `CITI_THANK_YOU_POINTS`
+
+            * `MERRILL_LYNCH_REWARDS`
+
+            * `WELLS_FARGO_POINTS`
+
+            * `DELTA_SKY_MILES`
+
+            * `UNITED_POINTS`
+
+            * `DISCOVER_MILES`
+
+            * `ALASKA_MILES`
+
+            * `RBC_REWARDS`
+
+            * `BILT_REWARDS`
+
+            * `ORBUCKS`
+
+            * `CHEAP_CASH`
+
+            * `BONUS_PLUS`
+
+            * `ULTIMATE_REWARDS`
+
+
+            'brand' with 'GiftCard' payment_type is an enum value with following:
+
+            * `GIFT_CARD`
+
+
+            'brand' with 'InternetBankPayment' payment_type is an enum value with following:
+
+            * `IBP`
+
+            * `LOCAL_DEBIT_CARD`
+
+            * `SOFORT`
+
+            * `YANDEX`
+
+            * `WEB_MONEY`
+
+            * `QIWI`
+
+            * `BITCOIN`
+
+
+            'brand' with 'DirectDebit' payment_type is an enum value with following:
+
+            * `ELV`
+
+            * `INTER_COMPANY`
+          type: string
+          enum:
+            - AMERICAN_EXPRESS
+            - DINERS_CLUB_INTERNATIONAL
+            - BC_CARD
+            - DISCOVER
+            - JCB
+            - MASTER_CARD
+            - MAESTRO
+            - POSTEPAY_MASTERCARD
+            - SOLO
+            - SWITCH
+            - CHINA_UNION_PAY
+            - VISA
+            - VISA_DELTA
+            - VISA_ELECTRON
+            - CARTA_SI
+            - CARTE_BLEUE
+            - VISA_DANKORT
+            - POSTEPAY_VISA_ELECTRON
+            - PAYPAL
+            - EXPEDIA_REWARDS
+            - AMEX_POINTS
+            - BANK_OF_AMERICA_REWARDS
+            - DISCOVER_POINTS
+            - MASTER_CARD_POINTS
+            - CITI_THANK_YOU_POINTS
+            - MERRILL_LYNCH_REWARDS
+            - WELLS_FARGO_POINTS
+            - DELTA_SKY_MILES
+            - UNITED_POINTS
+            - DISCOVER_MILES
+            - ALASKA_MILES
+            - RBC_REWARDS
+            - BILT_REWARDS
+            - ORBUCKS
+            - CHEAP_CASH
+            - BONUS_PLUS
+            - ULTIMATE_REWARDS
+            - GIFT_CARD
+            - IBP
+            - LOCAL_DEBIT_CARD
+            - SOFORT
+            - YANDEX
+            - WEB_MONEY
+            - QIWI
+            - BITCOIN
+            - ELV
+            - INTER_COMPANY
+        method:
+          $ref: "#/components/schemas/PaymentMethod"
+        reason:
+          $ref: "#/components/schemas/PaymentReason"
+        billing_name:
+          $ref: "#/components/schemas/Name"
+        billing_address:
+          allOf:
+            - $ref: "#/components/schemas/Address"
+            - required:
+                - zip_code
+                - address_line1
+                - city
+                - country_code
+        billing_email_address:
+          description: Email address associated with the payment.
+          type: string
+          format: email
+          maxLength: 200
+        authorized_amount:
+          $ref: "#/components/schemas/Amount"
+        verified_amount:
+          $ref: "#/components/schemas/Amount"
+        three_digits_secure_criteria:
+          $ref: "#/components/schemas/PaymentThreeDSCriteria"
+        operations:
+          $ref: "#/components/schemas/Operations"
+    PaymentThreeDSCriteria:
+      title: PaymentThreeDSCriteria
+      description: Payment ThreeDS criteria attributes.
+      type: object
+      properties:
+        probable_flag:
+          description: This is a flag passed that indicates that this transaction could
+            potentially go through 3DS.
+          type: boolean
+        transaction_model:
+          description: Model used to process payment transaction.
+          type: string
+          maxLength: 200
+    Operations:
+      title: Operations
+      description: >
+        All operations related to a payment throughout its lifespan. An
+        operation represents an event external to Fraud Prevention Service that
+        specifies to perform a payment operation. Possible operation types
+        include:
+
+
+        - `Verify`
+
+
+        - `Authorize`
+
+
+        - `AuthorizeReversal`
+
+
+        - `Capture`
+
+
+        - `Refund`
+      type: object
+      properties:
+        verify:
+          $ref: "#/components/schemas/Verify"
+        authorize:
+          $ref: "#/components/schemas/Authorize"
+        authorize_reversal:
+          $ref: "#/components/schemas/AuthorizeReversal"
+        capture:
+          $ref: "#/components/schemas/Capture"
+        refunds:
+          type: array
+          items:
+            $ref: "#/components/schemas/Refund"
+          maxItems: 20
+    Verify:
+      title: Verify
+      description: A verify operation represents the intent to verify the payment
+        associated with this transaction.
+      allOf:
+        - $ref: "#/components/schemas/PaymentOperation"
+        - type: object
+          properties:
+            type:
+              $ref: "#/components/schemas/VerificationType"
+    PaymentReason:
+      title: PaymentReason
+      description: >
+        The reason of payment. Possible values:
+
+        - `FULL` - If the amount is paid i full for the order
+
+        - `DEPOSIT` - The initial payment. Amount to be paid up front.
+
+        - `SCHEDULED` - The amount to be payment based on a schedule for the remaining portion of the booking amount.
+
+        - `SUBSEQUENT` - An additional amount paid that was not originally scheduled.
+
+        - `DEFERRED`
+      type: string
+      enum:
+        - FULL
+        - DEPOSIT
+        - SCHEDULED
+        - SUBSEQUENT
+        - DEFERRED
+    VerificationType:
+      title: VerificationType
+      description: The type of the verification used to verify the instrument. If the
+        Card Verfication Value was provided to verify the credit card used for
+        the transaction, `type = CVV`.
+      type: string
+      enum:
+        - CVV
+        - 3DS
+    Authorize:
+      title: Authorize
+      description: Authorize operation on the payment. An authorize operation
+        represents placing the funds on hold with the specified form of payment.
+      allOf:
+        - $ref: "#/components/schemas/PaymentOperation"
+        - type: object
+    AuthorizeReversal:
+      title: AuthorizeReversal
+      description: Authorize Reversal operation on the payment. An authorize reversal
+        operation represents a notification received usually from a 3rd party
+        payment processor to indicate that an authorization hold should be
+        released as a result of a sale being partially or completely cancelled.
+      allOf:
+        - $ref: "#/components/schemas/PaymentOperation"
+        - type: object
+    Capture:
+      title: Capture
+      description: Capture operation on the payment. A capture operation represents a
+        notification received usually from a 3rd party payment processor to
+        indicate that the funds placed on hold will be captured and the funds
+        transfer process will occur from the customer's funds to the merchant's
+        funds.
+      allOf:
+        - $ref: "#/components/schemas/PaymentOperation"
+        - type: object
+    Refund:
+      title: Refund
+      description: Refund operation on the payment. A refund operation represents the
+        intent to refund a previous charge.
+      allOf:
+        - $ref: "#/components/schemas/PaymentOperation"
+        - type: object
+    PaymentOperation:
+      title: PaymentOperation
+      type: object
+      properties:
+        id:
+          type: string
+          maxLength: 200
+        amount:
+          $ref: "#/components/schemas/Amount"
+        outcome:
+          $ref: "#/components/schemas/PaymentOutcome"
+    PaymentOutcome:
+      title: PaymentOutcome
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/PaymentStatus"
+        code:
+          description: A mnemonic code for the payment processing.
+          type: string
+          maxLength: 200
+        description:
+          description: A short description providing additional explanation regarding the
+            mnemonic code.
+          type: string
+          maxLength: 200
+    PaymentStatus:
+      title: PaymentStatus
+      description: The status of the payment operation.
+      type: string
+      enum:
+        - COMPLETED
+        - FAILED
+    PaymentMethod:
+      title: PaymentMethod
+      description: "The payment method used at the time of purchase for the
+        transaction. Supported `method`'s are: `CREDIT_CARD`, `PAYPAL`,
+        `POINTS`, `GIFT_CARD`, `INTERNET_BANK_PAYMENT`, `DIRECT_DEBIT`."
+      type: string
+      enum:
+        - CREDIT_CARD
+        - PAYPAL
+        - POINTS
+        - GIFT_CARD
+        - INTERNET_BANK_PAYMENT
+        - DIRECT_DEBIT
+    TravelProductType:
+      title: TravelProductType
+      description: Type of product.
+      type: string
+      enum:
+        - CRUISE
+        - AIR
+        - CAR
+        - INSURANCE
+        - HOTEL
+        - RAIL
+        - ACTIVITIES
+    Insurance:
+      title: Insurance
+      allOf:
+        - $ref: "#/components/schemas/TravelProduct"
+        - type: object
+          required:
+            - type
+    CreditCard:
+      title: CreditCard
+      allOf:
+        - $ref: "#/components/schemas/Payment"
+        - type: object
+          required:
+            - billing_address
+            - method
+            - card_type
+            - card_number
+            - expiry_date
+            - telephones
+          properties:
+            card_type:
+              description: >
+                The 'card_type' field value is an enum value which is associated
+                with the payment method of the specific payment instrument.
+
+                For credit card payment method ensure attributes mentioned in dictionary below are set to corresponding values only.
+
+                Ensure to comply with the naming standards provided in below dictionary. For example, some Payment processors use “Japan Credit Bureau” but “JCB” should be used when calling Fraud API.
+
+                Incorrect `card_type` - `brand` combination will result in data quality issues and result in degraded risk recommendation.
+
+                'card_type' is an enum value with the following mapping with Payment `brand` attribute:
+
+                *       card_type            :          brand
+
+                * --------------------------------------------------------
+
+                * `AMERICAN_EXPRESS`         : `AMERICAN_EXPRESS`
+
+                * `DINERS_CLUB`              : `DINERS_CLUB_INTERNATIONAL`
+
+                * `DINERS_CLUB`              : `BC_CARD`
+
+                * `DISCOVER`                 : `DISCOVER`
+
+                * `DISCOVER`                 : `BC_CARD`
+
+                * `DISCOVER`                 : `DINERS_CLUB_INTERNATIONAL`
+
+                * `DISCOVER`                 : `JCB`
+
+                * `JCB`                      : `JCB`
+
+                * `MASTER_CARD`              : `MASTER_CARD`
+
+                * `MASTER_CARD`              : `MAESTRO`
+
+                * `MASTER_CARD`              : `POSTEPAY_MASTERCARD`
+
+                * `SOLO`                     : `SOLO`
+
+                * `SWITCH`                   : `SWITCH`
+
+                * `MAESTRO`                  : `MAESTRO`
+
+                * `CHINA_UNION_PAY`          : `CHINA_UNION_PAY`
+
+                * `VISA`                     : `VISA`
+
+                * `VISA`                     : `VISA_DELTA`
+
+                * `VISA`                     : `VISA_ELECTRON`
+
+                * `VISA`                     : `CARTA_SI`
+
+                * `VISA`                     : `CARTE_BLEUE`
+
+                * `VISA`                     : `VISA_DANKORT`
+
+                * `VISA`                     : `POSTEPAY_VISA_ELECTRON`
+              type: string
+              enum:
+                - AMERICAN_EXPRESS
+                - DINERS_CLUB
+                - DISCOVER
+                - JCB
+                - MASTER_CARD
+                - SOLO
+                - SWITCH
+                - MAESTRO
+                - CHINA_UNION_PAY
+                - VISA
+            card_number:
+              description: All the digits (unencrypted) of the credit card number associated
+                with the payment.
+              type: string
+              maxLength: 200
+            expiry_date:
+              description: Expiration date of the credit card used for payment, in ISO-8061
+                date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+              type: string
+              format: date-time
+              maxLength: 50
+            electronic_commerce_indicator:
+              description: Electronic Commerce Indicator, a two or three digit number usually
+                returned by a 3rd party payment processor in regards to the
+                authentication used when gathering the cardholder's payment
+                credentials.
+              type: string
+              maxLength: 200
+            virtual_credit_card_flag:
+              description: A flag to indicate that the bank card being used for the charge is
+                a virtual credit card.
+              type: boolean
+            wallet_type:
+              description: "If a virtual/digital form of payment was used, the type of digital
+                wallet should be specified here. Possible `wallet_type`'s
+                include: `Google` or `ApplePay`."
+              type: string
+              maxLength: 200
+            card_avs_response:
+              type: string
+              maxLength: 50
+              description: A field used to confirm if the address provided at the time of
+                purchase matches what the bank has on file for the Credit Card.
+            card_cvv_response:
+              type: string
+              maxLength: 20
+              description: A field used to confirm the Card Verification Value on the Credit
+                Card matches the Credit Card used at the time of purchase.
+            telephones:
+              description: Telephone(s) associated with card holder and credit card.
+              type: array
+              minItems: 1
+              maxItems: 20
+              items:
+                $ref: "#/components/schemas/Telephone"
+            merchant_order_code:
+              description: Reference code passed to acquiring bank at the time of payment.
+                This code is the key ID that ties back to payments data at the
+                payment level.
+              type: string
+              maxLength: 200
+            card_authentication_failure_count:
+              description: Total authentication failure count for given card.
+              type: integer
+    PayPal:
+      title: PayPal
+      allOf:
+        - $ref: "#/components/schemas/Payment"
+        - type: object
+          required:
+            - method
+            - payer_id
+            - transaction_id
+          properties:
+            payer_id:
+              description: Unique PayPal Customer Account identification number.
+              type: string
+              maxLength: 200
+            transaction_id:
+              description: Unique transaction number to identify Auth calls at PayPal.
+              type: string
+              maxLength: 200
+            merchant_order_code:
+              description: Reference code passed to acquiring bank at the time of payment.
+                This code is the key ID that ties back to payments data at the
+                payment level.
+              type: string
+              maxLength: 200
+    Points:
+      title: Points
+      allOf:
+        - $ref: "#/components/schemas/Payment"
+        - type: object
+          required:
+            - method
+            - account_id
+          properties:
+            account_id:
+              description: Points account id.
+              type: string
+              maxLength: 200
+    GiftCard:
+      title: GiftCard
+      allOf:
+        - $ref: "#/components/schemas/Payment"
+        - type: object
+          required:
+            - method
+            - card_number
+            - card_holder_name
+            - pin
+          properties:
+            card_number:
+              description: Gift card number.
+              type: string
+              pattern: ^[0-9A-Za-z]{4,16}$
+              maxLength: 16
+              example: 123456ABCDabcd
+            card_holder_name:
+              description: The name of gift card holder.
+              type: string
+              maxLength: 200
+            pin:
+              description: The PIN of gift card.
+              type: string
+              pattern: ^[0-9]{4,8}$
+              maxLength: 8
+              example: "123456"
+    InternetBankPayment:
+      title: InternetBankPayment
+      allOf:
+        - $ref: "#/components/schemas/Payment"
+        - type: object
+          required:
+            - method
+            - bank_id
+            - bank_branch_code
+            - telephones
+          properties:
+            bank_id:
+              description: The bank_id provided by the internet bank payment(IBP) provider
+                (DRWP aka NetGiro) for the bank used for processing the payment.
+              type: string
+              maxLength: 15
+            bank_branch_code:
+              description: A code that identifies the bank branch for internet bank
+                payment(IBP).
+              type: string
+              maxLength: 15
+            telephones:
+              description: Telephone(s) associated with internet bank payment(IBP) provider.
+              type: array
+              minItems: 1
+              maxItems: 20
+              items:
+                $ref: "#/components/schemas/Telephone"
+    DirectDebit:
+      title: DirectDebit
+      allOf:
+        - $ref: "#/components/schemas/Payment"
+        - type: object
+          required:
+            - method
+            - routing_number
+            - account_number
+            - telephones
+          properties:
+            routing_number:
+              description: A code that identifies the financial institution for a specific
+                bank account.
+              type: string
+              maxLength: 15
+              example: "100000000"
+            account_number:
+              description: Cleartext (unencrypted) DirectDebit bank account number associated
+                with the payment instrument.
+              type: string
+              maxLength: 100
+            telephones:
+              description: Telephone(s) associated with direct debit payment provider.
+              type: array
+              minItems: 1
+              maxItems: 20
+              items:
+                $ref: "#/components/schemas/Telephone"
+    Name:
+      title: Name
+      description: Group of attributes intended to hold information about a customer
+        or traveler's name for the order.
+      type: object
+      required:
+        - first_name
+        - last_name
+      properties:
+        last_name:
+          description: Surname, or last name, of the person.
+          type: string
+          maxLength: 200
+        first_name:
+          description: Given, or first name, of the person.
+          type: string
+          maxLength: 200
+        middle_name:
+          description: Middle name of the person.
+          type: string
+          maxLength: 200
+        title:
+          description: Title of the person for name (e.g. Mr., Ms. etc).
+          type: string
+          maxLength: 200
+        suffix:
+          description: Generational designations (e.g. Sr, Jr, III) or values that
+            indicate the individual holds a position, educational degree,
+            accreditation, office, or honor (e.g. PhD, CCNA, OBE).
+          type: string
+          maxLength: 50
+    Telephone:
+      title: Telephone
+      description: Group of attributes intended to hold information about phone number
+        associated with the transaction.  A user can have one to many phone
+        numbers (home, work, mobile, etc.).
+      type: object
+      required:
+        - country_access_code
+        - area_code
+        - phone_number
+      properties:
+        type:
+          $ref: "#/components/schemas/TelephoneType"
+        platform_type:
+          $ref: "#/components/schemas/TelephonePlatformType"
+        country_access_code:
+          description: Numeric digit between 1 to 3 characters used to represent the
+            country code for international dialing.  Does not include symbols,
+            spaces, or leading zeros.
+          type: string
+          pattern: ^[0-9]{1,3}$
+          maxLength: 3
+          example: "1"
+        area_code:
+          description: "A number prefixed to an individual telephone number: used in
+            making long-distance calls.  Does not include symbols, spaces, or
+            leading zeros."
+          type: string
+          pattern: ^[0-9]{1,20}$
+          maxLength: 20
+          example: "1"
+        phone_number:
+          description: A number that is dialed on a telephone, without the country or area
+            codes, to reach a particular person, business, etc.  Does not
+            include symbols, spaces, or leading zeros.
+          type: string
+          pattern: ^[0-9]{1,50}$
+          maxLength: 50
+          example: "1234567"
+        extension_number:
+          description: The number used to reach an individual once a phone connection is
+            established.  Does not include symbols, spaces, or leading zeros.
+          type: string
+          pattern: ^[0-9]{1,20}$
+          maxLength: 20
+          example: "89"
+        preference_rank:
+          description: Ranking of order of user preference for contact via text (if type
+            is Mobile) or voice.  `0` means no preference.  `1` is the primary
+            phone, `2` is the secondary phone, etc.
+          type: number
+        last_verified_date_time:
+          description: Local date and time user validated possession of their phone number
+            via a text or voice multi factor authentication challenge, in
+            ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          type: string
+          format: date-time
+          maxLength: 50
+        verified_flag:
+          description: Flag indicating whether user passed validation of possession of
+            their phone number via a text or voice multi factor authentication
+            challenge.
+          type: boolean
+    TelephoneType:
+      title: TelephoneType
+      description: "Classification of the phone (e.g. `Home`, `Mobile`). "
+      type: string
+      enum:
+        - HOME
+        - MOBILE
+        - BUSINESS
+        - FAX
+        - OTHER
+    TelephonePlatformType:
+      title: TelephonePlatformType
+      description: Classification of the phone platform.
+      type: string
+      enum:
+        - MOBILE
+        - LANDLINE
+        - VOIP
+    Email:
+      title: Email
+      description: Group of attributes intended to hold information about email
+        address associated with the transaction.
+      type: object
+      properties:
+        email_address:
+          description: Full email address including the alias, @ symbol, domain, and root
+            domain.
+          type: string
+          format: email
+          maxLength: 200
+    Amount:
+      title: Amount
+      type: object
+      required:
+        - value
+        - currency_code
+      properties:
+        value:
+          description: The amount required in payment for the product/order in local
+            currency (including any taxes and fees).
+          type: number
+          format: double
+        currency_code:
+          description: The ISO  alpha-3 country code for the amount currency.
+          type: string
+          pattern: ^[A-Z]{3}$
+          maxLength: 3
+  securitySchemes:
+    orderPurchaseScreenAuth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /identity/oauth2/v3/token?grant_type=client_credentials
+          scopes:
+            fraudandrisk.stub.order-purchase-screen: Use Fraud Systems for screening orders
+    orderPurchaseUpdateAuth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /identity/oauth2/v3/token?grant_type=client_credentials
+          scopes:
+            fraudandrisk.stub.order-purchase-update: Use Fraud Systems for updating orders

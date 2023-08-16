@@ -26,15 +26,19 @@ def get_sdk(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     config = configparser.ConfigParser()
     config.read(f"{Path(__file__).parent}/sdk.config")
 
-    api = config["sdk"]["namespace"]
-    classname = "".join([word.capitalize() for word in re.findall(r"[a-zA-Z0-9]+", api)])
+    classname = "".join(list(map(lambda s: s[0].upper() + s[1::] if len(s) > 1 else s[0].upper(), re.findall(r"[a-zA-Z0-9]+", config["sdk"]["namespace"]))))
+
+    api = "".join([" " + classname[index] if index and classname[index].isupper() else classname[index] for index in range(len(classname))])
+
     namespace = classname.lower()
-    classname += "Client"
+
     version = config["sdk"]["version"]
+
     id = f"openworld-sdk-python-{namespace}"
+
     package = f"openworld.sdk.{namespace}"
 
-    return {"api": api, "version": version, "classname": classname, "namespace": namespace, "package": package, "id": id}
+    return {"api": api, "version": version, "classname": classname + "Client", "namespace": namespace, "package": package, "id": id}
 
 
 visit: Visitor = get_sdk

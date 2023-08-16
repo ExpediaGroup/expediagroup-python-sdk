@@ -67,7 +67,7 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
         apply_default_values_for_required_fields: bool = False,
         force_optional_for_required_fields: bool = False,
         class_name: Optional[str] = None,
-        use_standard_collections: bool = False,
+        use_standard_collections: bool = True,
         base_path: Optional[pathlib.Path] = None,
         use_schema_description: bool = True,
         reuse_model: bool = False,
