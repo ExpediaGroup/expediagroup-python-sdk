@@ -83,7 +83,7 @@ class FraudPreventionV2Client:
         query = {key: value for key, value in {}.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
-        request_url /= "/test/fraud-prevention/v2/order/purchase/screen"
+        request_url /= "/fraud-prevention/v2/order/purchase/screen"
         request_url.query.set(query)
         request_url.path.normalize()
 
@@ -137,7 +137,7 @@ class FraudPreventionV2Client:
         query = {key: value for key, value in {}.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
-        request_url /= "/test/fraud-prevention/v2/order/purchase/update"
+        request_url /= "/fraud-prevention/v2/order/purchase/update"
         request_url.query.set(query)
         request_url.path.normalize()
 
