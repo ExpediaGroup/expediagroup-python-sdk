@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import annotations
+
 import platform
-from typing import *
+from typing import Union
 from uuid import UUID, uuid4
 
 from furl import furl
@@ -23,23 +25,38 @@ from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
 from openworld.sdk.core.constant import header
 
-from .model import *
+from .model import (
+    BadGatewayError,
+    BadRequestError,
+    ForbiddenError,
+    GatewayTimeoutError,
+    InternalServerError,
+    NotFoundError,
+    OrderPurchaseScreenRequest,
+    OrderPurchaseScreenResponse,
+    OrderPurchaseUpdateNotFoundError,
+    OrderPurchaseUpdateRequest,
+    OrderPurchaseUpdateResponse,
+    ServiceUnavailableError,
+    TooManyRequestsError,
+    UnauthorizedError,
+)
 
 
 class FraudPreventionV2Client:
     def __init__(self, client_config: ClientConfig):
-        r"""F r a u d P r e v e n t i o n V 2 API Client.
+        r"""Fraud Prevention V2 API Client.
 
         Args:
             client_config(ClientConfig): SDK Client Configurations Holder.
         """
         python_version = platform.python_version()
-        os_name, os_version, *_ = platform.platform().split('-')
-        sdk_metadata = f'open-world-sdk-python-fraudpreventionv2/1.4.0'
+        os_name, os_version, *_ = platform.platform().split("-")
+        sdk_metadata = "open-world-sdk-python-fraudpreventionv2/1.4.0"
 
         self.__api_client = ApiClient(client_config, _OpenWorldAuthClient)
 
-        self.__user_agent = f'{sdk_metadata} (Python {python_version}; {os_name} {os_version})'
+        self.__user_agent = f"{sdk_metadata} (Python {python_version}; {os_name} {os_version})"
 
     def screen(
         self, transaction_id: UUID = uuid4(), body: OrderPurchaseScreenRequest = None
@@ -66,13 +83,13 @@ class FraudPreventionV2Client:
         query = {key: value for key, value in {}.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
-        request_url /= f'/fraud-prevention/v2/order/purchase/screen'
+        request_url /= "/fraud-prevention/v2/order/purchase/screen"
         request_url.query.set(query)
         request_url.path.normalize()
 
         return self.__api_client.call(
             headers=headers,
-            method='post',
+            method="post",
             body=body,
             response_models=[
                 OrderPurchaseScreenResponse,
@@ -120,13 +137,13 @@ class FraudPreventionV2Client:
         query = {key: value for key, value in {}.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
-        request_url /= f'/fraud-prevention/v2/order/purchase/update'
+        request_url /= "/fraud-prevention/v2/order/purchase/update"
         request_url.query.set(query)
         request_url.path.normalize()
 
         return self.__api_client.call(
             headers=headers,
-            method='post',
+            method="post",
             body=body,
             response_models=[
                 OrderPurchaseUpdateResponse,
