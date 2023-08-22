@@ -26,10 +26,6 @@ class {{ classname }}:
         {% endif %}
         self.__user_agent = f'{sdk_metadata} (Python {python_version}; {os_name} {os_version})'
 
-        {% for model in models %}
-
-        {% endfor %}
-
     {% for operation in operations %}
     def {{operation.function_name}}(self, transaction_id: UUID = uuid4(), {{operation.snake_case_arguments}}) -> {{operation.return_type}}:
         r"""{{ operation.description }}
@@ -67,5 +63,4 @@ Args:
             response_models={{ operation.return_type.removeprefix('Union')}},
             url=request_url
         )
-
 {% endfor %}

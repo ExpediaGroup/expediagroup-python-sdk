@@ -17,10 +17,9 @@ from pathlib import Path
 
 from datamodel_code_generator.imports import Imports
 from datamodel_code_generator.model import DataModel
-from datamodel_code_generator.model.base import BaseClassDataType
 from datamodel_code_generator.parser.base import sort_data_models
 from datamodel_code_generator.types import DataType
-from fastapi_code_generator.parser import OpenAPIParser, Operation
+from fastapi_code_generator.parser import OpenAPIParser
 from fastapi_code_generator.visitor import Visitor
 from pydantic import BaseModel, Extra, Field, parse_obj_as
 
@@ -228,19 +227,6 @@ def parse_sorted_aliases(models: dict[str, DataModel], discriminators: list[Disc
     return sorted(aliases, key=lambda alias_: alias_.order)
 
 
-def set_exceptions_models(operations: list[Operation], models: dict[str, DataModel]):
-    error_models_classnames = set()
-    ok_response_code_range = range(200, 300)
-
-    for operation in list(filter(lambda op: len(op.additional_responses.keys()), operations)):
-        error_models_classnames: set[DataModel] = {
-            model for model in [metadata["model"] for code, metadata in operation.additional_responses.items() if code not in ok_response_code_range]
-        }
-
-    for model_classname in models.keys():
-        setattr(models[model_classname], "is_error_model", model_classname in error_models_classnames)
-
-
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     r"""A visitor that exposes models and related data to `jinja2` templates.
 
@@ -258,8 +244,6 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     discriminators: list[Discriminator] = parse_discriminators(parser=parser, models=models)
 
     apply_discriminators_to_models(discriminators=discriminators, models=models)
-
-    set_exceptions_models(operations=parser.operations.values(), models=models)
 
     aliases: list[Alias] = parse_sorted_aliases(models=models, discriminators=discriminators)
     is_aliased: collections.defaultdict[str, bool] = collections.defaultdict(bool, {alias.parent_classname: True for alias in aliases})

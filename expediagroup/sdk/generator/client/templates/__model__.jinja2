@@ -21,7 +21,7 @@ from pydantic import Extra
 {{ decorator }}
 {% endfor -%}
 
-class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif %}({{ model.base_class }}{% if is_aliased[model.base_class] %}Generic{% endif %}, {% if model.is_error_model %} Exception,{% endif %}{% if model.base_class != 'Enum' %} smart_union=True, extra=Extra.forbid,{% endif %}): {% if comment is defined %}  # {{ model.comment }}{% endif %}
+class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif %}({{ model.base_class }}{% if is_aliased[model.base_class] %}Generic{% endif %},{% if model.base_class != 'Enum' %} smart_union=True, extra=Extra.forbid,{% endif %}): {% if comment is defined %}  # {{ model.comment }}{% endif %}
     r"""pydantic model {{ model.class_name }}{%- if model.description %}: {{ model.description }}{%- endif %}
 {# comment for new line #}
 {%- if model.fields %}Attributes:
