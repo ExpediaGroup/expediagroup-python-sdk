@@ -20,9 +20,9 @@ from http import HTTPStatus
 import pydantic.schema
 import requests
 
-from openworld.sdk.core.constant import constant
-from openworld.sdk.core.model.authentication import Credentials
-from openworld.sdk.core.model.rapid_auth import RapidAuthHeader, RapidToken
+from expediagroup.sdk.core.constant import constant
+from expediagroup.sdk.core.model.authentication import Credentials
+from expediagroup.sdk.core.model.rapid_auth import RapidAuthHeader, RapidToken
 
 VALID_KEY: str = "valid_key"
 

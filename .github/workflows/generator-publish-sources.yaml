@@ -19,13 +19,13 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: sdk
-          path: openworld/sdk/generator/package
+          path: expediagroup/sdk/generator/package
       - uses: actions/download-artifact@v3
         with:
           name: specs
-          path: openworld/sdk/generator/package
+          path: expediagroup/sdk/generator/package
       - name: Publish Code
-        working-directory: openworld/sdk/generator/package
+        working-directory: expediagroup/sdk/generator/package
         run: |
           git config --global user.email "oss@expediagroup.com"
           git config --global user.name "Expedia Group Open Source"

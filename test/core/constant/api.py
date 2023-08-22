@@ -22,7 +22,7 @@ from test.core.constant import authentication as auth_constant
 import pydantic.schema
 import requests
 
-from openworld.sdk.core.model.error import Error
+from expediagroup.sdk.core.model.error import Error
 
 METHOD = "post"
 

@@ -1,0 +1,71 @@
+{{ imports }}
+import json
+import platform
+import pydantic.schema
+from expediagroup.sdk.core.client.api import ApiClient
+from expediagroup.sdk.core.constant import header
+from expediagroup.sdk.core.configuration.client_config import ClientConfig
+from furl import furl
+from uuid import UUID, uuid4
+{% if api.lower() == "rapid" %}from expediagroup.sdk.core.client.rapid_auth_client import _RapidAuthClient
+{% else %}from expediagroup.sdk.core.client.expediagroup_auth_client import _ExpediaGroupAuthClient
+{% endif %}
+class {{ classname }}:
+    def __init__(self, client_config: ClientConfig):
+        r"""{{ api }} API Client.
+
+        Args:
+            client_config(ClientConfig): SDK Client Configurations Holder.
+        """
+        python_version = platform.python_version()
+        os_name, os_version, *_ = platform.platform().split('-')
+        sdk_metadata = 'open-world-sdk-python-{{ namespace }}/{{ version }}'
+
+        {% if api.lower() == "rapid" %}self.__api_client = ApiClient(client_config, _RapidAuthClient)
+        {% else %}self.__api_client = ApiClient(client_config, _ExpediaGroupAuthClient)
+        {% endif %}
+        self.__user_agent = f'{sdk_metadata} (Python {python_version}; {os_name} {os_version})'
+
+        {% for model in models %}
+
+        {% endfor %}
+
+    {% for operation in operations %}
+    def {{operation.function_name}}(self, transaction_id: UUID = uuid4(), {{operation.snake_case_arguments}}) -> {{operation.return_type}}:
+        r"""{{ operation.description }}
+Args:
+{% for arguemnt in operation.snake_case_arguments_list %}   {{ arguemnt.name }}({{ arguemnt.type_hint }}{% if not arguemnt.required %}, optional{% endif %}): {{ arguemnt.description.replace("\n", "") }}
+{% endfor %}"""
+        headers = {
+            header.TRANSACTION_ID: transaction_id,
+            header.USER_AGENT: self.__user_agent,
+        {% for arguemnt in operation.snake_case_arguments_list %}
+            {% if arguemnt.in_.value == 'header' %}
+            '{{ arguemnt.alias }}': {{ arguemnt.name.strip() }},
+            {% endif %}
+        {% endfor %}
+        }
+
+        query = {key: value for key, value in {
+        {% for arguemnt in operation.snake_case_arguments_list %}
+            {% if arguemnt.in_.value == 'query' %}
+            '{{ arguemnt.alias }}': json.loads(json.dumps({{ arguemnt.name.strip() }}, default=pydantic.schema.pydantic_encoder)),
+            {% set has_query_params = True %}
+            {% endif %}
+            {% endfor %}
+        }.items() if value}
+
+        request_url = furl(self.__api_client.endpoint)
+        request_url /= {% if has_query_params %}f{% endif %}'{{operation.path}}'
+        request_url.query.set(query)
+        request_url.path.normalize()
+
+        response_object = self.__api_client.call(
+            headers=headers,
+            method='{{ operation.method }}',
+            body={% if 'body' in operation.snake_case_arguments %}body{% else %}None{% endif %},
+            response_models={{ operation.return_type.removeprefix('Union')}},
+            url=request_url
+        )
+
+{% endfor %}

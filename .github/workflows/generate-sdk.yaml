@@ -35,13 +35,13 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: specs
-          path: openworld/sdk/generator
+          path: expediagroup/sdk/generator
       - name: generate_sdk
-        working-directory: openworld/sdk/generator
+        working-directory: expediagroup/sdk/generator
         run: |
           echo ${{ github.event.inputs.name }}
           ./scripts/generate-sdk.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i ./specs.yaml
       - uses: actions/upload-artifact@v3
         with:
           name: sdk
-          path: openworld/sdk/generator/package/dist
+          path: expediagroup/sdk/generator/package/dist
