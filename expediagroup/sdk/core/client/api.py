@@ -76,7 +76,6 @@ class ApiClient:
         body: pydantic.BaseModel,
         headers: dict = dict(),  # noqa
         response_models: Optional[list[Any]] = [None],  # noqa
-        response_code_to_model_mapping: dict[str, Any] = dict(),
     ) -> Any:
         r"""Sends HTTP request to API.
 
