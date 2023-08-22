@@ -56,7 +56,7 @@ Args:
         request_url.query.set(query)
         request_url.path.normalize()
 
-        response_object = self.__api_client.call(
+        return self.__api_client.call(
             headers=headers,
             method='{{ operation.method }}',
             body={% if 'body' in operation.snake_case_arguments %}body{% else %}None{% endif %},
