@@ -23,6 +23,10 @@ on:
       name:
         description: 'Generated SDK name'
         required: true
+      product_endpoint:
+        description: 'Endpoint to prepend specs paths with'
+        required: true
+        type: string
       specs_url:
         description: 'URL to download API specs from'
         required: true
@@ -40,7 +44,7 @@ jobs:
     needs: [ download_specs ]
     uses: ./.github/workflows/generator-transform-specs.yaml
     with:
-      configurations: -th -te -tt ${{ github.event.inputs.name }}
+      configurations: -th -te ${{ github.event.inputs.product_endpoint }} -tt ${{ github.event.inputs.name }}
 
 
   generate_sdk:
