@@ -138,21 +138,6 @@ class ModelUtils:
         return sorted_operations
 
 
-class OperationResponseUtil:
-    @staticmethod
-    def parse_response_operation_responses(operation: Operation):
-        pass
-
-    @staticmethod
-    def parse_response_operations_responses(parser: OpenAPIParser):
-        operations: list[Operation] = parser.operations.values()
-        for operation in operations:
-            if isinstance(operation, Operation):
-                print(operation.responses)
-            else:
-                print(operation)
-
-
 class OperationParamUtils:
     r"""A class holding static-methods that are used to post-process operations params that are:
     + Unwanted or to be hidden: Those should be removed from an operation's params list.
@@ -234,8 +219,6 @@ def post_process_operations(parser: OpenAPIParser):
     Returns:
         list[Operation]
     """
-    OperationResponseUtil.parse_response_operations_responses(parser)
-
     models = {model.class_name: model for model in parser.results if isinstance(model, DataModel)}
 
     non_schema_models = sorted(ModelUtils.parse_non_schema_models(parser), key=lambda m: len(m.class_name), reverse=True)
