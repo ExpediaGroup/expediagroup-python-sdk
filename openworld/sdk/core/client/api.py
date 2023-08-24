@@ -56,9 +56,10 @@ class ApiClient:
         response_models: list[pydantic.BaseModel],
         error_responses: dict[int, Any],
     ):
-        exception: typing.Union[service_exception.OpenWorldServiceException, None] = None
 
         if response.status_code not in OK_STATUS_CODES_RANGE:
+            exception: service_exception.OpenWorldServiceException
+
             if response.status_code not in error_responses.keys():
                 exception = service_exception.OpenWorldServiceException.of(
                     error=Error.parse_obj(response.json()),
