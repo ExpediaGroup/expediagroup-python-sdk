@@ -14,6 +14,7 @@
 import enum
 import json
 import logging
+import typing
 import uuid
 from http import HTTPStatus
 from typing import Any, Optional
@@ -55,14 +56,19 @@ class ApiClient:
         response_models: list[pydantic.BaseModel],
         error_responses: dict[int, Any],
     ):
+        exception: typing.Union[service_exception.OpenWorldServiceException, None] = None
+
         if response.status_code not in OK_STATUS_CODES_RANGE:
             if response.status_code not in error_responses.keys():
-                raise service_exception.OpenWorldServiceException.of(
+                exception = service_exception.OpenWorldServiceException.of(
                     error=Error.parse_obj(response.json()),
                     error_code=HTTPStatus(response.status_code),
                 )
+            else:
+                error_object = pydantic.parse_obj_as(error_responses[response.status_code], response.json())
+                exception = service_exception.OpenWorldServiceException.of(error_object, response.status_code)
 
-            raise pydantic.parse_obj_as(error_responses[response.status_code], response.json())
+            raise exception
 
         response_object = None
         for model in response_models:
