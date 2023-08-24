@@ -56,11 +56,17 @@ Args:
         request_url.query.set(query)
         request_url.path.normalize()
 
-        return self.__api_client.call(
+        error_responses = {
+            {% for error_model in operation.error_responses.keys() %}{{ error_model }}: {{ operation.error_responses[error_model]["model"] }},
+            {% endfor %}
+        }
+
+        response = self.__api_client.call(
             headers=headers,
             method='{{ operation.method }}',
             body={% if 'body' in operation.snake_case_arguments %}body{% else %}None{% endif %},
             response_models={{ operation.return_type.removeprefix('Union')}},
-            url=request_url
+            url=request_url,
+            error_responses=error_responses,
         )
 {% endfor %}
