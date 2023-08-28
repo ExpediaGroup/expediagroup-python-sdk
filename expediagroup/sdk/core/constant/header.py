@@ -34,7 +34,7 @@ TRANSACTION_ID: str = "transaction-id"
 
 USER_AGENT: str = "User-agent"
 
-EXPEDIAGROUP_SDK_PYTHON: str = "open-world-sdk-python/"
+EXPEDIAGROUP_SDK_PYTHON: str = "expedia-group-sdk-python/"
 
 API_REQUEST: dict = {CONTENT_TYPE: JSON_CONTENT_TYPE, ACCEPT: JSON_CONTENT_TYPE, ACCEPT_ENCODING: GZIP}
 

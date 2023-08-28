@@ -34,7 +34,7 @@ def get_sdk(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
 
     version = config["sdk"]["version"]
 
-    id = f"expediagroup-sdk-python-{namespace}"
+    id = f"expediagroup-{namespace}-sdk"
 
     package = f"expediagroup.sdk.{namespace}"
 

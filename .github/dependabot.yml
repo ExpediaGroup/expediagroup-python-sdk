@@ -20,7 +20,7 @@ updates:
       interval: daily
       time: "11:30"
       timezone: "UTC"
-    open§-pull-requests-limit: 10
+    open-pull-requests-limit: 10
     target-branch: main
     reviewers:
       - ExpediaGroup/openworld-committers

@@ -19,7 +19,7 @@ TOKEN_RENEWAL_SUCCESSFUL: str = "Token renewal successful"
 
 TOKEN_EXPIRED: str = "Token expired or is about to expire, request will wait until token is renewed"
 
-EXPEDIAGROUP_LOG_MESSAGE_TEMPLATE: str = "ExpediaSDK: {0}"
+EXPEDIAGROUP_LOG_MESSAGE_TEMPLATE: str = "ExpediaGroupSDK: {0}"
 
 UNSUCCESSFUL_RESPONSE_MESSAGE_TEMPLATE: str = "Unsuccessful response [{0}]"
 
