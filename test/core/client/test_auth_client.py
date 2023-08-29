@@ -20,9 +20,11 @@ from test.core.constant import authentication as auth_constant
 from unittest import mock
 from unittest.mock import Mock
 
-from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
-from openworld.sdk.core.model.exception import service as service_exception
-from openworld.sdk.core.model.rapid_auth import RapidAuthHeader, RapidToken
+from expediagroup.sdk.core.client.expediagroup_auth_client import (
+    _ExpediaGroupAuthClient,
+)
+from expediagroup.sdk.core.model.exception import service as service_exception
+from expediagroup.sdk.core.model.rapid_auth import RapidAuthHeader, RapidToken
 
 
 class AuthClientTest(unittest.TestCase):
@@ -32,9 +34,9 @@ class AuthClientTest(unittest.TestCase):
 
     eleven_seconds_expiration_token_mock = Mock(return_value=auth_constant.MockResponse.eleven_seconds_expiration_token_response())
 
-    @mock.patch("openworld.sdk.core.client.openworld_auth_client.post", authorized_retrieve_token_mock)
+    @mock.patch("expediagroup.sdk.core.client.expediagroup_auth_client.post", authorized_retrieve_token_mock)
     def test_auth_client(self, mocked=authorized_retrieve_token_mock):
-        auth_client = _OpenWorldAuthClient(auth_constant.VALID_CREDENTIALS, auth_constant.AUTH_ENDPOINT)
+        auth_client = _ExpediaGroupAuthClient(auth_constant.VALID_CREDENTIALS, auth_constant.AUTH_ENDPOINT)
 
         self.assertIsNotNone(auth_client.access_token)
 
@@ -45,9 +47,9 @@ class AuthClientTest(unittest.TestCase):
 
         mocked.assert_called_once()
 
-    @mock.patch("openworld.sdk.core.client.openworld_auth_client.post", authorized_retrieve_token_mock)
+    @mock.patch("expediagroup.sdk.core.client.expediagroup_auth_client.post", authorized_retrieve_token_mock)
     def test_default_auth_endpoint(self, mocked=authorized_retrieve_token_mock):
-        auth_client = _OpenWorldAuthClient(auth_constant.VALID_CREDENTIALS)
+        auth_client = _ExpediaGroupAuthClient(auth_constant.VALID_CREDENTIALS)
 
         self.assertIsNotNone(auth_client.access_token)
 
@@ -59,16 +61,16 @@ class AuthClientTest(unittest.TestCase):
 
     def test_auth_client_missing_credentials(self):
         with self.assertRaises(TypeError) as missing_credentials_test:
-            auth_client = _OpenWorldAuthClient(auth_endpoint=auth_constant.AUTH_ENDPOINT)
+            auth_client = _ExpediaGroupAuthClient(auth_endpoint=auth_constant.AUTH_ENDPOINT)
 
-    @mock.patch("openworld.sdk.core.client.openworld_auth_client.post", unauthorized_auth_request_mock)
+    @mock.patch("expediagroup.sdk.core.client.expediagroup_auth_client.post", unauthorized_auth_request_mock)
     def test_auth_client_invalid_credentials(self):
-        with self.assertRaises(expected_exception=service_exception.OpenWorldAuthException) as invalid_credentials_test:
-            auth_client = _OpenWorldAuthClient(auth_constant.INVALID_CREDENTIALS)
+        with self.assertRaises(expected_exception=service_exception.ExpediaGroupAuthException) as invalid_credentials_test:
+            auth_client = _ExpediaGroupAuthClient(auth_constant.INVALID_CREDENTIALS)
 
-    @mock.patch("openworld.sdk.core.client.openworld_auth_client.post", eleven_seconds_expiration_token_mock)
+    @mock.patch("expediagroup.sdk.core.client.expediagroup_auth_client.post", eleven_seconds_expiration_token_mock)
     def test_refresh_token(self, mocked=eleven_seconds_expiration_token_mock):
-        auth_client = _OpenWorldAuthClient(auth_constant.VALID_CREDENTIALS, auth_constant.AUTH_ENDPOINT)
+        auth_client = _ExpediaGroupAuthClient(auth_constant.VALID_CREDENTIALS, auth_constant.AUTH_ENDPOINT)
         self.assertIsNotNone(auth_client)
 
         # Test refresh token on AuthClient initialization

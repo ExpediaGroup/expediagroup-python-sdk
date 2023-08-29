@@ -12,7 +12,7 @@ updates:
       - ExpediaGroup/openworld-committers
     labels:
       - Dependabot
-      
+
   # Maintain dependencies for pip
   - package-ecosystem: pip
     directory: "/"

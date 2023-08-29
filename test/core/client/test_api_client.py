@@ -19,11 +19,13 @@ from test.core.constant import authentication as auth_constant
 from unittest import mock
 from unittest.mock import Mock
 
-from openworld.sdk.core.client.api import ApiClient
-from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
-from openworld.sdk.core.configuration.client_config import ClientConfig
-from openworld.sdk.core.constant import header as header_constant
-from openworld.sdk.core.model.exception import service as service_exception
+from expediagroup.sdk.core.client.api import ApiClient
+from expediagroup.sdk.core.client.expediagroup_auth_client import (
+    _ExpediaGroupAuthClient,
+)
+from expediagroup.sdk.core.configuration.client_config import ClientConfig
+from expediagroup.sdk.core.constant import header as header_constant
+from expediagroup.sdk.core.model.exception import service as service_exception
 
 
 class Mocks:
@@ -56,9 +58,9 @@ class ApiClientTest(unittest.TestCase):
         self.assertIsNotNone(headers)
         self.assertEqual(headers, header_constant.API_REQUEST)
 
-    @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
+    @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
     def test_api_client(self):
-        api_client = ApiClient(Configs.client_config, _OpenWorldAuthClient)
+        api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         self.assertIsNotNone(api_client)
 
@@ -66,10 +68,10 @@ class ApiClientTest(unittest.TestCase):
         with self.assertRaises(TypeError) as missing_client_config_test:
             api_client = ApiClient()
 
-    @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
+    @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
+    @mock.patch("expediagroup.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
     def test_api_client_call(self):
-        api_client = ApiClient(Configs.client_config, _OpenWorldAuthClient)
+        api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         response_obj: api_constant.HelloWorld = api_client.call(
             method=api_constant.METHOD,
@@ -83,10 +85,10 @@ class ApiClientTest(unittest.TestCase):
         self.assertEqual(response_obj.time, api_constant.DATETIME_NOW)
         self.assertEqual(response_obj.enum_value, api_constant.HelloWorldEnum.HELLO_WORLD)
 
-    @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
+    @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
+    @mock.patch("expediagroup.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
     def test_api_client_call_missing_headers(self):
-        api_client = ApiClient(Configs.client_config, _OpenWorldAuthClient)
+        api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         response_obj: api_constant.HelloWorld = api_client.call(
             method=api_constant.METHOD, body=api_constant.HELLO_WORLD_OBJECT, response_models=[api_constant.HelloWorld], url=api_constant.ENDPOINT
@@ -96,17 +98,17 @@ class ApiClientTest(unittest.TestCase):
         self.assertEqual(response_obj.time, api_constant.DATETIME_NOW)
         self.assertEqual(response_obj.enum_value, api_constant.HelloWorldEnum.HELLO_WORLD)
 
-    @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
+    @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
     def test_api_client_call_missing_url(self):
-        api_client = ApiClient(Configs.client_config, _OpenWorldAuthClient)
+        api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         with self.assertRaises(Exception) as call_missing_url_test:
             api_client.call(body=api_constant.HELLO_WORLD_OBJECT, method=api_constant.METHOD, response_models=[api_constant.HelloWorld], headers=dict())
 
-    @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
+    @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
+    @mock.patch("expediagroup.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
     def test_api_client_call_default_response_model(self):
-        api_client = ApiClient(Configs.client_config, _OpenWorldAuthClient)
+        api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         response_obj: api_constant.HelloWorld = api_client.call(
             method=api_constant.METHOD, body=api_constant.HELLO_WORLD_OBJECT, url=api_constant.ENDPOINT, headers=dict()
@@ -114,19 +116,19 @@ class ApiClientTest(unittest.TestCase):
 
         self.assertIsNone(response_obj)
 
-    @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
+    @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
     def test_api_client_call_missing_obj(self):
-        api_client = ApiClient(Configs.client_config, _OpenWorldAuthClient)
+        api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         with self.assertRaises(Exception) as call_missing_obj_test:
             api_client.call(method=api_constant.METHOD, url=api_constant.ENDPOINT, response_models=[api_constant.HelloWorld], headers=dict())
 
-    @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.invalid_request_response_mock)
+    @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
+    @mock.patch("expediagroup.sdk.core.client.api.requests.request", Mocks.invalid_request_response_mock)
     def test_error_response(self):
-        api_client = ApiClient(Configs.client_config, _OpenWorldAuthClient)
+        api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
-        with self.assertRaises(service_exception.OpenWorldServiceException) as call_error_response:
+        with self.assertRaises(service_exception.ExpediaGroupServiceException) as call_error_response:
             api_client.call(
                 body=api_constant.HELLO_WORLD_OBJECT,
                 method=api_constant.METHOD,
@@ -135,9 +137,9 @@ class ApiClientTest(unittest.TestCase):
                 headers=dict(),
             )
 
-    @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
+    @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
     def test_api_client_call_missing_method(self):
-        api_client = ApiClient(Configs.client_config, _OpenWorldAuthClient)
+        api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         with self.assertRaises(TypeError) as call_missing_method_test:
             api_client.call(
@@ -147,10 +149,10 @@ class ApiClientTest(unittest.TestCase):
                 headers=dict(),
             )
 
-    @mock.patch.object(_OpenWorldAuthClient, "_OpenWorldAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
-    @mock.patch("openworld.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
+    @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
+    @mock.patch("expediagroup.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
     def test_api_client_call_none_body(self):
-        api_client = ApiClient(Configs.client_config, _OpenWorldAuthClient)
+        api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         response_obj: api_constant.HelloWorld = api_client.call(
             method=api_constant.METHOD, response_models=[api_constant.HelloWorld], url=api_constant.ENDPOINT, headers=dict(), body=None

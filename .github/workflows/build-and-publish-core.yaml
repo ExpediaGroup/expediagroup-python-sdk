@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: '3.10'
       - name: Build core
-        working-directory: openworld/sdk/core
+        working-directory: expediagroup/sdk/core
         run: |
           python3 -m venv env
           source env/bin/activate
@@ -39,11 +39,11 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PY_PI_TOKEN }}
-          packages_dir: openworld/sdk/core/dist
+          packages_dir: expediagroup/sdk/core/dist
       - name: Publish to Test PyPI
         if: "${{ github.event.inputs.test != '' }}"
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository_url: https://test.pypi.org/legacy/
           password: ${{ secrets.TEST_PY_PI_TOKEN }}
-          packages_dir: openworld/sdk/core/dist
+          packages_dir: expediagroup/sdk/core/dist
