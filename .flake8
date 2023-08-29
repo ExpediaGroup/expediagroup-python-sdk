@@ -11,6 +11,7 @@ pep585-activation = always
 
 per-file-ignores =
     release/*: BLK100, E501, F722, W391, W505
+    openworld/sdk/docsgen/*: B006
 
 ignore =
     B008

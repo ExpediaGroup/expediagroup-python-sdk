@@ -76,8 +76,7 @@ class Attribute(CodeRepresentationElement):
             Attribute
         """
         return Attribute(
-            name=param_docstrings.arg_name, docstrings=param_docstrings.description,
-            type_hint=param_docstrings.type_name, optional=param_docstrings.is_optional
+            name=param_docstrings.arg_name, docstrings=param_docstrings.description, type_hint=param_docstrings.type_name, optional=param_docstrings.is_optional
         )
 
 
@@ -222,9 +221,9 @@ class Function(Method):
         arguments(list[Argument]): List of method arguments representation.
         return_type(str): Return type of method.
     """
+
     def __init__(self, name: str = "", docstrings: str = "", arguments: list[Argument] = [], return_type: str = ""):
-        super().__init__(name=name, docstrings=replace_new_lines_with_br_tag(docstrings), arguments=arguments,
-                         return_type=return_type)
+        super().__init__(name=name, docstrings=replace_new_lines_with_br_tag(docstrings), arguments=arguments, return_type=return_type)
 
 
 class Class(CodeRepresentationElement):
@@ -249,8 +248,7 @@ class Class(CodeRepresentationElement):
     methods: list[Method]
     bases: list[str]
 
-    def __init__(self, name: str = "", docstrings: str = str, attributes: list[Attribute] = [],
-                 methods: list[Method] = [], bases: list[str] = ["object"]):
+    def __init__(self, name: str = "", docstrings: str = str, attributes: list[Attribute] = [], methods: list[Method] = [], bases: list[str] = ["object"]):
         super().__init__(name=name, docstrings=docstrings)
         self.attributes = deepcopy(attributes)
         self.methods = deepcopy(methods)
@@ -316,8 +314,7 @@ class Alias(CodeRepresentationElement):
         text = astor.to_source(node)
         name, one_of = text.split("=")
 
-        return Alias(name=name.strip(), docstrings="",
-                     one_of=[model.strip() for model in one_of.removeprefix("Union[").removesuffix("]").split(",")])
+        return Alias(name=name.strip(), docstrings="", one_of=[model.strip() for model in one_of.removeprefix("Union[").removesuffix("]").split(",")])
 
 
 class Module:
@@ -342,8 +339,7 @@ class Module:
     aliases: list[Alias]
     file: str
 
-    def __init__(self, name: str = "", classes: list[Class] = [], functions: list[Function] = [],
-                 aliases: list[Alias] = []):
+    def __init__(self, name: str = "", classes: list[Class] = [], functions: list[Function] = [], aliases: list[Alias] = []):
         self.name = deepcopy(name)
         self.classes = deepcopy(classes)
         self.functions = deepcopy(functions)

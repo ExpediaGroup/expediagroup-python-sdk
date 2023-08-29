@@ -11,8 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from pathlib import Path
 
-from openworld.sdk.docsgen.docs import *
+from openworld.sdk.docsgen.docs import AliasComponent, ClassComponent, IndexComponent
+from openworld.sdk.docsgen.models import Module
 
 
 def generate(namespace: str, output: Path, modules: list[Module]):

@@ -18,7 +18,7 @@ from pathlib import Path
 import astor
 
 from openworld.sdk.docsgen.constant import IGNORE_MODULES, PYTHON_SUFFIX
-from openworld.sdk.docsgen.models import *
+from openworld.sdk.docsgen.models import Alias, Class, Method, Module
 
 
 def parse_modules_paths(path: Path) -> list[Path]:

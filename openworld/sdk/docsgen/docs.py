@@ -11,11 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from pathlib import Path
 
 from openworld.sdk.docsgen import constant
+from openworld.sdk.docsgen.constant import MARKDOWN_SUFFIX
 from openworld.sdk.docsgen.models import Alias, Argument, Class, Method, Module
 from openworld.sdk.docsgen.prettytable import PrettyTable
-from openworld.sdk.docsgen.util import *
+from openworld.sdk.docsgen.util import (
+    bullet_points,
+    get_datatype_reference,
+    header1,
+    header2,
+    header4,
+    write_file,
+)
 
 
 class Breadcrumbs:
@@ -383,8 +392,7 @@ class DocumentationComponent:
         self.alias_components = alias_components
 
     def render(self):
-        r"""Renders this component and all it's subcomponents into a given output path.
-        """
+        r"""Renders this component and all it's subcomponents into a given output path."""
         self.index_component.render(self.output)
         for module in self.modules_components:
             module.render(self.output)

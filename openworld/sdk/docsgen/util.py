@@ -151,7 +151,7 @@ def add_markdown_reference_to_datatype(type_hint: str, referenced_datatype: str)
         elif index + length == len(type_hint) and not type_hint[index - 1].isalpha():
             return type_hint[:index] + reference
         elif not type_hint[index - 1].isalpha() and not type_hint[index + length].isalpha():
-            return type_hint[:index] + reference + type_hint[index + length:]
+            return type_hint[:index] + reference + type_hint[index + length :]
     return type_hint
 
 
