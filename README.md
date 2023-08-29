@@ -1,6 +1,6 @@
-# Open World <sup>TM</sup> SDK for Python
+# Expedia Group <sup>TM</sup> SDK for Python
 
-The Open World SDK for Python allows Expedia Group partners to easily build Python applications that leverage the Open World<sup>TM</sup> platform.
+The Expedia Group SDK for Python allows Expedia Group partners to easily build Python applications that leverage the Expedia Group<sup>TM</sup> platform.
 
 ## Contributing
 
