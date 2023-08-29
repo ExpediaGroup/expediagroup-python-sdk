@@ -15,9 +15,9 @@
 import unittest
 from test.core.constant import authentication as auth_constant
 
-from openworld.sdk.core.configuration.auth_config import AuthConfig
-from openworld.sdk.core.constant import url
-from openworld.sdk.core.model.exception import client as client_exception
+from expediagroup.sdk.core.configuration.auth_config import AuthConfig
+from expediagroup.sdk.core.constant import url
+from expediagroup.sdk.core.model.exception import client as client_exception
 
 
 class AuthConfigTest(unittest.TestCase):
@@ -34,7 +34,7 @@ class AuthConfigTest(unittest.TestCase):
         self.assertEqual(auth_config.auth_endpoint, auth_constant.AUTH_ENDPOINT)
 
     def test_auth_config_missing_credentials(self):
-        with self.assertRaises(client_exception.OpenWorldConfigurationException) as missing_credentials_test:
+        with self.assertRaises(client_exception.ExpediaGroupConfigurationException) as missing_credentials_test:
             auth_config = AuthConfig()
 
     def test_default_auth_endpoint(self):

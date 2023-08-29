@@ -19,7 +19,6 @@ from typing import Union
 from uuid import UUID, uuid4
 
 from furl import furl
-
 from openworld.sdk.core.client.api import ApiClient
 from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
 from openworld.sdk.core.configuration.client_config import ClientConfig
