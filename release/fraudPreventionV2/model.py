@@ -18,7 +18,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Literal, Optional, Union
 
-from pydantic import BaseModel, EmailStr, Extra, Field, confloat, conint, constr
+from pydantic import BaseModel, EmailStr, Extra, Field, constr
 
 
 class Code(
@@ -675,122 +675,6 @@ class RailwayStationDetails(
     """
 
 
-class Activity(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
-    r"""pydantic model Activity: Provides essential details about a specific activity.
-    Attributes:
-        type(constr(max_length=200)): This field provides a categorization of the different types of activities available within the activity product. It is designed to accommodate the preferences of the API consumer, allowing them to assign a descriptive label or keyword that accurately represents the nature of each activity. Here are some suggested values for this field: | Adventures: This category includes activities such as hiking, zip-lining, rock climbing, bungee jumping, and other adventurous pursuits. | Air, Balloon & Helicopter Tours: This category offers activities like hot air balloon rides, helicopter tours, and aerial sightseeing experiences. | Cruises & Water Tours: This includes options such as boat cruises, yacht tours, river rafting, snorkeling, and diving expeditions. | Nightlife: This category encompasses activities like clubbing, pub crawls, live music events, and cultural performances. These activities predominantly occur during the evening or nighttime.
-        description(constr(max_length=200)): This field within the trip information provides additional details or a brief explanation about the specific trip or activity being described
-
-    """
-    type: constr(max_length=200) = Field(..., example="Balloon & Helicopter Tours")
-    """
-    This field provides a categorization of the different types of activities available within the activity product. It is designed to accommodate the preferences of the API consumer, allowing them to assign a descriptive label or keyword that accurately represents the nature of each activity. Here are some suggested values for this field: | Adventures: This category includes activities such as hiking, zip-lining, rock climbing, bungee jumping, and other adventurous pursuits. | Air, Balloon & Helicopter Tours: This category offers activities like hot air balloon rides, helicopter tours, and aerial sightseeing experiences. | Cruises & Water Tours: This includes options such as boat cruises, yacht tours, river rafting, snorkeling, and diving expeditions. | Nightlife: This category encompasses activities like clubbing, pub crawls, live music events, and cultural performances. These activities predominantly occur during the evening or nighttime.
-    """
-    description: constr(max_length=200) = Field(..., example="2-Day, 2 Day Ticket Weekend")
-    """
-    This field within the trip information provides additional details or a brief explanation about the specific trip or activity being described
-    """
-
-
-class Coordinates(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
-    r"""pydantic model Coordinates: Group of attributes intended to hold information about location coordinates.
-    Attributes:
-        latitude(Optional[confloat(ge=-90.0, le=90.0)], optional): The latitude in degrees. It must be in the range [-90.0, +90.0].
-        longitude(Optional[confloat(ge=-180.0, le=180.0)], optional): The longitude in degrees. It must be in the range [-180.0, +180.0].
-
-    """
-    latitude: Optional[confloat(ge=-90.0, le=90.0)] = None
-    """
-    The latitude in degrees. It must be in the range [-90.0, +90.0].
-    """
-    longitude: Optional[confloat(ge=-180.0, le=180.0)] = None
-    """
-    The longitude in degrees. It must be in the range [-180.0, +180.0].
-    """
-
-
-class Type1(
-    Enum,
-):
-    r"""pydantic model Type1: This field indicates the nature or relationship of the vendor associated with a particular activity. | THIRD_PARTY: This value indicates that the vendor is an external entity or third-party provider. | DIRECT: This value signifies that the vendor is a direct entity or provider associated with the organization or platform offering the activity.
-    Attributes:
-        THIRD_PARTY(Any): --
-        DIRECT(Any): --
-
-    """
-    THIRD_PARTY: Any = "THIRD_PARTY"
-    DIRECT: Any = "DIRECT"
-
-
-class OperatingCompanyModel(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
-    r"""pydantic model OperatingCompanyModel: This field helps to identify and understand the specific provider or operating company involved in offering the activity.
-    Attributes:
-        name(str): This field includes the provider's name.
-        type(Type1): This field indicates the nature or relationship of the vendor associated with a particular activity. | THIRD_PARTY: This value indicates that the vendor is an external entity or third-party provider. | DIRECT: This value signifies that the vendor is a direct entity or provider associated with the organization or platform offering the activity.
-
-    """
-    name: str = Field(..., example="VIATOR")
-    """
-    This field includes the provider's name.
-    """
-    type: Type1 = None
-    """
-    This field indicates the nature or relationship of the vendor associated with a particular activity. | THIRD_PARTY: This value indicates that the vendor is an external entity or third-party provider. | DIRECT: This value signifies that the vendor is a direct entity or provider associated with the organization or platform offering the activity.
-    """
-
-
-class Category(
-    Enum,
-):
-    r"""pydantic model Category: Describes the type or category of the ticket.
-    Attributes:
-        ADULT(Any): --
-        CHILD(Any): --
-        SENIOR(Any): --
-        STUDENT(Any): --
-        OTHER(Any): --
-
-    """
-    ADULT: Any = "ADULT"
-    CHILD: Any = "CHILD"
-    SENIOR: Any = "SENIOR"
-    STUDENT: Any = "STUDENT"
-    OTHER: Any = "OTHER"
-
-
-class Ticket(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
-    r"""pydantic model Ticket: This field provides information about the tickets related to the activity.
-    Attributes:
-        category(Category): Describes the type or category of the ticket.
-        quantity(conint(ge=1, le=30)): This field represents the count or number of a specific ticket type associated with an activity.
-
-    """
-    category: Category = None
-    """
-    Describes the type or category of the ticket.
-    """
-    quantity: conint(ge=1, le=30) = None
-    """
-    This field represents the count or number of a specific ticket type associated with an activity.
-    """
-
-
 class FlightType(
     Enum,
 ):
@@ -1124,7 +1008,6 @@ class TravelProductType(
         INSURANCE(Any): --
         HOTEL(Any): --
         RAIL(Any): --
-        ACTIVITIES(Any): --
 
     """
     CRUISE: Any = "CRUISE"
@@ -1133,7 +1016,6 @@ class TravelProductType(
     INSURANCE: Any = "INSURANCE"
     HOTEL: Any = "HOTEL"
     RAIL: Any = "RAIL"
-    ACTIVITIES: Any = "ACTIVITIES"
 
 
 class CardType(
@@ -1525,14 +1407,13 @@ class TravelProductGeneric(
     * `INSURANCE`: `Insurance`
     * `HOTEL`: `Hotel`
     * `RAIL`: `Rail`
-    * `ACTIVITIES`: `Activities`
 
     Attributes:
         price(Amount): --
         type(TravelProductType): --
-        inventory_type(constr(max_length=30)): Type of inventory. Ensure attributes mentioned in dictionary below are set to corresponding values only. `inventory_type` has the following mapping with TravelProduct `type` attribute: *       inventory_type            :      type * ------------------------------------------------------ *  `Cruise`                       : `CRUISE` *  `Air`                          : `AIR` *  `Car`                          : `CAR` *  `Insurance`                    : `INSURANCE` *  `Hotel`                        : `HOTEL` *  `Rail`                         :  `RAIL` *  `Activities`                   :  `ACTIVITIES`
+        inventory_type(constr(max_length=30)): Type of inventory. Ensure attributes mentioned in dictionary below are set to corresponding values only. `inventory_type` has the following mapping with TravelProduct `type` attribute: *       inventory_type            :      type * ------------------------------------------------------ *  `Cruise`                       : `CRUISE` *  `Air`                          : `AIR` *  `Car`                          : `CAR` *  `Insurance`                    : `INSURANCE` *  `Hotel`                        : `HOTEL` *  `Rail`                         :  `RAIL`
         inventory_source(InventorySource): Identifies the business model through which the supply is being sold. Merchant/Agency. * `MERCHANT` is used when Partner is the merchant of record for this order. * `AGENCY` is used when this order is through an agency booking.
-        travelers_references(list[constr(max_length=50)]): List of travelerGuids who are part of the traveling party on the order for the product. Information for each product and its required travelers should be provided in the API request. If the product booking does not require accompanying quest information then that does not need to be provided in the API request. Example: * For Air products, all travelers' details are required to complete the booking. * For Hotel products, typically the details on the person checking-in is required. * For Car products, typically only the primary driver information is required. If multiple traveler details are in the itinerary, this structure allows to fill up traveler details once in the `travelers` section, and then associate individual products to the respective travelers. This association is made using `traveler_id` field. A GUID can be generated for each object in the `travelers` section. The same GUID can be provided in the `traveler_references` below. The `travelers` array should have at least one `traveler` object, and each `traveler` object should have a `traveler_id` which is not necessarily an account id. Example: *   Travelers * ------------ *  A - GUID1 *  B - GUID2 *  C - GUID3 * *   Products * ------------ * Air *   [GUID1, GUID2, GUID3] * Hotel *   [GUID1] * Car *   [GUID3] * Rail *   [GUID2] * Activities *   [GUID1] * The example above demonstrates the association of travelers with various products. * All three travelers (A, B, and C) are associated with the Air product. * Traveler A is associated with the Hotel and Activities products. * Traveler C is associated with the Car product. * Traveler B is associated with the Rail product.
+        travelers_references(list[constr(max_length=50)]): List of travelerGuids who are part of the traveling party on the order for the product. Information for each product and its required travelers should be provided in the API request. If the product booking does not require accompanying quest information then that does not need to be provided in the API request. Example: * For Air products, all travelers' details are required to complete the booking. * For Hotel products, typically the details on the person checking-in is required. * For Car products, typically only the primary driver information is required. If multiple traveler details are in the itinerary, this structure allows to fill up traveler details once in the `travelers` section, and then associate individual products to the respective travelers. This association is made using `traveler_id` field. A GUID can be generated for each object in the `travelers` section. The same GUID can be provided in the `traveler_references` below. The `travelers` array should have at least one `traveler` object, and each `traveler` object should have a `traveler_id` which is not necessarily an account id. Example: *   Travelers * ------------ *  A - GUID1 *  B - GUID2 *  C - GUID3 * *   Products * ------------ * Air *   [GUID1, GUID2, GUID3] * Hotel *   [GUID1] * Car *   [GUID3] * Rail *   [GUID2] * The example above demonstrates the association of travelers with various products. * All three travelers (A, B, and C) are associated with the Air product. * Traveler A is associated with the Hotel. * Traveler C is associated with the Car product. * Traveler B is associated with the Rail product.
 
     """
     price: Amount = None
@@ -1550,7 +1431,6 @@ class TravelProductGeneric(
     *  `Insurance`                    : `INSURANCE`
     *  `Hotel`                        : `HOTEL`
     *  `Rail`                         :  `RAIL`
-    *  `Activities`                   :  `ACTIVITIES`
 
     """
     inventory_source: InventorySource = None
@@ -1589,11 +1469,9 @@ class TravelProductGeneric(
     *   [GUID3]
     * Rail
     *   [GUID2]
-    * Activities
-    *   [GUID1]
     * The example above demonstrates the association of travelers with various products.
     * All three travelers (A, B, and C) are associated with the Air product.
-    * Traveler A is associated with the Hotel and Activities products.
+    * Traveler A is associated with the Hotel.
     * Traveler C is associated with the Car product.
     * Traveler B is associated with the Rail product.
 
@@ -1641,45 +1519,6 @@ class RailSegments(
     """
     This attribute captures the name or identifier of the company responsible for operating the Rail product. It represents the specific operating entity, such as Amtrak, British Railways, or a bus company.
     """
-
-
-class Activities(
-    TravelProductGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
-):
-    r"""pydantic model Activities
-    Attributes:
-        activity(Activity): --
-        operating_company(OperatingCompanyModel): --
-        is_coupon_required(Optional[bool], optional): A coupon is typically a document or electronic code that confirms your reservation or purchase for the activity. It serves as proof of payment and allows you to participate in the activity. This field indicates whether a coupon is necessary for this activity. | For example, let's consider two scenarios: | Activity: Adventure Park | is_coupon_required: false | In this case, the attribute is set to 'false,' indicating that no coupon is necessary. However, you might still need to purchase a ticket to gain entry to the adventure park. The ticket serves as proof of payment and grants you access to the park's activities and attractions. | Activity: Spa Package | is_coupon_required: true | Here, the attribute is set to 'true,' indicating that a coupon is required. To participate in the spa package, you would need to present the designated coupon at the spa. The coupon confirms your reservation, serves as proof of payment, and may entitle you to specific spa treatments or discounts.
-        location_coordinates(Optional[Coordinates], optional): --
-        start_time(datetime): The field represents the start time of a activity, using the ISO-8061 date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
-        end_time(datetime): The field represents the end time of a activity, using the ISO-8061 date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
-        ticket(list[Ticket]): This field provides information about the tickets available for the activity.
-        type(Literal['ACTIVITIES']): --
-
-    """
-    activity: Activity = None
-    operating_company: OperatingCompanyModel = None
-    is_coupon_required: Optional[bool] = None
-    """
-    A coupon is typically a document or electronic code that confirms your reservation or purchase for the activity. It serves as proof of payment and allows you to participate in the activity. This field indicates whether a coupon is necessary for this activity. | For example, let's consider two scenarios: | Activity: Adventure Park | is_coupon_required: false | In this case, the attribute is set to 'false,' indicating that no coupon is necessary. However, you might still need to purchase a ticket to gain entry to the adventure park. The ticket serves as proof of payment and grants you access to the park's activities and attractions. | Activity: Spa Package | is_coupon_required: true | Here, the attribute is set to 'true,' indicating that a coupon is required. To participate in the spa package, you would need to present the designated coupon at the spa. The coupon confirms your reservation, serves as proof of payment, and may entitle you to specific spa treatments or discounts.
-    """
-    location_coordinates: Optional[Coordinates] = None
-    start_time: datetime = None
-    """
-    The field represents the start time of a activity, using the ISO-8061 date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
-    """
-    end_time: datetime = None
-    """
-    The field represents the end time of a activity, using the ISO-8061 date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
-    """
-    ticket: list[Ticket] = Field(..., maxItems=40, minItems=1)
-    """
-    This field provides information about the tickets available for the activity.
-    """
-    type: Literal["ACTIVITIES"] = "ACTIVITIES"
 
 
 class Air(
@@ -2612,7 +2451,7 @@ RefundUpdate = Union[IssuedRefundUpdate, SettledRefundUpdate, RefundUpdateGeneri
 
 OrderPurchaseUpdateRequest = Union[OrderUpdate, ChargebackFeedback, InsultFeedback, RefundUpdate, PaymentUpdate, OrderPurchaseUpdateRequestGeneric]
 
-TravelProduct = Union[Rail, Activities, Air, Cruise, Car, Hotel, Insurance, TravelProductGeneric]
+TravelProduct = Union[Rail, Air, Cruise, Car, Hotel, Insurance, TravelProductGeneric]
 
 Payment = Union[CreditCard, PayPal, Points, GiftCard, InternetBankPayment, DirectDebit, PaymentGeneric]
 
@@ -2680,18 +2519,6 @@ OperatingCompany.update_forward_refs()
 RailwayStationDetails.update_forward_refs()
 
 
-Activity.update_forward_refs()
-
-
-Coordinates.update_forward_refs()
-
-
-OperatingCompanyModel.update_forward_refs()
-
-
-Ticket.update_forward_refs()
-
-
 AirSegment.update_forward_refs()
 
 
@@ -2732,9 +2559,6 @@ OrderPurchaseScreenResponse.update_forward_refs()
 
 
 RailSegments.update_forward_refs()
-
-
-Activities.update_forward_refs()
 
 
 Air.update_forward_refs()
