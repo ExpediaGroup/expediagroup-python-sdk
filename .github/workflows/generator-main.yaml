@@ -16,12 +16,11 @@ name: Generate and Publish SDK
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Generated SDK version'
-        required: true
-        default: ''
       name:
         description: 'Generated SDK name'
+        required: true
+      version:
+        description: 'Generated SDK version'
         required: true
       endpoint_prefix:
         description: 'Endpoint to prepend specs paths with'
@@ -31,9 +30,14 @@ on:
         description: 'URL to download API specs from'
         required: true
         type: string
-      test:
-        description: 'Release to test?'
-        required: false
+      production_release:
+        description: 'Release to production? (Yes/No)'
+        required: true
+        type: choice
+        options:
+          - 'Yes'
+          - 'No'
+        default: 'No'
 jobs:
   download_specs:
     uses: ./.github/workflows/generator-download-specs.yaml
@@ -55,7 +59,7 @@ jobs:
       name: ${{ github.event.inputs.name }}
 
   publish_sources:
-    if: github.event.inputs.test == ''
+    if: github.event.inputs.production_release == 'Yes'
     needs: [ generate_sdk ]
     uses: ./.github/workflows/generator-publish-sources.yaml
     with:
@@ -66,3 +70,5 @@ jobs:
     needs: [ generate_sdk ]
     uses: ./.github/workflows/publish-sdk.yaml
     secrets: inherit
+    with:
+      production_release: ${{ github.event.inputs.production_release }}
