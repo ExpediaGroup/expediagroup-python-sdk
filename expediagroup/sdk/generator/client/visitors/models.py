@@ -14,12 +14,13 @@
 import collections
 import dataclasses
 from pathlib import Path
+from typing import Any
 
 from datamodel_code_generator.imports import Imports
 from datamodel_code_generator.model import DataModel
 from datamodel_code_generator.parser.base import sort_data_models
 from datamodel_code_generator.types import DataType
-from fastapi_code_generator.parser import OpenAPIParser
+from fastapi_code_generator.parser import OpenAPIParser, Operation
 from fastapi_code_generator.visitor import Visitor
 from pydantic import BaseModel, Extra, Field, parse_obj_as
 
@@ -227,6 +228,19 @@ def parse_sorted_aliases(models: dict[str, DataModel], discriminators: list[Disc
     return sorted(aliases, key=lambda alias_: alias_.order)
 
 
+def set_error_models_parents(operations: list[Operation]):
+    ok_status_code_range = [code for code in range(200, 300)]
+    error_models_classnames: set[str] = set()
+
+    for index, operation in enumerate(operations):
+        error_responses: dict[int, Any] = {
+            int(code): response for code, response in operation.additional_responses.items() if int(code) not in ok_status_code_range
+        }
+
+        operations[index].error_responses = error_responses
+        error_models_classnames = error_models_classnames.union(set(map(lambda resp: resp["model"], error_responses.values())))
+
+
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     r"""A visitor that exposes models and related data to `jinja2` templates.
 
@@ -243,6 +257,7 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     models: dict[str, DataModel] = parse_datamodels(parser)
     discriminators: list[Discriminator] = parse_discriminators(parser=parser, models=models)
 
+    set_error_models_parents([operation for operation in parser.operations.values()])
     apply_discriminators_to_models(discriminators=discriminators, models=models)
 
     aliases: list[Alias] = parse_sorted_aliases(models=models, discriminators=discriminators)
