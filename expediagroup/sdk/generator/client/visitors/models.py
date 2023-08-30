@@ -241,9 +241,6 @@ def set_error_models_parents(models: dict[str, DataModel], operations: list[Oper
         operations[index].error_responses = error_responses
         error_models_classnames = error_models_classnames.union(set(map(lambda resp: resp["model"], error_responses.values())))
 
-    for classname in error_models_classnames:
-        models[classname].base_classes.append(BaseClassDataType(type="Exception"))
-
 
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     r"""A visitor that exposes models and related data to `jinja2` templates.
