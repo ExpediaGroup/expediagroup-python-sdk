@@ -56,7 +56,6 @@ class ApiClient:
         response_models: list[pydantic.BaseModel],
         error_responses: dict[int, Any],
     ):
-
         if response.status_code not in OK_STATUS_CODES_RANGE:
             exception: service_exception.ExpediaGroupServiceException
 
