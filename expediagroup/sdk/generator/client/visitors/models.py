@@ -17,7 +17,6 @@ from pathlib import Path
 
 from datamodel_code_generator.imports import Imports
 from datamodel_code_generator.model import DataModel
-from datamodel_code_generator.model.base import BaseClassDataType
 from datamodel_code_generator.parser.base import sort_data_models
 from datamodel_code_generator.types import DataType
 from fastapi_code_generator.parser import OpenAPIParser, Operation
