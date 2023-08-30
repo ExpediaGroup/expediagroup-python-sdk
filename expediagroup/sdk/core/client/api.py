@@ -14,6 +14,7 @@
 import enum
 import json
 import logging
+import typing
 import uuid
 from http import HTTPStatus
 from typing import Any, Optional
@@ -50,12 +51,25 @@ class ApiClient:
         self.request_timeout = config.request_timeout
 
     @staticmethod
-    def __build_response(response: requests.Response, response_models: list[pydantic.BaseModel]):
+    def __build_response(
+        response: requests.Response,
+        response_models: list[pydantic.BaseModel],
+        error_responses: dict[int, Any],
+    ):
+
         if response.status_code not in OK_STATUS_CODES_RANGE:
-            raise service_exception.ExpediaGroupServiceException.of(
-                error=Error.parse_obj(response.json()),
-                error_code=HTTPStatus(response.status_code),
-            )
+            exception: service_exception.OpenWorldServiceException
+
+            if response.status_code not in error_responses.keys():
+                exception = service_exception.OpenWorldServiceException.of(
+                    error=Error.parse_obj(response.json()),
+                    error_code=HTTPStatus(response.status_code),
+                )
+            else:
+                error_object = pydantic.parse_obj_as(error_responses[response.status_code], response.json())
+                exception = service_exception.OpenWorldServiceException.of(error_object, response.status_code)
+
+            raise exception
 
         response_object = None
         for model in response_models:
@@ -76,6 +90,7 @@ class ApiClient:
         body: pydantic.BaseModel,
         headers: dict = dict(),  # noqa
         response_models: Optional[list[Any]] = [None],  # noqa
+        error_responses: dict[int, Any] = {},  # noqa
     ) -> Any:
         r"""Sends HTTP request to API.
 
@@ -121,7 +136,12 @@ class ApiClient:
 
         LOG.info(log_constant.EXPEDIAGROUP_LOG_MESSAGE_TEMPLATE.format(request_log_message))
 
-        result = ApiClient.__build_response(response=response, response_models=response_models)
+        result = ApiClient.__build_response(
+            response=response,
+            response_models=response_models,
+            error_responses=error_responses,
+        )
+
         return result
 
     @staticmethod
