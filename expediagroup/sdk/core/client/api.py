@@ -58,16 +58,16 @@ class ApiClient:
     ):
 
         if response.status_code not in OK_STATUS_CODES_RANGE:
-            exception: service_exception.OpenWorldServiceException
+            exception: service_exception.ExpediaGroupServiceException
 
             if response.status_code not in error_responses.keys():
-                exception = service_exception.OpenWorldServiceException.of(
+                exception = service_exception.ExpediaGroupServiceException.of(
                     error=Error.parse_obj(response.json()),
                     error_code=HTTPStatus(response.status_code),
                 )
             else:
                 error_object = pydantic.parse_obj_as(error_responses[response.status_code], response.json())
-                exception = service_exception.OpenWorldServiceException.of(error_object, response.status_code)
+                exception = service_exception.ExpediaGroupServiceException.of(error_object, response.status_code)
 
             raise exception
 
