@@ -14,7 +14,6 @@
 import enum
 import json
 import logging
-import typing
 import uuid
 from http import HTTPStatus
 from typing import Any, Optional
