@@ -8,13 +8,14 @@ info:
     email: RiskTechVerge@expedia.com
   x-eg-lifecycle: PLANNED
 servers:
-  - url: https://api.expediagroup.com/fraud-prevention/v2
+  - url: https://api.expediagroup.com/test/fraud-prevention/v2
 tags:
   - name: fraudPreventionV2
 paths:
   /fraud-prevention/v2/order/purchase/screen:
     post:
       tags:
+        &a1
         - fraudPreventionV2
       description: "The Order Purchase API gives a Fraud recommendation for a
         transaction. A recommendation can be Accept, Reject, or Review. A
@@ -96,8 +97,7 @@ paths:
                 $ref: "#/components/schemas/GatewayTimeoutError"
   /fraud-prevention/v2/order/purchase/update:
     post:
-      tags:
-        - fraudPreventionV2
+      tags: *a1
       description: >
         The Order Purchase Update API is called when the status of the order has
         changed.
@@ -1005,8 +1005,6 @@ components:
         * `HOTEL`: `Hotel`
 
         * `RAIL`: `Rail`
-
-        * `ACTIVITIES`: `Activities`
       required:
         - price
         - type
@@ -1023,7 +1021,6 @@ components:
           INSURANCE: "#/components/schemas/Insurance"
           HOTEL: "#/components/schemas/Hotel"
           RAIL: "#/components/schemas/Rail"
-          ACTIVITIES: "#/components/schemas/Activities"
       properties:
         price:
           $ref: "#/components/schemas/Amount"
@@ -1052,8 +1049,6 @@ components:
             *  `Hotel`                        : `HOTEL`
 
             *  `Rail`                         :  `RAIL`
-
-            *  `Activities`                   :  `ACTIVITIES`
           type: string
           maxLength: 30
         inventory_source:
@@ -1125,15 +1120,11 @@ components:
 
             *   [GUID2]
 
-            * Activities
-
-            *   [GUID1]
-
             * The example above demonstrates the association of travelers with various products.
 
             * All three travelers (A, B, and C) are associated with the Air product.
 
-            * Traveler A is associated with the Hotel and Activities products.
+            * Traveler A is associated with the Hotel.
 
             * Traveler C is associated with the Car product.
 
@@ -1277,161 +1268,6 @@ components:
           type: string
           maxLength: 200
           example: America/New_York
-    Activities:
-      title: Activities
-      allOf:
-        - $ref: "#/components/schemas/TravelProduct"
-        - type: object
-          required:
-            - activity
-            - operating_company
-            - start_time
-            - end_time
-            - ticket
-          properties:
-            activity:
-              $ref: "#/components/schemas/Activity"
-            operating_company:
-              $ref: "#/components/schemas/OperatingCompany"
-            is_coupon_required:
-              description: "A coupon is typically a document or electronic code that confirms
-                your reservation or purchase for the activity. It serves as
-                proof of payment and allows you to participate in the activity.
-                This field indicates whether a coupon is necessary for this
-                activity. | For example, let's consider two scenarios: |
-                Activity: Adventure Park | is_coupon_required: false | In this
-                case, the attribute is set to 'false,' indicating that no coupon
-                is necessary. However, you might still need to purchase a ticket
-                to gain entry to the adventure park. The ticket serves as proof
-                of payment and grants you access to the park's activities and
-                attractions. | Activity: Spa Package | is_coupon_required: true
-                | Here, the attribute is set to 'true,' indicating that a coupon
-                is required. To participate in the spa package, you would need
-                to present the designated coupon at the spa. The coupon confirms
-                your reservation, serves as proof of payment, and may entitle
-                you to specific spa treatments or discounts."
-              type: boolean
-            location_coordinates:
-              $ref: "#/components/schemas/Coordinates"
-            start_time:
-              description: The field represents the start time of a activity, using the
-                ISO-8061 date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
-              type: string
-              format: date-time
-              maxLength: 50
-            end_time:
-              description: The field represents the end time of a activity, using the ISO-8061
-                date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
-              type: string
-              format: date-time
-              maxLength: 50
-            ticket:
-              description: This field provides information about the tickets available for the
-                activity.
-              type: array
-              items:
-                $ref: "#/components/schemas/Ticket"
-              minItems: 1
-              maxItems: 40
-    Activity:
-      title: Activity
-      description: Provides essential details about a specific activity.
-      type: object
-      required:
-        - type
-        - description
-      properties:
-        type:
-          description: "This field provides a categorization of the different types of
-            activities available within the activity product. It is designed to
-            accommodate the preferences of the API consumer, allowing them to
-            assign a descriptive label or keyword that accurately represents the
-            nature of each activity. Here are some suggested values for this
-            field: | Adventures: This category includes activities such as
-            hiking, zip-lining, rock climbing, bungee jumping, and other
-            adventurous pursuits. | Air, Balloon & Helicopter Tours: This
-            category offers activities like hot air balloon rides, helicopter
-            tours, and aerial sightseeing experiences. | Cruises & Water Tours:
-            This includes options such as boat cruises, yacht tours, river
-            rafting, snorkeling, and diving expeditions. | Nightlife: This
-            category encompasses activities like clubbing, pub crawls, live
-            music events, and cultural performances. These activities
-            predominantly occur during the evening or nighttime."
-          type: string
-          maxLength: 200
-          example: Balloon & Helicopter Tours
-        description:
-          description: This field within the trip information provides additional details
-            or a brief explanation about the specific trip or activity being
-            described
-          type: string
-          maxLength: 200
-          example: 2-Day, 2 Day Ticket Weekend
-    Coordinates:
-      title: Coordinates
-      type: object
-      description: Group of attributes intended to hold information about location
-        coordinates.
-      properties:
-        latitude:
-          type: number
-          description: The latitude in degrees. It must be in the range [-90.0, +90.0].
-          minimum: -90
-          maximum: 90
-        longitude:
-          type: number
-          description: The longitude in degrees. It must be in the range [-180.0, +180.0].
-          minimum: -180
-          maximum: 180
-    OperatingCompany:
-      title: OperatingCompany
-      description: This field helps to identify and understand the specific provider
-        or operating company involved in offering the activity.
-      type: object
-      required:
-        - name
-        - type
-      properties:
-        name:
-          description: This field includes the provider's name.
-          type: string
-          example: VIATOR
-        type:
-          description: "This field indicates the nature or relationship of the vendor
-            associated with a particular activity. | THIRD_PARTY: This value
-            indicates that the vendor is an external entity or third-party
-            provider. | DIRECT: This value signifies that the vendor is a direct
-            entity or provider associated with the organization or platform
-            offering the activity."
-          type: string
-          enum:
-            - THIRD_PARTY
-            - DIRECT
-    Ticket:
-      title: Ticket
-      description: This field provides information about the tickets related to the
-        activity.
-      type: object
-      required:
-        - category
-        - quantity
-      properties:
-        category:
-          type: string
-          description: Describes the type or category of the ticket.
-          enum:
-            - ADULT
-            - CHILD
-            - SENIOR
-            - STUDENT
-            - OTHER
-        quantity:
-          description: This field represents the count or number of a specific ticket type
-            associated with an activity.
-          type: integer
-          format: int32
-          minimum: 1
-          maximum: 30
     Air:
       title: Air
       allOf:
@@ -2054,7 +1890,6 @@ components:
         - INSURANCE
         - HOTEL
         - RAIL
-        - ACTIVITIES
     Insurance:
       title: Insurance
       allOf:

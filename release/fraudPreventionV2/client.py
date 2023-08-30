@@ -19,10 +19,13 @@ from typing import Union
 from uuid import UUID, uuid4
 
 from furl import furl
-from openworld.sdk.core.client.api import ApiClient
-from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
-from openworld.sdk.core.configuration.client_config import ClientConfig
-from openworld.sdk.core.constant import header
+
+from expediagroup.sdk.core.client.api import ApiClient
+from expediagroup.sdk.core.client.expediagroup_auth_client import (
+    _ExpediaGroupAuthClient,
+)
+from expediagroup.sdk.core.configuration.client_config import ClientConfig
+from expediagroup.sdk.core.constant import header
 
 from .model import (
     BadGatewayError,
@@ -51,9 +54,9 @@ class FraudPreventionV2Client:
         """
         python_version = platform.python_version()
         os_name, os_version, *_ = platform.platform().split("-")
-        sdk_metadata = "open-world-sdk-python-fraudpreventionv2/1.4.0"
+        sdk_metadata = "expediagroup-fraudpreventionv2-python-sdk/1.0.1"
 
-        self.__api_client = ApiClient(client_config, _OpenWorldAuthClient)
+        self.__api_client = ApiClient(client_config, _ExpediaGroupAuthClient)
 
         self.__user_agent = f"{sdk_metadata} (Python {python_version}; {os_name} {os_version})"
 
