@@ -61,7 +61,7 @@ Args:
             {% endfor %}
         }
 
-        response = self.__api_client.call(
+        return self.__api_client.call(
             headers=headers,
             method='{{ operation.method }}',
             body={% if 'body' in operation.snake_case_arguments %}body{% else %}None{% endif %},
