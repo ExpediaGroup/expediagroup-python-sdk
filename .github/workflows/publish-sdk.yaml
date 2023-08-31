@@ -2,9 +2,9 @@ name: Publish SDK
 on:
   workflow_call:
     inputs:
-      test:
-        description: 'Release to test?'
-        required: false
+      production_release:
+        description: 'Release to production? (Yes/No)'
+        required: true
         type: string
 jobs:
   publish:
@@ -15,13 +15,13 @@ jobs:
           name: sdk
           path: sdk
       - name: Publish to PyPI
-        if: "${{ github.event.inputs.test == '' }}"
+        if: ${{ github.event.inputs.production_release == 'Yes' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PY_PI_TOKEN }}
           packages_dir: sdk
       - name: Publish to Test PyPI
-        if: "${{ github.event.inputs.test != '' }}"
+        if: ${{ github.event.inputs.production_release == 'No' }}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository_url: https://test.pypi.org/legacy/

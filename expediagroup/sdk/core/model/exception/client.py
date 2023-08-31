@@ -11,3 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from typing import Optional
+
+from expediagroup.sdk.core.model.exception.expediagroup import ExpediaGroupException
+
+
+class ExpediaGroupClientException(ExpediaGroupException):
+    def __init__(self, message: str, cause: Optional[BaseException] = None):
+        super().__init__(message, cause)
+
+
+class ExpediaGroupConfigurationException(ExpediaGroupClientException):
+    def __init__(self, message: str, cause: Optional[BaseException] = None):
+        super().__init__(message, cause)

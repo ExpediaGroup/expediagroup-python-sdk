@@ -1,0 +1,74 @@
+# Copyright 2022 Expedia, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Generate and Publish SDK
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Generated SDK name'
+        required: true
+      version:
+        description: 'Generated SDK version'
+        required: true
+      endpoint_prefix:
+        description: 'Endpoint to prepend specs paths with'
+        required: true
+        type: string
+      specs_url:
+        description: 'URL to download API specs from'
+        required: true
+        type: string
+      production_release:
+        description: 'Release to production? (Yes/No)'
+        required: true
+        type: choice
+        options:
+          - 'Yes'
+          - 'No'
+        default: 'No'
+jobs:
+  download_specs:
+    uses: ./.github/workflows/generator-download-specs.yaml
+    with:
+      url: ${{ github.event.inputs.specs_url }}
+
+  transform_specs:
+    needs: [ download_specs ]
+    uses: ./.github/workflows/generator-transform-specs.yaml
+    with:
+      configurations: -th -te ${{ github.event.inputs.endpoint_prefix }} -tt ${{ github.event.inputs.name }}
+
+
+  generate_sdk:
+    needs: [ transform_specs ]
+    uses: ./.github/workflows/generate-sdk.yaml
+    with:
+      version: ${{ github.event.inputs.version }}
+      name: ${{ github.event.inputs.name }}
+
+  publish_sources:
+    if: github.event.inputs.production_release == 'Yes'
+    needs: [ generate_sdk ]
+    uses: ./.github/workflows/generator-publish-sources.yaml
+    with:
+      version: ${{ github.event.inputs.version }}
+      name: ${{ github.event.inputs.name }}
+
+  publish_sdk:
+    needs: [ generate_sdk ]
+    uses: ./.github/workflows/publish-sdk.yaml
+    secrets: inherit
+    with:
+      production_release: ${{ github.event.inputs.production_release }}
