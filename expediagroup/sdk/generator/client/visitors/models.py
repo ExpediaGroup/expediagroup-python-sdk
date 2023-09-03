@@ -238,6 +238,14 @@ def set_other_responses_models(operations: list[Operation]):
         operations[index].error_responses = error_responses
 
 
+def get_error_models(parser: OpenAPIParser) -> list:
+    error_models: set[str] = set()
+    for response in list(map(lambda operation: operation.error_responses, parser.operations.values())):
+        for model in response.values():
+            error_models.add(model["model"])
+    return list(error_models)
+
+
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     r"""A visitor that exposes models and related data to `jinja2` templates.
 
@@ -265,6 +273,7 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
         "model_imports": collect_imports(sorted_models, parser),
         "aliases": aliases,
         "is_aliased": is_aliased,
+        "error_responses_models": get_error_models(parser),
     }
 
 

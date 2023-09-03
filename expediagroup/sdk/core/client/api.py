@@ -64,8 +64,8 @@ class ApiClient:
                     error_code=HTTPStatus(response.status_code),
                 )
             else:
-                error_object = pydantic.parse_obj_as(error_responses[response.status_code], response.json())
-                exception = service_exception.ExpediaGroupServiceException.of(error=error_object, error_code=HTTPStatus(response.status_code))
+                error_object = pydantic.parse_obj_as(error_responses[response.status_code].model, response.json())
+                exception = error_responses[response.status_code].exception.of(error=error_object, error_code=HTTPStatus(response.status_code))
 
             raise exception
 

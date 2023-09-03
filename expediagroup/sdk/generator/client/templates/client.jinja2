@@ -7,6 +7,10 @@ from expediagroup.sdk.core.constant import header
 from expediagroup.sdk.core.configuration.client_config import ClientConfig
 from furl import furl
 from uuid import UUID, uuid4
+{% if error_responses_models.__len__() %}
+from .model import ({% for error_model in error_responses_models %}{{ error_model }}DeserializationContract,{% endfor %}
+)
+{% endif %}
 {% if api.lower() == "rapid" %}from expediagroup.sdk.core.client.rapid_auth_client import _RapidAuthClient
 {% else %}from expediagroup.sdk.core.client.expediagroup_auth_client import _ExpediaGroupAuthClient
 {% endif %}
@@ -57,7 +61,7 @@ Args:
         request_url.path.normalize()
 
         error_responses = {
-            {% for error_model in operation.error_responses.keys() %}{{ error_model }}: {{ operation.error_responses[error_model]["model"] }},
+            {% for response_code in operation.error_responses.keys() %}{{ response_code }}: {{ operation.error_responses[response_code]["model"] }}DeserializationContract,
             {% endfor %}
         }
 
