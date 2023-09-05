@@ -3,7 +3,7 @@ requests~=2.31.0
 pydantic==1.10.12
 build~=1.0.0
 setuptools~=68.1.2
-virtualenv~=20.24.3
+virtualenv~=20.24.4
 coverage~=7.3.0
 flake8~=6.0.0
 flake8-black~=0.3.6
