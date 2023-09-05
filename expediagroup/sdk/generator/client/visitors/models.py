@@ -14,12 +14,13 @@
 import collections
 import dataclasses
 from pathlib import Path
+from typing import Any
 
 from datamodel_code_generator.imports import Imports
 from datamodel_code_generator.model import DataModel
 from datamodel_code_generator.parser.base import sort_data_models
 from datamodel_code_generator.types import DataType
-from fastapi_code_generator.parser import OpenAPIParser
+from fastapi_code_generator.parser import OpenAPIParser, Operation
 from fastapi_code_generator.visitor import Visitor
 from pydantic import BaseModel, Extra, Field, parse_obj_as
 
@@ -227,6 +228,24 @@ def parse_sorted_aliases(models: dict[str, DataModel], discriminators: list[Disc
     return sorted(aliases, key=lambda alias_: alias_.order)
 
 
+def set_other_responses_models(operations: list[Operation]):
+    ok_status_code_range = [code for code in range(200, 300)]
+    for index, operation in enumerate(operations):
+        error_responses: dict[int, Any] = {
+            int(code): response for code, response in operation.additional_responses.items() if int(code) not in ok_status_code_range
+        }
+
+        operations[index].error_responses = error_responses
+
+
+def get_error_models(parser: OpenAPIParser) -> list:
+    error_models: set[str] = set()
+    for response in list(map(lambda operation: operation.error_responses, parser.operations.values())):
+        for model in response.values():
+            error_models.add(model["model"])
+    return list(error_models)
+
+
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     r"""A visitor that exposes models and related data to `jinja2` templates.
 
@@ -243,6 +262,7 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     models: dict[str, DataModel] = parse_datamodels(parser)
     discriminators: list[Discriminator] = parse_discriminators(parser=parser, models=models)
 
+    set_other_responses_models([operation for operation in parser.operations.values()])
     apply_discriminators_to_models(discriminators=discriminators, models=models)
 
     aliases: list[Alias] = parse_sorted_aliases(models=models, discriminators=discriminators)
@@ -253,6 +273,7 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
         "model_imports": collect_imports(sorted_models, parser),
         "aliases": aliases,
         "is_aliased": is_aliased,
+        "error_responses_models": get_error_models(parser),
     }
 
 
