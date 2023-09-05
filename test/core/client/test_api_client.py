@@ -128,7 +128,7 @@ class ApiClientTest(unittest.TestCase):
     def test_error_response(self):
         api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
-        with self.assertRaises(service_exception.ExpediaGroupServiceException) as call_error_response:
+        with self.assertRaises(service_exception.ExpediaGroupApiException) as call_error_response:
             api_client.call(
                 body=api_constant.HELLO_WORLD_OBJECT,
                 method=api_constant.METHOD,
