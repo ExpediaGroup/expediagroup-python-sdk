@@ -56,10 +56,10 @@ class ApiClient:
         error_responses: dict[int, Any],
     ):
         if response.status_code not in OK_STATUS_CODES_RANGE:
-            exception: service_exception.ExpediaGroupServiceException
+            exception: service_exception.ExpediaGroupApiException
 
             if response.status_code not in error_responses.keys():
-                exception = service_exception.ExpediaGroupServiceException.of(
+                exception = service_exception.ExpediaGroupApiException.of(
                     error=Error.parse_obj(response.json()),
                     error_code=HTTPStatus(response.status_code),
                 )

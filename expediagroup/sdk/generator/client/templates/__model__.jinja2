@@ -15,7 +15,7 @@
 from typing import Union, Any, Literal
 from pydantic import Extra
 from pydantic.dataclasses import dataclass
-from expediagroup.sdk.core.model.exception.service import ExpediaGroupServiceException
+from expediagroup.sdk.core.model.exception.service import ExpediaGroupApiException
 
 
 {% for model in models %}
@@ -70,7 +70,7 @@ class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif
 {% endfor %}
 
 {% for error_model in error_responses_models %}
-class ExpediaGroup{{ error_model }}Exception(ExpediaGroupServiceException):
+class ExpediaGroup{{ error_model }}Exception(ExpediaGroupApiException):
     r"""Exception wrapping a {{ error_model }} object."""
     pass
 {% endfor %}

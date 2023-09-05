@@ -19,15 +19,15 @@ from expediagroup.sdk.core.model.error import Error
 from expediagroup.sdk.core.model.exception.expediagroup import ExpediaGroupException
 
 
-class ExpediaGroupServiceException(ExpediaGroupException):
+class ExpediaGroupApiException(ExpediaGroupException):
     def __init__(self, message: str, cause: Optional[BaseException] = None):
         super().__init__(message, cause)
 
     @staticmethod
     def of(error: Error, error_code: HTTPStatus):
-        return ExpediaGroupServiceException(message=f"[{error_code.value}] {error}")
+        return ExpediaGroupApiException(message=f"[{error_code.value}] {error}")
 
 
-class ExpediaGroupAuthException(ExpediaGroupServiceException):
+class ExpediaGroupAuthException(ExpediaGroupApiException):
     def __init__(self, error_code: HTTPStatus, message: str):
         super().__init__(message=f"[{error_code.value}] {message}")
