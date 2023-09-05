@@ -58,14 +58,14 @@ class ApiClient:
         if response.status_code not in OK_STATUS_CODES_RANGE:
             exception: service_exception.ExpediaGroupApiException
 
-            if response.status_code not in error_responses.keys():
+            if response.status_code in error_responses.keys():
+                error_object = pydantic.parse_obj_as(error_responses[response.status_code].model, response.json())
+                exception = error_responses[response.status_code].exception.of(error=error_object, error_code=HTTPStatus(response.status_code))
+            else:
                 exception = service_exception.ExpediaGroupApiException.of(
                     error=Error.parse_obj(response.json()),
                     error_code=HTTPStatus(response.status_code),
                 )
-            else:
-                error_object = pydantic.parse_obj_as(error_responses[response.status_code].model, response.json())
-                exception = error_responses[response.status_code].exception.of(error=error_object, error_code=HTTPStatus(response.status_code))
 
             raise exception
 
