@@ -47,7 +47,7 @@ go install github.com/google/addlicense@latest &&\
 `go env GOPATH`/bin/addlicense -f ../../LICENSE_header.txt . &&\
 cd - &&\
 mkdir -p "package/expediagroup/sdk/$normalized_namespace" &&\
-cp -a "client/sdk/." "package/expediagroup/sdk/$normalized_namespace/" &&\Z
+cp -a "client/sdk/." "package/expediagroup/sdk/$normalized_namespace/" &&\
 mv "package/expediagroup/sdk/$normalized_namespace/__model__.py" "package/expediagroup/sdk/$normalized_namespace/model.py" &&\
 cp "../../../requirements-sdk.txt" "package/requirements.txt" &&\
 mv "package/expediagroup/sdk/$normalized_namespace/setup.py" "package/setup.py" &&\
