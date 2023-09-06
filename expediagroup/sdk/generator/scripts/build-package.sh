@@ -48,8 +48,11 @@ go install github.com/google/addlicense@latest &&\
 cd - &&\
 mkdir -p "package/expediagroup/sdk/$normalized_namespace" &&\
 cp -a "client/sdk/." "package/expediagroup/sdk/$normalized_namespace/" &&\
+echo "----" &&\
+pwd &&\
+echo "----" &&\
 mv "package/expediagroup/sdk/$normalized_namespace/__model__.py" "package/expediagroup/sdk/$normalized_namespace/model.py" &&\
-cp "resources/requirements.txt" "package/requirements.txt" &&\
+cp "../../../requirements-sdk.txt" "package/requirements.txt" &&\
 mv "package/expediagroup/sdk/$normalized_namespace/setup.py" "package/setup.py" &&\
 rm -rf "package/expediagroup/sdk/$normalized_namespace/models.py" &&\
 cd package &&\
