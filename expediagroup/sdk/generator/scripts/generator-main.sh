@@ -53,6 +53,6 @@ while getopts ":n:v:i:" OPTION; do
 done; validate_arguments
 
 cp $input_spec ./client/spec.yaml
-pip3 install -r client/requirements.txt &&\
+pip3 install -r ../../../requirements-dev.txt &&\
 scripts/generate-sdk.sh -i "spec.yaml" -v "$sdk_version" -n "$sdk_namespace" &&\
 scripts/build-package.sh -n "$sdk_namespace"
