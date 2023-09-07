@@ -33,7 +33,6 @@ jobs:
       - name: Build core
         working-directory: expediagroup/sdk/core
         run: |
-          ls
           echo -e "[sdk-properties]\n[version]\nversion=${{ github.event.inputs.version }}" > core.config
           python3 -m venv env
           source env/bin/activate
