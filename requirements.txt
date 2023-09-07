@@ -1,7 +1,7 @@
 uri~=2.0.1
 requests~=2.31.0
 pydantic==1.10.12
-build~=1.0.0
+build~=1.0.3
 setuptools~=68.2.0
 virtualenv~=20.24.4
 coverage~=7.3.1
