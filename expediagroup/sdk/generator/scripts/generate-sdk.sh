@@ -61,7 +61,6 @@ version=$sdk_version"\
 python3 ./__main__.py -i "$input_spec" -t "./templates" -o "./sdk" -m "model.py" &&\
 autoflake --in-place --remove-all-unused-imports ./sdk/client.py &&\
 cd ../../../.. &&\
-pip3 install -r requirements.txt &&\
 isort . &&\
 black . &&\
 cd - && cd ..
