@@ -17,7 +17,7 @@
 
 function fail {
   echo "SDK properties can't be empty!"
-  echo "Usage: >> ./generate-client.sh -i input_spec_file -n namespace -v version"
+  echo "Usage: >> ./generator-main.sh -i input_spec_file -n namespace -v version"
   exit 1
 }
 
@@ -52,18 +52,7 @@ while getopts ":n:v:i:" OPTION; do
         esac
 done; validate_arguments
 
-# Generate SDK Client
-cd client || exit 1 &&\
-echo -e "[sdk]\n\
-namespace=$sdk_namespace\n\
-version=$sdk_version"\
->./visitors/sdk.config &&\
-python3 ./__main__.py -i "$input_spec" -t "./templates" -o "./sdk" -m "model.py" &&\
-autoflake --in-place --remove-all-unused-imports ./sdk/client.py &&\
-cd ../../../.. &&\
-ls &&\
-pwd &&\
-pip3 install -r requirements.txt &&\
-isort . &&\
-black . &&\
-cd - && cd ..
+cp $input_spec ./client/spec.yaml
+pip3 install -r ../../../requirements-dev.txt &&\
+scripts/generate-sdk.sh -i "spec.yaml" -v "$sdk_version" -n "$sdk_namespace" &&\
+scripts/build-package.sh -n "$sdk_namespace"

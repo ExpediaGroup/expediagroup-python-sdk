@@ -16,6 +16,9 @@ name: Build and Publish Core
 on:
   workflow_dispatch:
     inputs:
+      version:
+        description: 'Generated SDK version'
+        required: true
       test:
         description: 'Release to test?'
         required: false
@@ -23,16 +26,20 @@ jobs:
   build-and-publish-core:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
       - name: Build core
         working-directory: expediagroup/sdk/core
         run: |
+          echo -e "[sdk-properties]\nversion=${{ github.event.inputs.version }}\n" > core.config
           python3 -m venv env
           source env/bin/activate
-          python3 -m pip install build
+
+          pip3 install -r "../../../requirements-dev.txt"
+          cp ../../../requirements-core.txt ./requirements.txt
+
           python -m build --sdist --wheel
       - name: Publish to PyPI
         if: "${{ github.event.inputs.test == '' }}"

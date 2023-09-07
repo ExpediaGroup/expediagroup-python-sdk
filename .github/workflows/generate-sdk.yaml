@@ -28,7 +28,7 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
@@ -40,7 +40,7 @@ jobs:
         working-directory: expediagroup/sdk/generator
         run: |
           echo ${{ github.event.inputs.name }}
-          ./scripts/generate-sdk.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i ./specs.yaml
+          ./scripts/generator-main.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i ./specs.yaml
       - uses: actions/upload-artifact@v3
         with:
           name: sdk

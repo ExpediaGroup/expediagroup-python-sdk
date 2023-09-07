@@ -44,3 +44,4 @@ class Argument(fastapi_code_generator_parser.Argument):
 class Operation(fastapi_code_generator_parser.Operation):
     arguments_list: list[Argument] = []
     snake_case_arguments_list: list[Argument] = []
+    error_responses: dict[int, typing.Any] = dict()
