@@ -114,7 +114,7 @@ class ApiClient:
                 timeout=self.request_timeout,
             )
         else:
-            request_body = body.json(exclude_none=True, exclude_unset=True)
+            request_body = body.json(exclude_none=True)
             response = requests.request(
                 method=method.upper(),
                 url=url,
