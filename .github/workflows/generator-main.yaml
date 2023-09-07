@@ -31,13 +31,10 @@ on:
         required: true
         type: string
       production_release:
-        description: 'Release to production? (Yes/No)'
+        description: 'Release to production'
         required: true
-        type: choice
-        options:
-          - 'Yes'
-          - 'No'
-        default: 'No'
+        type: boolean
+        default: false
 jobs:
   download_specs:
     uses: ./.github/workflows/generator-download-specs.yaml
@@ -59,7 +56,7 @@ jobs:
       name: ${{ github.event.inputs.name }}
 
   publish_sources:
-    if: github.event.inputs.production_release == 'Yes'
+    if: ${{ github.event.inputs.production_release == 'true' }}
     needs: [ generate_sdk ]
     uses: ./.github/workflows/generator-publish-sources.yaml
     with:
@@ -71,4 +68,4 @@ jobs:
     uses: ./.github/workflows/publish-sdk.yaml
     secrets: inherit
     with:
-      production_release: ${{ github.event.inputs.production_release }}
+      production_release: ${{ github.event.inputs.production_release == 'true' }}
