@@ -1,4 +1,4 @@
-build~=1.0.0
+build~=1.0.3
 setuptools~=68.1.2
 coverage~=7.3.0
 fastapi-code-generator==0.4.1
