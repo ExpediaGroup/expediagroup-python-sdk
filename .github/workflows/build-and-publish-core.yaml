@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Generated SDK version'
+        description: 'Package version'
         required: true
       test:
         description: 'Release to test?'
