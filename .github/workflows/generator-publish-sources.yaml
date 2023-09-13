@@ -39,7 +39,7 @@ jobs:
           git checkout -b "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           git add ../../../../release/\*
           cd ../../../..
-          pip install -r requirements.txt
+          pip install -r ../../../../requirements-dev.txt
           black .
           cd -
           git commit -m "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
