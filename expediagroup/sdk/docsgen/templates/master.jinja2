@@ -1,0 +1,9 @@
+{{ breadcrumbs }}
+{% if modules.__len__() %}
+# Modules
+{% set rows = [] %}
+    {% for module in modules %}
+        {% set rows = rows.append(["[{0}]({0}.md)".format(module.name)]) %}
+    {% endfor %}
+{{ table(["Module"], rows) }}
+{% endif %}
