@@ -6,10 +6,10 @@ from typing import Any
 import docspec
 from pydoc_markdown import Context, Loader
 
-from expediagroup.sdk.docsgen.model import Module, Master
-from expediagroup.sdk.docsgen.render import MarkdownRenderer
-from expediagroup.sdk.docsgen.resolver import Resolver, CrossReferenceResolver
 from expediagroup.sdk.docsgen.helper import helpers
+from expediagroup.sdk.docsgen.model import Master, Module
+from expediagroup.sdk.docsgen.render import MarkdownRenderer
+from expediagroup.sdk.docsgen.resolver import CrossReferenceResolver, Resolver
 
 
 @dataclass
@@ -43,8 +43,8 @@ class ExpediaGroupDocumentationGenerator:
         loader: Loader,
         templates_path: Path,
         master_filename: str = "index",
-        helpers: dict[str, Any] = dict(), # noqa
-        resolvers: dict[str, Resolver] = dict(), # noqa
+        helpers: dict[str, Any] = dict(),  # noqa
+        resolvers: dict[str, Resolver] = dict(),  # noqa
     ):
         """
         Initializes the ExpediaGroupDocumentationGenerator.
@@ -85,7 +85,7 @@ class ExpediaGroupDocumentationGenerator:
             helpers=self.helpers,
             resolvers=self.resolvers,
             master=Master.from_modules(copy.deepcopy(self.modules)),
-            master_filename=self.master_filename
+            master_filename=self.master_filename,
         )
 
     def generate(self, output_path: Path):

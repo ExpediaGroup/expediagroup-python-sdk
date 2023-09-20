@@ -30,11 +30,7 @@ def parse_method_description_docstrings(description: str | None) -> str:
         return ""
 
     docstring = parse(str(description), docstring_parser.Style.GOOGLE)
-    return max(
-        docstring.long_description if docstring.long_description else "",
-        docstring.short_description if docstring.short_description else "",
-        key=len
-    )
+    return max(docstring.long_description if docstring.long_description else "", docstring.short_description if docstring.short_description else "", key=len)
 
 
 def write_markdown_file(path: Path, filename: str, content: str) -> None:
@@ -70,7 +66,7 @@ def replace_word(text: str, word: str, replacement: str) -> str:
     for index in [w.start() for w in re.finditer(word, text)]:
         index += index_change_value
         if index == 0 and not text[len(word)].isalnum():
-            text = replacement + text[len(word)::]
+            text = replacement + text[len(word) : :]
             index_change_value += index_change_ratio
 
         elif index + len(word) == len(text) and not text[index - 1].isalnum():
@@ -78,7 +74,7 @@ def replace_word(text: str, word: str, replacement: str) -> str:
             index_change_value += index_change_ratio
 
         elif not text[index - 1].isalpha() and not text[index + len(word)].isalnum():
-            text = text[:index] + replacement + text[index + len(word):]
+            text = text[:index] + replacement + text[index + len(word) :]
             index_change_value += index_change_ratio
 
     return text

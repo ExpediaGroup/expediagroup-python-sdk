@@ -19,6 +19,4 @@ def table(field_names: list[str], rows: list[list[str]]):
     return markdown_table
 
 
-helpers: dict[str, Any] = {
-    "table": table
-}
+helpers: dict[str, Any] = {"table": table}

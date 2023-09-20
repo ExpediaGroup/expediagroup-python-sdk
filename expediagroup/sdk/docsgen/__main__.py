@@ -13,7 +13,7 @@ app = typer.Typer()
 def main(
     package_path: Path = typer.Option(..., "--package-path", "-p"),
     templates_path: Optional[Path] = typer.Option(None, "--templates-path", "-t"),
-    output_path: Optional[Path] = typer.Option(Path(".."), "--output-path", "-o")
+    output_path: Optional[Path] = typer.Option(Path(".."), "--output-path", "-o"),
 ):
     context = Context(directory=str(package_path.absolute()))
     loader = PythonLoader(search_path=[str(package_path.absolute())])
@@ -27,5 +27,5 @@ def main(
     generator.generate(output_path=output_path)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     typer.run(main)

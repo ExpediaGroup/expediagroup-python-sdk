@@ -9,8 +9,7 @@ import docstring_parser
 from docstring_parser.parser import parse
 from pydantic import BaseModel
 
-from expediagroup.sdk.docsgen import constant
-from expediagroup.sdk.docsgen import util
+from expediagroup.sdk.docsgen import constant, util
 
 
 class DocumentedObject(BaseModel):
@@ -179,17 +178,13 @@ class Argument(Attribute):
         description: str = max(
             docstring_object.long_description if docstring_object.long_description else constant.NULL_DESCRIPTION,
             docstring_object.short_description if docstring_object.short_description else constant.NULL_DESCRIPTION,
-            key=len
+            key=len,
         )
 
         for param in docstring_object.params:
-            arguments.append(Argument(
-                name=param.arg_name,
-                description=description,
-                datatype=param.type_name,
-                is_optional=param.is_optional,
-                default_value=param.default
-            ))
+            arguments.append(
+                Argument(name=param.arg_name, description=description, datatype=param.type_name, is_optional=param.is_optional, default_value=param.default)
+            )
 
         return arguments
 
@@ -245,6 +240,7 @@ class Class(Document):
         attributes (list[Attribute]): List of attributes of the class.
         methods (list[Method]): List of methods defined in the class.
     """
+
     constructor: Method
     bases: list[str]
     attributes: list[Attribute]
@@ -275,8 +271,7 @@ class Class(Document):
         constructor = None
         is_enum = "Enum" in other.bases
 
-        for index, method in enumerate(
-                list(map(Method.from_, filter(lambda m: isinstance(m, docspec.Function), other.members)))):
+        for index, method in enumerate(list(map(Method.from_, filter(lambda m: isinstance(m, docspec.Function), other.members)))):
             if constant.INIT_METHOD in method.name:
                 constructor = copy.deepcopy(method)
                 constructor.name = other.name
@@ -317,6 +312,7 @@ class Module(Document):
         variables (list[Variable]): List of variables defined in the module.
         submodules (list[Module]): List of submodules within the module.
     """
+
     classes: list[Class]
     variables: list[Variable]
     submodules: list[Module]
@@ -370,6 +366,7 @@ class Master(Document):
     Attributes:
         modules (list[Module]): List of modules to be included in the master document.
     """
+
     modules: list[Module]
 
     @staticmethod
@@ -387,7 +384,7 @@ class Master(Document):
             modules=Master.parse_master_modules(modules=modules),
             name=constant.DefaultNames.MASTER_FILE_NAME,
             breadcrumbs=Breadcrumbs(document_name=constant.DefaultNames.MASTER_FILE_NAME, parent=None),
-            description=""
+            description="",
         )
 
     @staticmethod
@@ -401,8 +398,7 @@ class Master(Document):
         Returns:
             list[Module]: List of organized module instances for inclusion in the master document.
         """
-        modules: dict[str, Module | None] = collections.defaultdict(lambda m: None,
-                                                                    {module.name: module for module in modules})
+        modules: dict[str, Module | None] = collections.defaultdict(lambda m: None, {module.name: module for module in modules})
         master_modules: list[Module] = list()
         has_parent: dict[str, bool] = collections.defaultdict(bool)
 

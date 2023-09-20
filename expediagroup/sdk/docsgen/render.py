@@ -7,7 +7,13 @@ from typing import Any
 from jinja2 import Environment, FileSystemLoader, Template
 
 from expediagroup.sdk.docsgen import constant
-from expediagroup.sdk.docsgen.model import Module, DocumentedObject, Master, Breadcrumbs, Document
+from expediagroup.sdk.docsgen.model import (
+    Breadcrumbs,
+    Document,
+    DocumentedObject,
+    Master,
+    Module,
+)
 from expediagroup.sdk.docsgen.util import write_markdown_file
 
 
@@ -31,13 +37,13 @@ class MarkdownRenderer:
     master_filename: str
 
     def __init__(
-            self,
-            modules: list[Module],
-            master: Master,
-            master_filename: str,
-            templates_path: Path = Path(__file__).parent / constant.TEMPLATES_DIR,
-            helpers: dict[str, Any] = dict(),  # noqa
-            resolvers: dict[str, Any] = dict(),  # noqa
+        self,
+        modules: list[Module],
+        master: Master,
+        master_filename: str,
+        templates_path: Path = Path(__file__).parent / constant.TEMPLATES_DIR,
+        helpers: dict[str, Any] = dict(),  # noqa
+        resolvers: dict[str, Any] = dict(),  # noqa
     ):
         """Initializes the MarkdownRenderer instance with the given parameters.
 
@@ -60,8 +66,7 @@ class MarkdownRenderer:
         self.__post_init__()
 
     def __post_init__(self):
-        """Called after the object is initialized to setup additional initial configurations.
-        """
+        """Called after the object is initialized to setup additional initial configurations."""
         self.__init_breadcrumbs()
 
     def render(self, output_path: Path):
@@ -135,7 +140,7 @@ class MarkdownRenderer:
 
         environment_args: dict[str, DocumentedObject] = {
             constant.Jinja2EnvironmentVariables.MODULES: self.master.modules,
-            constant.Jinja2EnvironmentVariables.BREADCRUMBS: self.master.breadcrumbs
+            constant.Jinja2EnvironmentVariables.BREADCRUMBS: self.master.breadcrumbs,
         }
         self.setup_jinja_environment_arguments(environment_arguments=environment_args)
 
@@ -151,8 +156,7 @@ class MarkdownRenderer:
         environment_arguments.update(self.resolvers)
 
     def __init_breadcrumbs(self):
-        """Initializes breadcrumb structures for modules and classes to facilitate navigation in the documentation.
-        """
+        """Initializes breadcrumb structures for modules and classes to facilitate navigation in the documentation."""
         dfs_stack: list = list()
         current_parent: Document = self.master
 

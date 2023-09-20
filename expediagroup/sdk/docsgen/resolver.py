@@ -11,6 +11,7 @@ class Resolver(abc.ABC):
     Attributes:
         modules (list[Module]): A list of Module objects that contain documentation information.
     """
+
     modules: list[Module]
 
     def __init__(self, modules: list[Module]):
@@ -31,8 +32,8 @@ class Resolver(abc.ABC):
 
 
 class TypeAliasResolver(Resolver):
-    """A resolver class that handles the resolving of type aliases within the documentation text.
-    """
+    """A resolver class that handles the resolving of type aliases within the documentation text."""
+
     def resolve(self, text):
         """Resolves type aliases in the provided text by replacing alias names with their actual values.
 
