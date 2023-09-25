@@ -1,20 +1,21 @@
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, Template
 
-from expediagroup.sdk.docsgen import constant
-from expediagroup.sdk.docsgen.model import (
+import constant
+from model import (
     Breadcrumbs,
     Document,
     DocumentedObject,
     Master,
     Module,
 )
-from expediagroup.sdk.docsgen.util import write_markdown_file
+from util import write_markdown_file
 
 
 @dataclass

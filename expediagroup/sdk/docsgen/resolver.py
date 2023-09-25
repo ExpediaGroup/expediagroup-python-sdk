@@ -1,8 +1,8 @@
 import abc
 import copy
 
-from expediagroup.sdk.docsgen.model import Module
-from expediagroup.sdk.docsgen.util import replace_word
+from model import Module
+from util import replace_word
 
 
 class Resolver(abc.ABC):

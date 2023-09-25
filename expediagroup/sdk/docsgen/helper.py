@@ -1,6 +1,6 @@
 from typing import Any
 
-from expediagroup.sdk.docsgen.markdown_prettytable import PrettyTable
+from markdown_prettytable import PrettyTable
 
 
 def table(field_names: list[str], rows: list[list[str]]):

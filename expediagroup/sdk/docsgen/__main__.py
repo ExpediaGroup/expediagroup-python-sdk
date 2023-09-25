@@ -5,7 +5,7 @@ import typer
 from pydoc_markdown.contrib.loaders.python import PythonLoader
 from pydoc_markdown.interfaces import Context
 
-from expediagroup.sdk.docsgen.generator import ExpediaGroupDocumentationGenerator
+from generator import ExpediaGroupDocumentationGenerator
 
 app = typer.Typer()
 

@@ -6,10 +6,10 @@ from typing import Any
 import docspec
 from pydoc_markdown import Context, Loader
 
-from expediagroup.sdk.docsgen.helper import helpers
-from expediagroup.sdk.docsgen.model import Master, Module
-from expediagroup.sdk.docsgen.render import MarkdownRenderer
-from expediagroup.sdk.docsgen.resolver import CrossReferenceResolver, Resolver
+from helper import helpers
+from model import Master, Module
+from render import MarkdownRenderer
+from resolver import CrossReferenceResolver, Resolver
 
 
 @dataclass

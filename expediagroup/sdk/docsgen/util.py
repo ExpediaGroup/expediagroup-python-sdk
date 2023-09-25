@@ -1,5 +1,6 @@
 import re
 from pathlib import Path
+from typing import Union
 
 import docstring_parser
 from docstring_parser.parser import parse
@@ -17,7 +18,7 @@ def to_markdown_file_ref(filename: str) -> str:
     return "[{0}]({0}.md)".format(filename)
 
 
-def parse_method_description_docstrings(description: str | None) -> str:
+def parse_method_description_docstrings(description: Union[str, None]) -> str:
     """Parses the description docstring and extracts the longest description between short and long description.
 
     Args:

@@ -9,7 +9,8 @@ import docstring_parser
 from docstring_parser.parser import parse
 from pydantic import BaseModel
 
-from expediagroup.sdk.docsgen import constant, util
+import constant
+import util
 
 
 class DocumentedObject(BaseModel):
@@ -25,7 +26,7 @@ class DocumentedObject(BaseModel):
         smart_union = True
 
     name: str
-    description: str | None
+    description: Union[str, None]
 
 
 class Breadcrumbs(BaseModel):
@@ -42,8 +43,8 @@ class Breadcrumbs(BaseModel):
         smart_union = True
 
     document_name: str
-    parent: Breadcrumbs | None
-    alias: str | None = None
+    parent: Union[Breadcrumbs, None]
+    alias: Union[str, None] = None
 
     def __str__(self) -> str:
         """
@@ -70,7 +71,7 @@ class Document(DocumentedObject):
         breadcrumbs (Breadcrumbs | None): The breadcrumb trail for the document.
     """
 
-    breadcrumbs: Breadcrumbs | None
+    breadcrumbs: Union[Breadcrumbs, None]
 
     def init_breadcrumbs_from_parent(self, parent: Document) -> None:
         """
@@ -90,7 +91,7 @@ class Variable(DocumentedObject):
         value (str | None): The value of the variable.
     """
 
-    value: str | None = None
+    value: Union[str, None] = None
 
     @staticmethod
     def from_(other: docspec.Variable) -> Variable:
@@ -198,8 +199,8 @@ class Method(DocumentedObject):
         arguments (list[Argument | Attribute]): List of arguments of the method.
     """
 
-    return_type: str | None
-    arguments: list[Argument | Attribute]
+    return_type: Union[str, None]
+    arguments: list[Union[Argument, Attribute]]
 
     @staticmethod
     def from_(other: docspec.Function) -> Method:
@@ -398,7 +399,7 @@ class Master(Document):
         Returns:
             list[Module]: List of organized module instances for inclusion in the master document.
         """
-        modules: dict[str, Module | None] = collections.defaultdict(lambda m: None, {module.name: module for module in modules})
+        modules: dict[str, Union[Module, None]] = collections.defaultdict(lambda m: None, {module.name: module for module in modules})
         master_modules: list[Module] = list()
         has_parent: dict[str, bool] = collections.defaultdict(bool)
 
