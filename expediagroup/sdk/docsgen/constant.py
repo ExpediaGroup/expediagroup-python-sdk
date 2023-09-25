@@ -44,6 +44,7 @@ class Jinja2EnvironmentVariables:
     MODULE: str = "module"
     MODULES: str = "modules"
     BREADCRUMBS: str = "breadcrumbs"
+    PACKAGE: str = "package"
 
 
 class FileExtensions:

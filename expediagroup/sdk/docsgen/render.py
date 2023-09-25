@@ -42,11 +42,13 @@ class MarkdownRenderer:
     helpers: dict[str, Any]
     resolvers: dict[str, Any]
     master_filename: str
+    package_name: str
 
     def __init__(
         self,
         modules: list[Module],
         master: Master,
+        package_name: str,
         master_filename: str,
         templates_path: Path = Path(__file__).parent / constant.TEMPLATES_DIR,
         helpers: dict[str, Any] = dict(),  # noqa
@@ -62,6 +64,7 @@ class MarkdownRenderer:
             helpers (dict[str, Any]): Dictionary of helper functions to assist in rendering.
             resolvers (dict[str, Any]): Dictionary of resolver functions to assist in rendering.
         """
+        self.package_name = package_name
         self.master = master
         self.master_filename = master_filename.removesuffix(constant.FileExtensions.MARKDOWN)
 
@@ -148,6 +151,7 @@ class MarkdownRenderer:
         environment_args: dict[str, DocumentedObject] = {
             constant.Jinja2EnvironmentVariables.MODULES: self.master.modules,
             constant.Jinja2EnvironmentVariables.BREADCRUMBS: self.master.breadcrumbs,
+            constant.Jinja2EnvironmentVariables.PACKAGE: self.package_name
         }
         self.setup_jinja_environment_arguments(environment_arguments=environment_args)
 

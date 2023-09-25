@@ -1,6 +1,7 @@
 {{ breadcrumbs }}
+# {{ package }}
 {% if modules.__len__() %}
-# Modules
+## Modules
 {% set rows = [] %}
     {% for module in modules %}
         {% set rows = rows.append(["[{0}]({0}.md)".format(module.name)]) %}

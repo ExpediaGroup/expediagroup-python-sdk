@@ -49,12 +49,14 @@ class ExpediaGroupDocumentationGenerator:
     helpers: dict[str, Any]
     resolvers: dict[str, Resolver]
     master_filename: str
+    package_name: str
 
     def __init__(
         self,
         context: Context,
         loader: Loader,
         templates_path: Path,
+        package_name: str,
         master_filename: str = "index",
         helpers: dict[str, Any] = dict(),  # noqa
         resolvers: dict[str, Resolver] = dict(),  # noqa
@@ -69,6 +71,7 @@ class ExpediaGroupDocumentationGenerator:
             master_filename (str, optional): The filename for the master documentation file. Defaults to "index".
             helpers (dict[str, Any], optional): A dictionary of helper functions for documentation generation used in the `jinja2` modules.
             resolvers (dict[str, Resolver], optional): A dictionary of resolvers used in the `jinja2` modules.
+            package_name(str): Package name.
         """
         self.context = context
         self.master_filename = master_filename
@@ -76,6 +79,7 @@ class ExpediaGroupDocumentationGenerator:
         self.templates_path = templates_path
         self.helpers = helpers
         self.resolvers = resolvers
+        self.package_name = package_name
 
         self.__post_init__()
 
@@ -99,6 +103,7 @@ class ExpediaGroupDocumentationGenerator:
             resolvers=self.resolvers,
             master=Master.from_modules(copy.deepcopy(self.modules)),
             master_filename=self.master_filename,
+            package_name=self.package_name,
         )
 
     def generate(self, output_path: Path):

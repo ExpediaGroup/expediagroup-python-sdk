@@ -25,6 +25,7 @@ app = typer.Typer()
 
 
 def main(
+    package_name: str = typer.Option(..., "--package-name", "-n"),
     package_path: Path = typer.Option(..., "--package-path", "-p"),
     templates_path: Optional[Path] = typer.Option(None, "--templates-path", "-t"),
     output_path: Optional[Path] = typer.Option(Path(".."), "--output-path", "-o"),
@@ -36,6 +37,7 @@ def main(
         context=context,
         loader=loader,
         templates_path=templates_path,
+        package_name=package_name,
     )
 
     generator.generate(output_path=output_path)
