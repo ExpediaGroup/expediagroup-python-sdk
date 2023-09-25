@@ -4,13 +4,12 @@ import collections
 import copy
 from typing import Any, Union
 
+import constant
 import docspec
 import docstring_parser
+import util
 from docstring_parser.parser import parse
 from pydantic import BaseModel
-
-import constant
-import util
 
 
 class DocumentedObject(BaseModel):

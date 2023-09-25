@@ -1,20 +1,12 @@
 from __future__ import annotations
 
-import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from jinja2 import Environment, FileSystemLoader, Template
-
 import constant
-from model import (
-    Breadcrumbs,
-    Document,
-    DocumentedObject,
-    Master,
-    Module,
-)
+from jinja2 import Environment, FileSystemLoader, Template
+from model import Breadcrumbs, Document, DocumentedObject, Master, Module
 from util import write_markdown_file
 
 

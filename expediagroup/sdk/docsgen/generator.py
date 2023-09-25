@@ -4,10 +4,9 @@ from pathlib import Path
 from typing import Any
 
 import docspec
-from pydoc_markdown import Context, Loader
-
 from helper import helpers
 from model import Master, Module
+from pydoc_markdown import Context, Loader
 from render import MarkdownRenderer
 from resolver import CrossReferenceResolver, Resolver
 
