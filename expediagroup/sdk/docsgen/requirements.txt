@@ -4,3 +4,4 @@ docspec-python~=2.2.1
 typer
 docstring_parser
 jinja2
+mdformat-gfm~=0.3.5
