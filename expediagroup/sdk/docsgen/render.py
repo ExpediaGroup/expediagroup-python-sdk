@@ -151,7 +151,7 @@ class MarkdownRenderer:
         environment_args: dict[str, DocumentedObject] = {
             constant.Jinja2EnvironmentVariables.MODULES: self.master.modules,
             constant.Jinja2EnvironmentVariables.BREADCRUMBS: self.master.breadcrumbs,
-            constant.Jinja2EnvironmentVariables.PACKAGE: self.package_name
+            constant.Jinja2EnvironmentVariables.PACKAGE: self.package_name,
         }
         self.setup_jinja_environment_arguments(environment_arguments=environment_args)
 
