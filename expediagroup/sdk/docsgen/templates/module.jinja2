@@ -1,0 +1,23 @@
+{{ breadcrumbs }}
+# Module {{ module.name }}
+
+{% if module.submodules.__len__() %}
+{% set rows = [] %}
+## Submodules
+    {% for submodule in module.submodules %}
+        {% set rows = rows.append(["[{0}]({0}.md)".format(submodule.name)]) %}
+    {% endfor %}
+{{ table(["Module"], rows) }}
+{% endif %}
+
+{% if module.classes.__len__() %}
+## Classes
+{% set rows = [] %}
+{% for class in module.classes %}
+    {% set rows = rows.append([
+        "[{0}]({0}.md)".format(class.name),
+        class.description.strip().replace("|", "\|").replace("\n", "<br/>")
+    ]) %}
+{% endfor %}
+{{ table(["Class", "Description"], rows) }}
+{% endif %}

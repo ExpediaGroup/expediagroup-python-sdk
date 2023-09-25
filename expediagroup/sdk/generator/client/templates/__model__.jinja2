@@ -26,14 +26,7 @@ from expediagroup.sdk.core.model.exception.service import ExpediaGroupApiExcepti
 class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif %}({{ model.base_class }}{% if is_aliased[model.base_class] %}Generic{% endif %},{% if model.base_class != 'Enum' %} smart_union=True, extra=Extra.forbid,{% endif %}): {% if comment is defined %}  # {{ model.comment }}{% endif %}
     r"""pydantic model {{ model.class_name }}{%- if model.description %}: {{ model.description }}{%- endif %}
 {# comment for new line #}
-{%- if model.fields %}Attributes:
-    {# comment #}
-    {%- for field in model.fields -%}
-    {% if field.name %}{{ field.name }}{% else %}__root__{% endif %}({{ field.type_hint }}{% if not field.required %}, optional{% endif %}): {%- if field.docstring %} {{ field.docstring.replace("\n", " ") }}{% elif field.description %}{{ field.description.replace("\n", " ") }}{%- else %} -- {%- endif %}
-    {# comment for new line #}
-    {%- endfor -%}
-{%- endif %}
-    """
+"""
 {%- if not model.fields %}
     pass
 {%- endif %}

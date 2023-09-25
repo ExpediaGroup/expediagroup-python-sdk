@@ -1,5 +1,5 @@
 [flake8]
-extend-exclude = venv*,*lib,*test
+extend-exclude = venv*,*lib,*test,*markdown_prettytable.py
 
 max-line-length = 160
 max-doc-length = 160

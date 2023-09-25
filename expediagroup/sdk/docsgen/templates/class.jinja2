@@ -1,0 +1,57 @@
+{{ breadcrumbs }}
+# class `{{ module.name }}.{{ class.name }}`
+```
+{{ class.constructor.name }}({% for arg in class.constructor.arguments %}
+    {{ arg.name }}: {{ arg.datatype }},{% endfor %}
+)
+```
+
+{% if class.description and class.description != "..." %}{{ class.description }}{% endif %}
+
+{# ---------------------------- Class Attributes ---------------------------- #}
+{% if class.attributes.__len__() %}
+## Attributes
+    {% set rows = [] %}
+    {% for attribute in class.attributes %}
+        {% set rows = rows.append([
+            attribute.name,
+            cross_reference_resolver.resolve(attribute.datatype.replace("|", "\|").replace("\n", "<br/>")),
+            not attribute.is_optional,
+            attribute.description.replace("|", "\|").replace("\n", "<br/>")
+          ])%}
+    {% endfor %}
+{{ table(["Name", "Type", "Required", "Description"], rows) }}
+{% endif %}
+
+{# ---------------------------- Class Methods ------------------------------- #}
+
+{% if class.methods.__len__() %}
+## Methods
+{% for method in class.methods %}
+### {{ method.name }}
+```
+{{ method.name }}(
+    {% for arg in method.arguments %}{{ arg.name }}: {{ arg.datatype }},
+{% endfor %})
+```
+    {% if method.arguments.__len__() %}
+        {% set rows = [] %}
+        {% for arg in method.arguments %}
+            {% set rows = rows.append([
+            arg.name,
+            cross_reference_resolver.resolve(arg.datatype.replace("|", "\|").replace("\n", "<br/>")),
+            not arg.is_optional,
+            arg.description.replace("|", "\|").replace("\n", "<br/>")
+          ])%}
+        {% endfor %}
+
+#### Parameters
+{{ table(["Name", "Type", "Required", "Description"], rows) }}
+    {% endif %}
+{% endfor %}
+{% endif %}
+
+{# ----------------------------- Inheritance -------------------------------- #}
+
+# Inheritance
+object {% if class.bases.__len__() %}> {{ cross_reference_resolver.resolve(class.bases|join(' > ')) }}{% endif %} > {{ class.name }}
