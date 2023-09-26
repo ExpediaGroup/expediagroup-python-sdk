@@ -48,7 +48,7 @@ jobs:
           source env/bin/activate
           pip3 install -r "../../../requirements-docs.txt"
           pip3 install -r "../../../requirements-core.txt"
-          pip3 install -r "../../../requirements-devs.txt"
+          pip3 install -r "../../../requirements-dev.txt"
 
           namespace="$(echo "${{ inputs.name }}" | tr '[:upper:]' '[:lower:]')"
           mkdir -p "temp/expediagroup/sdk/$namespace"
