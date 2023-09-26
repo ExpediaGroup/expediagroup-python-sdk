@@ -46,8 +46,10 @@ jobs:
         run: |
           python3 -m venv env
           source env/bin/activate
-
           pip3 install -r "../../../requirements-docs.txt"
+          pip3 install -r "../../../requirements-core.txt"
+          pip3 install -r "../../../requirements-devs.txt"
+
           namespace="$(echo "${{ inputs.name }}" | tr '[:upper:]' '[:lower:]')"
           mkdir -p "temp/expediagroup/sdk/$namespace"
           cp "../generator/package/expediagroup/sdk/$namespace/__init__.py" "./temp/expediagroup/__init__.py"
