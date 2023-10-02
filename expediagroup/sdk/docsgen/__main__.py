@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -31,7 +31,7 @@ def main(
     output_path: Optional[Path] = typer.Option(Path(".."), "--output-path", "-o"),
 ):
     print(Path().absolute())
-    print(Path())
+    print(os.listdir(Path()))
     context = Context(directory=str(package_path.absolute()))
     loader = PythonLoader(search_path=[str(package_path.absolute())])
 
