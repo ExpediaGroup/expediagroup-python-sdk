@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   title: Fraud Prevention Service
   version: v2
@@ -9,12 +9,16 @@ info:
   x-eg-lifecycle: PLANNED
 servers:
   - url: https://api.expediagroup.com/fraud-prevention/v2
+  - url: https://api.sandbox.expediagroup.com/fraud-prevention/v2
+  - url: https://test-api.expediagroup.com/fraud-prevention/v2
+  - url: https://test-api.sandbox.expediagroup.com/fraud-prevention/v2
 tags:
   - name: fraudPreventionV2
 paths:
   /fraud-prevention/v2/order/purchase/screen:
     post:
       tags:
+        &a1
         - fraudPreventionV2
       description: "The Order Purchase API gives a Fraud recommendation for a
         transaction. A recommendation can be Accept, Reject, or Review. A
@@ -22,7 +26,7 @@ paths:
         to recommend Accept or Reject. These incidents are manually reviewed,
         and a corrected recommendation is made asynchronously. "
       summary: Run fraud screening for one transaction
-      operationId: screen
+      operationId: screenOrder
       security:
         - orderPurchaseScreenAuth:
             - fraudandrisk.stub.order-purchase-screen
@@ -83,11 +87,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/BadGatewayError"
         "503":
-          description: Service unavailable
+          description: Retryable Order Purchase Screen Failure
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ServiceUnavailableError"
+                $ref: "#/components/schemas/RetryableOrderPurchaseScreenFailure"
         "504":
           description: Gateway timeout
           content:
@@ -96,8 +100,7 @@ paths:
                 $ref: "#/components/schemas/GatewayTimeoutError"
   /fraud-prevention/v2/order/purchase/update:
     post:
-      tags:
-        - fraudPreventionV2
+      tags: *a1
       description: >
         The Order Purchase Update API is called when the status of the order has
         changed.
@@ -108,7 +111,7 @@ paths:
 
         The Order Purchase Update API is also called when the merchant cancels or changes an order based on a Fraud recommendation.
       summary: Send an update for a transaction
-      operationId: update
+      operationId: notifyWithOrderUpdate
       security:
         - orderPurchaseUpdateAuth:
             - fraudandrisk.stub.order-purchase-update
@@ -218,6 +221,199 @@ paths:
               schema:
                 $ref: "#/components/schemas/BadGatewayError"
         "503":
+          description: Retryable Order Purchase Update Failure
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetryableOrderPurchaseUpdateFailure"
+        "504":
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GatewayTimeoutError"
+  /fraud-prevention/v2/account/screen:
+    post:
+      tags: *a1
+      description: The Account Screen API gives a Fraud recommendation for an account
+        transaction. A recommendation can be ACCEPT, CHALLENGE, or REJECT. A
+        transaction is marked as CHALLENGE whenever there are insufficient
+        signals to recommend ACCEPT or REJECT. These CHALLENGE incidents are
+        manually reviewed, and a corrected recommendation is made
+        asynchronously.
+      summary: Run fraud screening for one transaction
+      operationId: screenAccount
+      security:
+        - accountScreenAuth:
+            - fraudandrisk.stub.account-screen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountScreenRequest"
+      responses:
+        "200":
+          description: The AccountScreenRequest was successfully received and the account
+            screening is complete.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountScreenResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountTakeoverBadRequestError"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountTakeoverUnauthorizedError"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "429":
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TooManyRequestsError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+        "502":
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadGatewayError"
+        "503":
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceUnavailableError"
+        "504":
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GatewayTimeoutError"
+  /fraud-prevention/v2/account/update:
+    post:
+      tags: *a1
+      description: The Account Update API is called when there is an account lifecycle
+        transition such as a challenge outcome, account restoration, or
+        remediation action completion. For example, if a user's account is
+        disabled, deleted, or restored, the Account Update API is called to
+        notify Expedia Group about the change. The Account Update API is also
+        called when a user responds to a login Multi-Factor Authentication based
+        on a Fraud recommendation.
+      summary: Send an update as a result of an account screen transaction
+      operationId: notifyWithAccountUpdate
+      security:
+        - accountUpdateAuth:
+            - fraudandrisk.stub.account-update
+      requestBody:
+        required: true
+        description: An AccountUpdate request may be of one of the following types
+          `MULTI_FACTOR_AUTHENTICATION_UPDATE`, `REMEDIATION_UPDATE`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountUpdateRequest"
+            examples:
+              MultiFactorAuthenticationUpdate:
+                summary: Sample MultiFactorAuthenticationUpdate Request
+                value:
+                  type: MULTI_FACTOR_AUTHENTICATION_UPDATE
+                  risk_id: "1234324324"
+                  multi_factor_authentication_attempts:
+                    - delivery_method: SMS
+                      status: SUCCESS
+                      reference_id: "1234324324"
+                      provider_name: DUO
+                      attempt_count: 2
+                      update_start_date_time: 2022-07-24T01:01:01.111Z
+                      update_end_date_time: 2022-07-24T01:02:01.111Z
+                      telephone:
+                        country_access_code: "1"
+                        area_code: "234"
+                        phone_number: "5678910"
+              RemediationUpdate:
+                summary: Sample RemediationUpdate Request
+                value:
+                  type: REMEDIATION_UPDATE
+                  risk_id: "1234324324"
+                  remediation_update_actions:
+                    - action_name: PASSWORD_RESET
+                      status: SUCCESS
+                      update_end_date_time: 2022-07-24T01:02:01.111Z
+      responses:
+        "200":
+          description: The AccountUpdateResponse was successful.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountUpdateResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountTakeoverBadRequestError"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountTakeoverUnauthorizedError"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenError"
+        "404":
+          description: Account Update Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountUpdateNotFoundError"
+        "429":
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TooManyRequestsError"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+        "502":
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadGatewayError"
+        "503":
           description: Service unavailable
           content:
             application/json:
@@ -282,7 +478,7 @@ components:
         code: FORBIDDEN
         message: Insufficient permissions to perform the request.
       allOf:
-        - $ref: "#/components/schemas/Error"
+        - $ref: "#/components/schemas/AccountTakeoverError"
     NotFoundError:
       description: Indicates that the API cannot find the resource that is either
         being requested or against which the operation is being performed.
@@ -291,7 +487,7 @@ components:
         code: NOT_FOUND
         message: The requested resource does not exist.
       allOf:
-        - $ref: "#/components/schemas/Error"
+        - $ref: "#/components/schemas/AccountTakeoverError"
     OrderPurchaseUpdateNotFoundError:
       description: Indicates that the API cannot find the resource that is either
         being requested or against which the operation is being performed.
@@ -314,7 +510,7 @@ components:
         message: The request failed because the server resources for this client have
           been exhausted.
       allOf:
-        - $ref: "#/components/schemas/Error"
+        - $ref: "#/components/schemas/AccountTakeoverError"
     InternalServerError:
       description: Indicates that the API encountered an unexpected condition that
         prevented it from fulfilling the request. Sometimes used as a generic
@@ -325,7 +521,7 @@ components:
         code: INTERNAL_SERVER_ERROR
         message: The server encountered an internal error.
       allOf:
-        - $ref: "#/components/schemas/Error"
+        - $ref: "#/components/schemas/AccountTakeoverError"
     BadGatewayError:
       description: Indicates that the server received an invalid response from the
         upstream server. Causes could be incorrectly configured target server at
@@ -335,8 +531,8 @@ components:
         code: BAD_GATEWAY
         message: The server received an invalid response from an upstream server.
       allOf:
-        - $ref: "#/components/schemas/Error"
-    ServiceUnavailableError:
+        - $ref: "#/components/schemas/AccountTakeoverError"
+    RetryableOrderPurchaseScreenFailure:
       description: >
         Indicates that the API is either down for maintenance or overloaded and
         cannot fulfill the request at the current time. This is a temporary
@@ -346,6 +542,20 @@ components:
         There will be a Retry-After HTTP header in API response specifying how long to wait to retry the request. If there is no Retry-After HTTP header then retry can happen immediately. If the error persists after retrying with delay, please reach out to <support team>."
       example:
         code: RETRYABLE_ORDER_PURCHASE_SCREEN_FAILURE
+        message: A temporary internal error occurred. You can safely retry your call
+          using the same order details.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+    RetryableOrderPurchaseUpdateFailure:
+      description: >
+        Indicates that the API is either down for maintenance or overloaded and
+        cannot fulfill the request at the current time. This is a temporary
+        error and retrying the same request after a certain delay could
+        eventually result in success.
+
+        There will be a Retry-After HTTP header in API response specifying how long to wait to retry the request. If there is no Retry-After HTTP header then retry can happen immediately. If the error persists after retrying with delay, please reach out to <support team>."
+      example:
+        code: RETRYABLE_ORDER_PURCHASE_UPDATE_FAILURE
         message: A temporary internal error occurred. You can safely retry your call
           using the same order details.
       allOf:
@@ -360,7 +570,7 @@ components:
         code: GATEWAY_TIMEOUT
         message: The server timed out while trying to complete the request.
       allOf:
-        - $ref: "#/components/schemas/Error"
+        - $ref: "#/components/schemas/AccountTakeoverError"
     BadRequestError:
       description: Indicates that a bad request occurred. Typically it is an invalid
         parameter.
@@ -370,8 +580,8 @@ components:
           details.
         causes:
           code: MISSING_MANDATORY_PARAM
-          field: $.transaction.payments.brand
-          message: The value of a field was missed or not valid.
+          field: $.transaction.customer_account.account_type
+          message: The value of a field should not be null.
       allOf:
         - $ref: "#/components/schemas/Error"
         - type: object
@@ -392,10 +602,10 @@ components:
                     type: string
                     description: A JSON Path expression indicating which field, in the request body,
                       caused the error.
-                    example: $.transaction.payments.brand
+                    example: $.transaction.customer_account.account_type
                   message:
                     type: string
-                    example: The value of a field was missed or not valid.
+                    example: The value of a field should not be null.
     OrderPurchaseUpdateRequest:
       title: OrderPurchaseUpdateRequest
       description: >
@@ -662,7 +872,7 @@ components:
           type: string
           format: date-time
           description: Date and time when the chargeback was reported to the partner, in
-            ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+            ISO-8601 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
     InsultDetail:
       title: InsultDetail
       type: object
@@ -672,7 +882,7 @@ components:
           type: string
           format: date-time
           description: Date and time when the insult was reported to the partner, in
-            ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+            ISO-8601 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
     Status:
       title: Status
       description: >
@@ -718,6 +928,8 @@ components:
       properties:
         transaction:
           $ref: "#/components/schemas/OrderPurchaseTransaction"
+      required:
+        - transaction
     OrderPurchaseTransaction:
       title: OrderPurchaseTransaction
       type: object
@@ -773,7 +985,6 @@ components:
     DeviceDetails:
       title: DeviceDetails
       required:
-        - device_box
         - ip_address
       type: object
       properties:
@@ -798,7 +1009,6 @@ components:
         - order_type
         - travel_products
         - travelers
-        - payments
       type: object
       properties:
         order_id:
@@ -905,7 +1115,7 @@ components:
                 - country_code
         registered_time:
           description: The local date and time that the customer first registered on the
-            client site, in ISO-8061 date and time format
+            client site, in ISO-8601 date and time format
             `yyyy-MM-ddTHH:mm:ss.SSSZ`.
           type: string
           format: date-time
@@ -940,7 +1150,7 @@ components:
           description: Age of the traveler.
           type: number
         birth_date:
-          description: Date of birth for traveler, in ISO-8061 date and time format
+          description: Date of birth for traveler, in ISO-8601 date and time format
             `yyyy-MM-ddTHH:mm:ss.SSSZ`.
           type: string
           format: date-time
@@ -1005,14 +1215,11 @@ components:
         * `HOTEL`: `Hotel`
 
         * `RAIL`: `Rail`
-
-        * `ACTIVITIES`: `Activities`
       required:
         - price
         - type
         - inventory_type
         - inventory_source
-        - travelers_references
       type: object
       discriminator:
         propertyName: type
@@ -1023,7 +1230,6 @@ components:
           INSURANCE: "#/components/schemas/Insurance"
           HOTEL: "#/components/schemas/Hotel"
           RAIL: "#/components/schemas/Rail"
-          ACTIVITIES: "#/components/schemas/Activities"
       properties:
         price:
           $ref: "#/components/schemas/Amount"
@@ -1052,8 +1258,6 @@ components:
             *  `Hotel`                        : `HOTEL`
 
             *  `Rail`                         :  `RAIL`
-
-            *  `Activities`                   :  `ACTIVITIES`
           type: string
           maxLength: 30
         inventory_source:
@@ -1125,15 +1329,11 @@ components:
 
             *   [GUID2]
 
-            * Activities
-
-            *   [GUID1]
-
             * The example above demonstrates the association of travelers with various products.
 
             * All three travelers (A, B, and C) are associated with the Air product.
 
-            * Traveler A is associated with the Hotel and Activities products.
+            * Traveler A is associated with the Hotel.
 
             * Traveler C is associated with the Car product.
 
@@ -1144,6 +1344,19 @@ components:
           items:
             type: string
             maxLength: 50
+        pay_later:
+          description: >
+            The attribute serves as a boolean indicator that significantly
+            influences the handling of payment information during the fraud
+            prevention process:
+
+            * When 'pay_later' is set to 'true':
+              - This configuration signals that payment information is optional for the booking. Travelers are given the choice to defer payment until they arrive at the rental counter following the completion of the booking.
+              - It is imperative for partners to explicitly set this attribute to 'true' when payment information can be optional for a particular booking scenario.
+            * When 'pay_later' is set to 'false':
+              - In this mode, the attribute mandates the inclusion of payment information during the order purchase screen request. Travelers are required to provide payment details.
+              - Partners must exercise caution and ensure they supply the necessary payment information, as failure to do so in cases where 'pay_later' is set to 'false' will result in a 'Bad Request' error. This error helps maintain the consistency and accuracy of the fraud prevention process and payment handling.
+          type: boolean
     Rail:
       title: Rail
       allOf:
@@ -1187,14 +1400,14 @@ components:
       properties:
         departure_time:
           description: The local date and time of the scheduled departure from the
-            departure station, in ISO-8061 date and time format
+            departure station, in ISO-8601 date and time format
             `yyyy-MM-ddTHH:mm:ss.SSSZ`.
           type: string
           format: date-time
           maxLength: 50
         arrival_time:
           description: The local date and time of the scheduled arrival at the destination
-            station, in ISO-8061 date and time format
+            station, in ISO-8601 date and time format
             `yyyy-MM-ddTHH:mm:ss.SSSZ`.
           type: string
           format: date-time
@@ -1269,7 +1482,14 @@ components:
           maxLength: 200
           example: GCT
         address:
-          $ref: "#/components/schemas/Address"
+          allOf:
+            - $ref: "#/components/schemas/Address"
+            - required:
+                - address_line1
+                - city
+                - state
+                - zip_code
+                - country_code
         timezone:
           description: The timezone associated with the location of the station,
             specifying the local time offset from Coordinated Universal Time
@@ -1277,161 +1497,6 @@ components:
           type: string
           maxLength: 200
           example: America/New_York
-    Activities:
-      title: Activities
-      allOf:
-        - $ref: "#/components/schemas/TravelProduct"
-        - type: object
-          required:
-            - activity
-            - operating_company
-            - start_time
-            - end_time
-            - ticket
-          properties:
-            activity:
-              $ref: "#/components/schemas/Activity"
-            operating_company:
-              $ref: "#/components/schemas/OperatingCompany"
-            is_coupon_required:
-              description: "A coupon is typically a document or electronic code that confirms
-                your reservation or purchase for the activity. It serves as
-                proof of payment and allows you to participate in the activity.
-                This field indicates whether a coupon is necessary for this
-                activity. | For example, let's consider two scenarios: |
-                Activity: Adventure Park | is_coupon_required: false | In this
-                case, the attribute is set to 'false,' indicating that no coupon
-                is necessary. However, you might still need to purchase a ticket
-                to gain entry to the adventure park. The ticket serves as proof
-                of payment and grants you access to the park's activities and
-                attractions. | Activity: Spa Package | is_coupon_required: true
-                | Here, the attribute is set to 'true,' indicating that a coupon
-                is required. To participate in the spa package, you would need
-                to present the designated coupon at the spa. The coupon confirms
-                your reservation, serves as proof of payment, and may entitle
-                you to specific spa treatments or discounts."
-              type: boolean
-            location_coordinates:
-              $ref: "#/components/schemas/Coordinates"
-            start_time:
-              description: The field represents the start time of a activity, using the
-                ISO-8061 date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
-              type: string
-              format: date-time
-              maxLength: 50
-            end_time:
-              description: The field represents the end time of a activity, using the ISO-8061
-                date and time format yyyy-MM-ddTHH:mm:ss.SSSZ.
-              type: string
-              format: date-time
-              maxLength: 50
-            ticket:
-              description: This field provides information about the tickets available for the
-                activity.
-              type: array
-              items:
-                $ref: "#/components/schemas/Ticket"
-              minItems: 1
-              maxItems: 40
-    Activity:
-      title: Activity
-      description: Provides essential details about a specific activity.
-      type: object
-      required:
-        - type
-        - description
-      properties:
-        type:
-          description: "This field provides a categorization of the different types of
-            activities available within the activity product. It is designed to
-            accommodate the preferences of the API consumer, allowing them to
-            assign a descriptive label or keyword that accurately represents the
-            nature of each activity. Here are some suggested values for this
-            field: | Adventures: This category includes activities such as
-            hiking, zip-lining, rock climbing, bungee jumping, and other
-            adventurous pursuits. | Air, Balloon & Helicopter Tours: This
-            category offers activities like hot air balloon rides, helicopter
-            tours, and aerial sightseeing experiences. | Cruises & Water Tours:
-            This includes options such as boat cruises, yacht tours, river
-            rafting, snorkeling, and diving expeditions. | Nightlife: This
-            category encompasses activities like clubbing, pub crawls, live
-            music events, and cultural performances. These activities
-            predominantly occur during the evening or nighttime."
-          type: string
-          maxLength: 200
-          example: Balloon & Helicopter Tours
-        description:
-          description: This field within the trip information provides additional details
-            or a brief explanation about the specific trip or activity being
-            described
-          type: string
-          maxLength: 200
-          example: 2-Day, 2 Day Ticket Weekend
-    Coordinates:
-      title: Coordinates
-      type: object
-      description: Group of attributes intended to hold information about location
-        coordinates.
-      properties:
-        latitude:
-          type: number
-          description: The latitude in degrees. It must be in the range [-90.0, +90.0].
-          minimum: -90
-          maximum: 90
-        longitude:
-          type: number
-          description: The longitude in degrees. It must be in the range [-180.0, +180.0].
-          minimum: -180
-          maximum: 180
-    OperatingCompany:
-      title: OperatingCompany
-      description: This field helps to identify and understand the specific provider
-        or operating company involved in offering the activity.
-      type: object
-      required:
-        - name
-        - type
-      properties:
-        name:
-          description: This field includes the provider's name.
-          type: string
-          example: VIATOR
-        type:
-          description: "This field indicates the nature or relationship of the vendor
-            associated with a particular activity. | THIRD_PARTY: This value
-            indicates that the vendor is an external entity or third-party
-            provider. | DIRECT: This value signifies that the vendor is a direct
-            entity or provider associated with the organization or platform
-            offering the activity."
-          type: string
-          enum:
-            - THIRD_PARTY
-            - DIRECT
-    Ticket:
-      title: Ticket
-      description: This field provides information about the tickets related to the
-        activity.
-      type: object
-      required:
-        - category
-        - quantity
-      properties:
-        category:
-          type: string
-          description: Describes the type or category of the ticket.
-          enum:
-            - ADULT
-            - CHILD
-            - SENIOR
-            - STUDENT
-            - OTHER
-        quantity:
-          description: This field represents the count or number of a specific ticket type
-            associated with an activity.
-          type: integer
-          format: int32
-          minimum: 1
-          maximum: 30
     Air:
       title: Air
       allOf:
@@ -1445,13 +1510,13 @@ components:
           properties:
             departure_time:
               description: Local date and time of departure from original departure location,
-                in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+                in ISO-8601 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
               type: string
               format: date-time
               maxLength: 50
             arrival_time:
               description: Local date and time of arrival to final destination location, in
-                ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+                ISO-8601 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
               type: string
               format: date-time
               maxLength: 50
@@ -1500,12 +1565,12 @@ components:
           maxLength: 10
         departure_time:
           description: Local date and time of departure from departure location, in
-            ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+            ISO-8601 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
           type: string
           format: date-time
           maxLength: 50
         arrival_time:
-          description: Local date and time of arrival to destination location, in ISO-8061
+          description: Local date and time of arrival to destination location, in ISO-8601
             date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
           type: string
           format: date-time
@@ -1525,13 +1590,13 @@ components:
           properties:
             departure_time:
               description: Local date and time of departure from original departure location,
-                in ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+                in ISO-8601 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
               type: string
               format: date-time
               maxLength: 50
             arrival_time:
               description: Local date and time of arrival from original arrival location, in
-                ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+                ISO-8601 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
               type: string
               format: date-time
               maxLength: 50
@@ -1568,13 +1633,13 @@ components:
               type: string
               maxLength: 200
             pickup_time:
-              description: Local date and time the automobile will be picked-up, in ISO-8061
+              description: Local date and time the automobile will be picked-up, in ISO-8601
                 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
               type: string
               format: date-time
               maxLength: 50
             return_time:
-              description: Local date and time the automobile will be returned, in ISO-8061
+              description: Local date and time the automobile will be returned, in ISO-8601
                 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
               type: string
               format: date-time
@@ -1611,15 +1676,22 @@ components:
               type: integer
               format: int32
             address:
-              $ref: "#/components/schemas/HotelAddress"
+              allOf:
+                - $ref: "#/components/schemas/HotelAddress"
+                - required:
+                    - address_line1
+                    - city
+                    - state
+                    - zip_code
+                    - country_code
             checkin_time:
-              description: Local date and time of the hotel check-in, in ISO-8061 date and
+              description: Local date and time of the hotel check-in, in ISO-8601 date and
                 time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
               type: string
               format: date-time
               maxLength: 50
             checkout_time:
-              description: Local date and time of the hotel check-out, in ISO-8061 date and
+              description: Local date and time of the hotel check-out, in ISO-8601 date and
                 time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
               type: string
               format: date-time
@@ -2054,7 +2126,6 @@ components:
         - INSURANCE
         - HOTEL
         - RAIL
-        - ACTIVITIES
     Insurance:
       title: Insurance
       allOf:
@@ -2153,7 +2224,7 @@ components:
               type: string
               maxLength: 200
             expiry_date:
-              description: Expiration date of the credit card used for payment, in ISO-8061
+              description: Expiration date of the credit card used for payment, in ISO-8601
                 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
               type: string
               format: date-time
@@ -2407,7 +2478,7 @@ components:
         last_verified_date_time:
           description: Local date and time user validated possession of their phone number
             via a text or voice multi factor authentication challenge, in
-            ISO-8061 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+            ISO-8601 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
           type: string
           format: date-time
           maxLength: 50
@@ -2463,18 +2534,755 @@ components:
           type: string
           pattern: ^[A-Z]{3}$
           maxLength: 3
+    AccountTakeoverError:
+      description: The object used to describe an error, containing both
+        human-readable and machine-readable information.
+      type: object
+      properties:
+        code:
+          description: Snake cased all caps error code interpreted from the HTTP status
+            code that can programmatically be acted upon.
+          type: string
+          example: BAD_REQUEST
+          enum:
+            - UNAUTHORIZED
+            - FORBIDDEN
+            - NOT_FOUND
+            - ACCOUNT_UPDATE_NOT_FOUND
+            - TOO_MANY_REQUESTS
+            - INTERNAL_SERVER_ERROR
+            - BAD_GATEWAY
+            - RETRYABLE_ACCOUNT_SCREEN_FAILURE
+            - RETRYABLE_ACCOUNT_UPDATE_FAILURE
+            - GATEWAY_TIMEOUT
+            - BAD_REQUEST
+        message:
+          description: A human-readable explanation of the error, specific to this error
+            occurrence.
+          type: string
+          example: An input validation error was encountered. Please see causes for more
+            details.
+      required:
+        - code
+        - message
+    AccountTakeoverUnauthorizedError:
+      description: Indicates that the token sent in the 'Authorization' header is
+        either invalid or missing. Please check the value in the token field
+        along with the token expiration time before retrying.
+      example:
+        code: UNAUTHORIZED
+        message: Invalid EG token provided. Please provide a valid token in the
+          Authorization header.
+      allOf:
+        - $ref: "#/components/schemas/AccountTakeoverError"
+    AccountUpdateNotFoundError:
+      description: Indicates that the API cannot find the resource that is either
+        being requested or against which the operation is being performed.
+      example:
+        code: ACCOUNT_UPDATE_NOT_FOUND
+        message: The request failed because the Account Screen event for this account is
+          missing. Please send a new Account Screen event again.
+      allOf:
+        - $ref: "#/components/schemas/AccountTakeoverError"
+    ServiceUnavailableError:
+      description: >
+        Indicates that the API is either down for maintenance or overloaded and
+        cannot fulfill the request at the current time. This is a temporary
+        error and retrying the same request after a certain delay could
+        eventually result in success.
+
+        There will be a Retry-After HTTP header in API response specifying how long to wait to retry the request. If there is no Retry-After HTTP header then retry can happen immediately. If the error persists after retrying with delay, please reach out to <support team>."
+      example:
+        code: RETRYABLE_ACCOUNT_SCREEN_FAILURE
+        message: A temporary internal error occurred. You can safely retry your call
+          using the same account details.
+      allOf:
+        - $ref: "#/components/schemas/AccountTakeoverError"
+    AccountTakeoverBadRequestError:
+      description: Indicates that a bad request occurred. Typically it is an invalid
+        parameter.
+      example:
+        code: BAD_REQUEST
+        message: An input validation error was encountered. Please see causes for more
+          details.
+        causes:
+          code: MISSING_MANDATORY_PARAM
+          field: $.transaction.device_details.device_box
+          message: The value of a field was missed or not valid.
+      allOf:
+        - $ref: "#/components/schemas/AccountTakeoverError"
+        - type: object
+          properties:
+            causes:
+              type: array
+              items:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: MISSING_MANDATORY_PARAM
+                    enum:
+                      - MISSING_MANDATORY_PARAM
+                      - INVALID_PARAM
+                      - INVALID_FORMAT
+                  field:
+                    type: string
+                    description: A JSON Path expression indicating which field, in the request body,
+                      caused the error.
+                    example: $.transaction.device_details.device_box
+                  message:
+                    type: string
+                    example: The value of a field was missed or not valid.
+    AccountUpdateRequest:
+      title: AccountUpdateRequest
+      type: object
+      description: >
+        The `type` field value is used as a discriminator, with the following
+        mapping:
+
+        * `MULTI_FACTOR_AUTHENTICATION_UPDATE`: `MultiFactorAuthenticationUpdate`
+
+        * `REMEDIATION_UPDATE`: `RemediationUpdate`
+      discriminator:
+        propertyName: type
+        mapping:
+          MULTI_FACTOR_AUTHENTICATION_UPDATE: MultiFactorAuthenticationUpdate
+          REMEDIATION_UPDATE: RemediationUpdate
+      required:
+        - type
+        - risk_id
+      properties:
+        type:
+          type: string
+          description: The categorized type of account update event from the Partner's
+            system.
+          enum:
+            - MULTI_FACTOR_AUTHENTICATION_UPDATE
+            - REMEDIATION_UPDATE
+        risk_id:
+          description: The `risk_id` provided by Expedia's Fraud Prevention Service in the
+            `AccountScreenResponse`.
+          type: string
+          maxLength: 200
+          example: "123456789"
+    MultiFactorAuthenticationUpdate:
+      title: MultiFactorAuthenticationUpdate
+      description: Information specific to a user's response to a Multi-Factor
+        Authentication initiated by the Partner's system as a result of a fraud
+        recommendation.
+      allOf:
+        - $ref: "#/components/schemas/AccountUpdateRequest"
+        - type: object
+          required:
+            - multi_factor_authentication_attempts
+          properties:
+            multi_factor_authentication_attempts:
+              type: array
+              minItems: 1
+              maxItems: 20
+              items:
+                $ref: "#/components/schemas/MultiFactorAuthenticationAttempt"
+    MultiFactorAuthenticationAttempt:
+      title: MultiFactorAuthenticationAttempt
+      type: object
+      description: Information specific to the update event by a user.
+      required:
+        - delivery_method
+        - status
+        - reference_id
+        - provider_name
+        - attempt_count
+      properties:
+        delivery_method:
+          type: string
+          description: The delivery method of the Multi-Factor Authentication to a user.
+          enum:
+            - EMAIL
+            - SMS
+            - VOICE
+            - PUSH
+        status:
+          type: string
+          description: >
+            The status of a user''s response to the Multi-Factor Authentication
+            initiated by the Partner''s system to the user.'
+
+            - `SUCCESS` - Applicable if the user successfully passed the challenge.
+
+            - `ABANDON` - Applicable if the user did not complete the challenge.
+
+            - `FAILED` - Applicable if the user failed the challenge.
+          enum:
+            - SUCCESS
+            - ABANDON
+            - FAILED
+        reference_id:
+          type: string
+          description: The identifier related to a Multi-Factor Authentication attempt by
+            the Partner's system to the Multi-Factor Authentication provider.
+          maxLength: 200
+        provider_name:
+          type: string
+          description: The vendor providing the Multi-Factor Authentication verification.
+          maxLength: 200
+        attempt_count:
+          type: number
+          description: The number of attempts a user tried for this Multi-Factor
+            Authentication.
+        update_start_date_time:
+          type: string
+          description: The local date and time the Multi-Factor Authentication was
+            initiated to a user from the Partner's system, in ISO-8601 date and
+            time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          format: date-time
+          maxLength: 50
+        update_end_date_time:
+          type: string
+          description: The local date and time the Multi-Factor Authentication to a user
+            ended in the Partner's system, in ISO-8601 date and time format
+            `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          format: date-time
+          maxLength: 50
+        telephone:
+          $ref: "#/components/schemas/Telephone"
+        email_address:
+          type: string
+          description: Email address used for the Multi-Factor Authentication by a user.
+          format: email
+          maxLength: 200
+    RemediationUpdate:
+      title: RemediationUpdate
+      description: Information specific to remediation actions initiated by the
+        Partner's system to a user as a result of a fraud recommendation.
+      allOf:
+        - $ref: "#/components/schemas/AccountUpdateRequest"
+        - type: object
+          required:
+            - remediation_update_actions
+          properties:
+            remediation_update_actions:
+              type: array
+              minItems: 1
+              maxItems: 20
+              items:
+                $ref: "#/components/schemas/RemediationUpdateAction"
+    RemediationUpdateAction:
+      title: RemediationUpdateAction
+      type: object
+      description: Information specific to the remediation action initiated by the
+        Partner's system to a user.
+      required:
+        - action_name
+        - status
+      properties:
+        action_name:
+          type: string
+          description: >
+            The categorized remediation action initiated by the Partner''s
+            system to a user. Possible values are:
+
+            - `PASSWORD_RESET` - Applicable if this event is the result of a password reset by the Partner''s system.
+
+            - `DISABLE_ACCOUNT` - Applicable if this event is the result of disabling an account by the Partner''s system.
+
+            - `TERMINATE_ALL_SESSIONS` - Applicable if this event is the result of terminating all active user sessions of an account by the Partner''s system.
+          enum:
+            - PASSWORD_RESET
+            - DISABLE_ACCOUNT
+            - TERMINATE_ALL_SESSIONS
+        status:
+          type: string
+          description: >
+            The status of the remediation action.
+              - `SUCCESS` - Applicable if the Partner''s system was successfully able to perform the remediation action.
+              - `FAILED` - Applicable if the Partner''s system failed to perform the remediation action.
+          enum:
+            - SUCCESS
+            - FAILED
+        update_end_date_time:
+          type: string
+          description: The local date and time the remediation action to a user ended in
+            the Partner's system, in ISO-8601 date and time format
+            `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          format: date-time
+          maxLength: 50
+    AccountUpdateResponse:
+      title: AccountUpdateResponse
+      type: object
+      properties:
+        risk_id:
+          type: string
+          description: Unique identifier of transaction that was updated.
+          maxLength: 200
+          example: "1234567"
+    AccountScreenRequest:
+      title: AccountScreenRequest
+      type: object
+      description: Information for account screening by Expedia's Fraud Prevention Service.
+      required:
+        - transaction
+      properties:
+        transaction:
+          $ref: "#/components/schemas/AccountTransaction"
+    AccountScreenResponse:
+      title: AccountScreenResponse
+      type: object
+      description: Response for an account transaction provided by Expedia's Fraud
+        Prevention Service.
+      properties:
+        risk_id:
+          type: string
+          description: Unique identifier assigned to the transaction by Expedia's Fraud
+            Prevention Service.
+          maxLength: 200
+          example: "1234567"
+        decision:
+          $ref: "#/components/schemas/AccountTakeoverFraudDecision"
+    AccountTakeoverFraudDecision:
+      title: FraudDecision
+      type: string
+      description: >
+        Fraud recommendation for an account transaction. A recommendation can be
+        ACCEPT, CHALLENGE, or REJECT.
+
+        - `ACCEPT` - Represents an account transaction where the user’’s account activity is accepted.
+
+        - `CHALLENGE` - Represents an account transaction that requires additional verification or challenges the user’’s identity (example: CAPTCHA, MULTI_FACTOR_AUTHENTICATION, etc).
+
+        - `REJECT` - Represents a suspicious account transaction where the user’’s credentials or their behavior requires us to block the account activity.
+      enum:
+        - ACCEPT
+        - CHALLENGE
+        - REJECT
+    AccountTransaction:
+      title: AccountTransaction
+      type: object
+      description: Information for an account transaction.
+      required:
+        - site_info
+        - device_details
+        - customer_account
+        - transaction_details
+      properties:
+        site_info:
+          $ref: "#/components/schemas/AccountTakeoverSiteInfo"
+        device_details:
+          $ref: "#/components/schemas/AccountTakeoverDeviceDetails"
+        customer_account:
+          $ref: "#/components/schemas/AccountTakeoverCustomerAccount"
+        transaction_details:
+          $ref: "#/components/schemas/AccountTakeoverTransactionDetails"
+    AccountTakeoverSiteInfo:
+      title: SiteInfo
+      type: object
+      description: Information specific to the Partner's website through which a
+        transaction was made.
+      required:
+        - brand_name
+      properties:
+        locale:
+          type: string
+          description: The locale of the website a user is accessing, which is separate
+            from the user configured browser locale, in ISO 639-2 language code
+            format and in ISO 3166-1 country code format.
+          pattern: ^([a-z]{2}-[A-Z]{2})$
+          example: en-US
+        name:
+          type: string
+          description: Name of the website from which the event is generated.
+          example: expedia.com
+          maxLength: 200
+        brand_name:
+          type: string
+          description: The trademark brand name that is displayed to a user on the website.
+          maxLength: 200
+        placement_name:
+          type: string
+          description: >
+            The categorized name of the page where a user initiated event is
+            being evaluated.
+
+            - `LOGIN` - Applicable if the user initiated this account event from a login web page.
+
+            - `PASSWORD_RESET` - Applicable if the user initiated this account event from a password reset web page.
+          enum:
+            - LOGIN
+            - PASSWORD_RESET
+    AccountTakeoverDeviceDetails:
+      title: DeviceDetails
+      type: object
+      description: Information specific to the Partner's device through which a
+        transaction was made.
+      required:
+        - device_box
+        - ip_address
+        - user_agent
+      properties:
+        source:
+          type: string
+          maxLength: 50
+          description: Source of the device_box. Default value is `TrustWidget`.
+        device_box:
+          type: string
+          maxLength: 16000
+          description: Device related information retrieved from TrustWidget.
+        ip_address:
+          type: string
+          description: IP address of the device used for this event.
+          pattern: ^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$
+          example: 192.168.32.48
+        user_agent:
+          type: string
+          description: The application type, operating system, software vendor, or
+            software version of the originating request.
+          maxLength: 200
+          example: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/114.0.0.0 Safari/537.36
+        type:
+          type: string
+          description: >
+            The categorized type of device used by a user. Possible values are:
+
+            - `WEBSITE` - Applicable if the user initiated this event from a web browser on a desktop computer.
+
+            - `PHONE_WEB` - Applicable if the user initiated this event from a web browser on a phone.
+
+            - `TABLET_WEB` - Applicable if the user initiated this event from a web browser on a tablet.
+
+            - `PHONE_APP` - Applicable if the user initiated this event from an app on a phone.
+
+            - `TABLET_APP` - Applicable if the user initiated this event from an app on a tablet.
+          enum:
+            - WEBSITE
+            - PHONE_WEB
+            - TABLET_WEB
+            - PHONE_APP
+            - TABLET_APP
+    AccountTakeoverCustomerAccount:
+      title: CustomerAccount
+      type: object
+      description: Information about a user's account.
+      required:
+        - user_id
+        - account_type
+        - username
+        - email_address
+        - registered_time
+        - active_flag
+      properties:
+        user_id:
+          type: string
+          description: Unique account identifier provided by the Partner's Identity
+            Provider/System assigned to the account owner by the partner.
+            `user_id` is specific to the Partner's namespace. Used to track
+            repeat account activity by the same user.
+          maxLength: 200
+        account_type:
+          type: string
+          description: >
+            Identifies the account type of a user''s account. Possible values
+            are:
+
+            - `INDIVIDUAL` - Applicable if this account is for an individual traveler.
+
+            - `BUSINESS` - Applicable if this account is for a business or organization account used by suppliers or Partners.
+          enum:
+            - INDIVIDUAL
+            - BUSINESS
+        account_role:
+          type: string
+          description: >
+            Identifies the account role and associated permissions of a user''s
+            account. Possible values are:
+
+            - `USER`: Basic account with no special privileges.
+
+            - `MANAGER`: Account with additional privileges, such as the ability to make bookings for others.
+
+            - `ADMIN`: Account with higher privileges than a manager, including the ability to grant manager access to other users.
+          enum:
+            - USER
+            - MANAGER
+            - ADMIN
+        name:
+          $ref: "#/components/schemas/AccountTakeoverName"
+        username:
+          type: string
+          description: Username of the account.
+          maxLength: 200
+        email_address:
+          description: Email address for the account owner.
+          type: string
+          format: email
+        telephones:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/Telephone"
+        address:
+          allOf:
+            - $ref: "#/components/schemas/Address"
+            - required:
+                - address_line1
+                - city
+                - state
+                - zip_code
+                - country_code
+        registered_time:
+          description: The local date and time that the customer first registered on the
+            Partner's site, in ISO-8601 date and time format
+            `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          type: string
+          format: date-time
+          maxLength: 50
+        active_flag:
+          type: boolean
+          description: Indicator for if this account is an active account or not.
+        loyalty_member_id:
+          type: string
+          description: Unique loyalty identifier for a user.
+          maxLength: 200
+    AccountTakeoverName:
+      title: Name
+      description: Group of attributes intended to hold information about a customer
+        or traveler''s name for the account.
+      type: object
+      required:
+        - first_name
+        - last_name
+      properties:
+        last_name:
+          description: Surname, or last name, of the person.
+          type: string
+          maxLength: 200
+        first_name:
+          description: Given, or first name, of the person.
+          type: string
+          maxLength: 200
+        middle_name:
+          description: Middle name of the person.
+          type: string
+          maxLength: 200
+        title:
+          description: Title of the person for name (e.g. Mr., Ms. etc).
+          type: string
+          maxLength: 200
+        suffix:
+          description: Generational designations (e.g. Sr, Jr, III) or values indicate
+            that the individual holds a position, educational degree,
+            accreditation, office, or honor (e.g. PhD, CCNA, OBE).
+          type: string
+          maxLength: 50
+    AccountTakeoverTransactionDetails:
+      title: TransactionDetails
+      type: object
+      description: >
+        The `transaction_type` field value is used as a discriminator, with the
+        following mapping:
+
+        * `LOGIN`: `LoginTransactionDetails`
+      required:
+        - type
+        - transaction_date_time
+        - transaction_id
+      discriminator:
+        propertyName: type
+        mapping:
+          LOGIN: "#/components/schemas/LoginTransactionDetails"
+      properties:
+        type:
+          type: string
+          description: The categorized type of account event related to a user's action.
+          enum:
+            - LOGIN
+        transaction_date_time:
+          type: string
+          description: The local date and time the transaction occured in the Partner's
+            system, in ISO-8601 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          format: date-time
+          maxLength: 50
+        transaction_id:
+          type: string
+          description: Unique identifier to identify a transaction attempt in the
+            Partner's system.
+          maxLength: 200
+        current_user_session:
+          $ref: "#/components/schemas/CurrentUserSession"
+    LoginTransactionDetails:
+      title: LoginTransactionDetails
+      allOf:
+        - $ref: "#/components/schemas/AccountTakeoverTransactionDetails"
+        - type: object
+          description: Specific information about a login transaction for a user.
+          required:
+            - authentication_type
+            - successful_login_flag
+          properties:
+            authentication_type:
+              type: string
+              description: >
+                The type of login authentication method used by a user.
+
+                For `authentication_type` ensure attributes mentioned in dictionary below are set to corresponding values only.
+
+                `authentication_type` is an enum value with the following mapping with `authentication_sub_type` attribute:
+
+                *       authentication_type       :     authentication_sub_type
+
+                * -------------------------------------------------------------------------------
+
+                * `CREDENTIALS`                         : `EMAIL`
+
+                * `CREDENTIALS`                         :
+
+                * `PASSWORD_RESET`                      : `EMAIL`
+
+                * `SINGLE_SIGN_ON`                      : `EMAIL`
+
+                * `MULTI_FACTOR_AUTHENTICATION`         : `EMAIL`
+
+                * `MULTI_FACTOR_AUTHENTICATION`         : `PHONE`
+
+                * `SOCIAL`                              : `GOOGLE`
+
+                * `SOCIAL`                              : `FACEBOOK`
+
+                * `SOCIAL`                              : `APPLE`
+              enum:
+                - CREDENTIALS
+                - PASSWORD_RESET
+                - SOCIAL
+                - SINGLE_SIGN_ON
+                - MULTI_FACTOR_AUTHENTICATION
+            authentication_sub_type:
+              type: string
+              description: >
+                The sub type of login authentication method used by a user.
+
+                For `authentication_sub_type` ensure attributes mentioned in dictionary below are set to corresponding values only.
+
+                `authentication_sub_type` is an enum value with the following mapping with `authentication_type` attribute:
+
+                *       authentication_sub_type   :     authentication_type
+
+                * -------------------------------------------------------------------------------
+
+                * `EMAIL`                               : `CREDENTIALS`
+
+                * `EMAIL`                               : `PASSWORD_RESET`
+
+                * `EMAIL`                               : `SINGLE_SIGN_ON`
+
+                * `EMAIL`                               : `MULTI_FACTOR_AUTHENTICATION`
+
+                * `PHONE`                               : `MULTI_FACTOR_AUTHENTICATION`
+
+                * `GOOGLE`                              : `SOCIAL`
+
+                * `FACEBOOK`                            : `SOCIAL`
+
+                * `APPLE`                               : `SOCIAL`
+
+                *                                       : `CREDENTIALS`
+              enum:
+                - EMAIL
+                - PHONE
+                - GOOGLE
+                - FACEBOOK
+                - APPLE
+            successful_login_flag:
+              type: boolean
+              description: Identifies if a login attempt by a user was successful or not.
+            failed_login_reason:
+              type: string
+              description: >
+                The reason for the failed login attempt in the Partner''s
+                system, related to user failure or Partner''s system failure.
+
+                - `INVALID_CREDENTIALS` - Applicable if the user provided invalid login credentials for this login attempt.
+
+                - `ACCOUNT_NOT_FOUND` - Applicable if the user attempted to login to an account that doesn't exist.
+
+                - `VERIFICATION_FAILED` - Applicable if the user failed the verification for this login, or any authentication exception occured in the Partner system for this login attempt.
+
+                - `ACCOUNT_LOCKED` - Applicable if the user attempted to login to an account that is locked.
+              enum:
+                - INVALID_CREDENTIALS
+                - ACCOUNT_NOT_FOUND
+                - VERIFICATION_FAILED
+                - ACCOUNT_LOCKED
+    CurrentUserSession:
+      title: CurrentUserSession
+      type: object
+      description: >
+        The current user session prior to this transaction, which contains
+        details related to any challenge initiated by the Partner''s system to a
+        user before calling Expedia''s Fraud Prevention Service.
+
+        An example is if the Partner''s system sent a Captcha challenge to the user before calling Expedia''s Fraud Prevention Service.
+      properties:
+        session_id:
+          type: string
+          description: Unique identifier for a user's session on their device
+          maxLength: 200
+        start_date_time:
+          type: string
+          description: The local date and time a user's session started, in ISO-8601 date
+            and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+          format: date-time
+          maxLength: 50
+        challenge_detail:
+          $ref: "#/components/schemas/ChallengeDetail"
+    ChallengeDetail:
+      title: ChallengeDetail
+      type: object
+      description: Information related to challenges initiated by the Partner's system
+        to a user before calling Expedia's Fraud Prevention Service.
+      required:
+        - displayed_flag
+        - type
+        - status
+      properties:
+        displayed_flag:
+          type: boolean
+          description: Indicates that there was a challenge initiated by the Partner's
+            system to a user before calling Expedia's Fraud Prevention Service.
+        type:
+          type: string
+          description: >
+            The kind of challenge served by the Partner''s system to a user
+            prior to calling Expedia''s Fraud Prevention Service.
+
+            - `CAPTCHA` - Applicable if the challenge served by the Partner''s system was a Captcha challenge.
+
+            - `TWO_FACTOR` - Applicable if the challenge served by the Partner''s system was a two-factor challenge including (Email verification, One Time Password, Okta, etc).
+          enum:
+            - CAPTCHA
+            - TWO_FACTOR
+        status:
+          type: string
+          description: >
+            The status of the challenge served by the Partner''s system to a
+            user before calling Expedia''s Fraud Prevention Service.
+
+            - `SUCCESS` - Applicable if the user successfully passed the challenge.
+
+            - `FAILED` - Applicable if the user failed the challenge.
+          enum:
+            - SUCCESS
+            - FAILED
   securitySchemes:
     orderPurchaseScreenAuth:
       type: oauth2
       flows:
         clientCredentials:
-          tokenUrl: /identity/oauth2/v3/token?grant_type=client_credentials
+          tokenUrl: https://api.expediagroup.com/identity/oauth2/v3/token?grant_type=client_credentials
           scopes:
             fraudandrisk.stub.order-purchase-screen: Use Fraud Systems for screening orders
     orderPurchaseUpdateAuth:
       type: oauth2
       flows:
         clientCredentials:
-          tokenUrl: /identity/oauth2/v3/token?grant_type=client_credentials
+          tokenUrl: https://api.expediagroup.com/identity/oauth2/v3/token?grant_type=client_credentials
           scopes:
             fraudandrisk.stub.order-purchase-update: Use Fraud Systems for updating orders
