@@ -27,7 +27,7 @@ app = typer.Typer()
 def main(
     package_name: str = typer.Option(..., "--package-name", "-n"),
     package_path: Path = typer.Option(..., "--package-path", "-p"),
-    templates_path: Optional[Path] = typer.Option(None, "--templates-path", "-t"),
+    templates_path: Optional[Path] = typer.Option("./templates", "--templates-path", "-t"),
     output_path: Optional[Path] = typer.Option(Path(".."), "--output-path", "-o"),
 ):
     print(Path().absolute())
