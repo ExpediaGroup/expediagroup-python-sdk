@@ -30,6 +30,8 @@ def main(
     templates_path: Optional[Path] = typer.Option(None, "--templates-path", "-t"),
     output_path: Optional[Path] = typer.Option(Path(".."), "--output-path", "-o"),
 ):
+    print(Path().absolute())
+    print(Path())
     context = Context(directory=str(package_path.absolute()))
     loader = PythonLoader(search_path=[str(package_path.absolute())])
 
