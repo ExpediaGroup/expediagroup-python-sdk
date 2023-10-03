@@ -30,8 +30,6 @@ def main(
     templates_path: Optional[Path] = typer.Option(Path(__file__).parent/"templates", "--templates-path", "-t"),
     output_path: Optional[Path] = typer.Option(Path()/"docs", "--output-path", "-o"),
 ):
-    print(Path().absolute())
-    print(os.listdir(Path()))
     context = Context(directory=str(package_path.absolute()))
     loader = PythonLoader(search_path=[str(package_path.absolute())])
 
