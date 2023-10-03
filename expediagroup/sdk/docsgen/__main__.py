@@ -26,8 +26,8 @@ app = typer.Typer()
 def main(
     package_name: str = typer.Option(..., "--package-name", "-n"),
     package_path: Path = typer.Option(..., "--package-path", "-p"),
-    templates_path: Optional[Path] = typer.Option(Path(__file__).parent/"templates", "--templates-path", "-t"),
-    output_path: Optional[Path] = typer.Option(Path()/"docs", "--output-path", "-o"),
+    templates_path: Optional[Path] = typer.Option(Path(__file__).parent / "templates", "--templates-path", "-t"),
+    output_path: Optional[Path] = typer.Option(Path() / "docs", "--output-path", "-o"),
 ):
     context = Context(directory=str(package_path.absolute()))
     loader = PythonLoader(search_path=[str(package_path.absolute())])
