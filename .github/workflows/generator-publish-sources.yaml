@@ -31,24 +31,26 @@ jobs:
       - name: Publish Code
         working-directory: expediagroup/sdk/generator/package
         run: |
-          git config --global user.email "oss@expediagroup.com"
-          git config --global user.name "Expedia Group Open Source"
           rm -rf ../../../../release/"${{github.event.inputs.name}}"
           mkdir -p ../../../../release/"${{github.event.inputs.name}}"
           tar -xzf *.tar.gz
           rm *.tar.gz
+          echo "separator"
+          pwd
+          ls
+          echo "separator"
           cp -r ./docs ../../../../release/"${{github.event.inputs.name}}"/
           find ./ -name \*.py -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/ \;
           find ./ -name \*.yaml -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/ \;
-          git fetch --depth=1 origin main
-          git checkout -b "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
-          git add ../../../../release/\*
           cd ../../../..
           pip install -r ../../../../requirements-dev.txt
           black .
           cd -
-          git commit -m "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
-          git push --set-upstream origin "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
-          gh pr create -B main -H "${{github.event.inputs.name}}-${{github.event.inputs.version}}" --title 'chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK' --fill
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
+          commit-message: "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
+          title: "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
+          add-paths: |
+            release/*
