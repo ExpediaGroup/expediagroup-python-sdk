@@ -71,4 +71,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: docs
-          path: expediagroup/sdk/generator/docsgen/docs
+          path: expediagroup/sdk/docsgen/docs
