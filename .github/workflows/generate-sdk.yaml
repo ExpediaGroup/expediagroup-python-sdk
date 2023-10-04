@@ -58,12 +58,6 @@ jobs:
           cp "../generator/package/expediagroup/sdk/$namespace/model.py" "./temp/expediagroup/sdk/$namespace/model.py"
 
           python3 ./__main__.py -p ./temp -n "$namespace"
-
-          ls
-          cd temp
-          ls
-          cd ../docs
-          ls
       - uses: actions/upload-artifact@v3
         with:
           name: sdk
