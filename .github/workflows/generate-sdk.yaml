@@ -41,28 +41,7 @@ jobs:
         run: |
           echo ${{ github.event.inputs.name }}
           ./scripts/generator-main.sh -n "${{ inputs.name }}" -v "${{ inputs.version }}" -i ./specs.yaml
-      - name: generate-docs
-        working-directory: expediagroup/sdk/docsgen
-        run: |
-          python3 -m venv env
-          source env/bin/activate
-          pip3 install -r "../../../requirements-docs.txt"
-          pip3 install -r "../../../requirements-dev.txt"
-
-          namespace="$(echo "${{ inputs.name }}" | tr '[:upper:]' '[:lower:]')"
-          mkdir -p "temp/expediagroup/sdk/$namespace"
-          cp "../generator/package/expediagroup/sdk/$namespace/__init__.py" "./temp/expediagroup/__init__.py"
-          cp "../generator/package/expediagroup/sdk/$namespace/__init__.py" "./temp/expediagroup/sdk/__init__.py"
-          cp "../generator/package/expediagroup/sdk/$namespace/__init__.py" "./temp/expediagroup/sdk/$namespace/__init__.py"
-          cp "../generator/package/expediagroup/sdk/$namespace/client.py" "./temp/expediagroup/sdk/$namespace/client.py"
-          cp "../generator/package/expediagroup/sdk/$namespace/model.py" "./temp/expediagroup/sdk/$namespace/model.py"
-
-          python3 ./__main__.py -p ./temp -n "$namespace"
       - uses: actions/upload-artifact@v3
         with:
           name: sdk
           path: expediagroup/sdk/generator/package/dist
-      - uses: actions/upload-artifact@v3
-        with:
-          name: docs
-          path: expediagroup/sdk/docsgen/docs

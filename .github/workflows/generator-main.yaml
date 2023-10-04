@@ -62,3 +62,10 @@ jobs:
     with:
       version: ${{ github.event.inputs.version }}
       name: ${{ github.event.inputs.name }}
+
+  publish_sdk:
+    needs: [ generate_sdk ]
+    uses: ./.github/workflows/publish-sdk.yaml
+    secrets: inherit
+    with:
+      production_release: ${{ github.event.inputs.production_release == 'true' }}
