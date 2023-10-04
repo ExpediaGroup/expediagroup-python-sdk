@@ -17,13 +17,13 @@ from setuptools import setup
 
 setup(
     name="expediagroup-fraudpreventionv2-sdk",
-    version="2.1.0",
-    packages=["expediagroup-fraudpreventionv2-sdk"],
+    version="1.0.0",
+    packages=["expediagroup.sdk.fraudpreventionv2"],
     package_dir={"expediagroup-fraudpreventionv2-sdk": "."},
     license="Apache License, Version 2.0",
     author="Expedia Group",
     author_email="oss@expediagroup.com",
-    url="https://github.com/ExpediaGroup/expediagroup-python-sdk",
+    url="https://github.com/ExpediaGroup/expediagroup-sdk-python",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python",
