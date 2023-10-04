@@ -28,7 +28,7 @@ jobs:
         with:
           name: docs
           path: expediagroup/sdk/generator/package/docs
-      - name: Publish Code
+      - name: Prepare Code
         working-directory: expediagroup/sdk/generator/package
         run: |
           rm -rf ../../../../release/"${{github.event.inputs.name}}"
@@ -38,7 +38,9 @@ jobs:
           cp -r ./docs ../../../../release/"${{github.event.inputs.name}}"/
           find ./ -name \*.py -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/ \;
           find ./ -name \*.yaml -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/ \;
-          pip install -r ../../../../requirements-dev.txt
+      - name: Format Code
+        run: |
+          pip install -r ./requirements-dev.txt
           black .
       - name: Create PR
         uses: peter-evans/create-pull-request@v5
