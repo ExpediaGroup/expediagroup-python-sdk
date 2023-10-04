@@ -16,14 +16,14 @@
 from setuptools import setup
 
 setup(
-    name="openworld-sdk-python-fraudpreventionv2",
-    version="1.4.0",
-    packages=["openworld.sdk.fraudpreventionv2"],
-    package_dir={"openworld-sdk-python-fraudpreventionv2": "."},
+    name="expediagroup-fraudpreventionv2-sdk",
+    version="2.1.0",
+    packages=["expediagroup-fraudpreventionv2-sdk"],
+    package_dir={"expediagroup-fraudpreventionv2-sdk": "."},
     license="Apache License, Version 2.0",
     author="Expedia Group",
     author_email="oss@expediagroup.com",
-    url="https://github.com/ExpediaGroup/openworld-sdk-python",
+    url="https://github.com/ExpediaGroup/expediagroup-python-sdk",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python",
@@ -36,7 +36,7 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     python_requires=">=3.8",
-    install_requires=["uri", "furl", "openworld-sdk-python-core", "pydantic", "pydantic[email]", "email-validator"],
-    description="Open World Fraud Prevention V2 SDK for Python",
-    long_description="Open World Fraud Prevention V2 SDK for Python",
+    install_requires=["uri", "furl", "expediagroup-sdk-python-core", "pydantic", "pydantic[email]", "email-validator"],
+    description="Expedia Group Fraud Prevention V2 SDK for Python",
+    long_description="Expedia Group Fraud Prevention V2 SDK for Python",
 )

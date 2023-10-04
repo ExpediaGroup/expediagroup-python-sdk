@@ -1,4 +1,4 @@
-pydoc-markdown~=4.8.1
+pydoc-markdown~=4.8.2
 docspec~=2.2.1
 docspec-python~=2.2.1
 typer

@@ -19,26 +19,53 @@ from typing import Union
 from uuid import UUID, uuid4
 
 from furl import furl
-from openworld.sdk.core.client.api import ApiClient
-from openworld.sdk.core.client.openworld_auth_client import _OpenWorldAuthClient
-from openworld.sdk.core.configuration.client_config import ClientConfig
-from openworld.sdk.core.constant import header
+
+from expediagroup.sdk.core.client.api import ApiClient
+from expediagroup.sdk.core.client.expediagroup_auth_client import (
+    _ExpediaGroupAuthClient,
+)
+from expediagroup.sdk.core.configuration.client_config import ClientConfig
+from expediagroup.sdk.core.constant import header
 
 from .model import (
+    AccountScreenRequest,
+    AccountScreenResponse,
+    AccountTakeoverBadRequestError,
+    AccountTakeoverBadRequestErrorDeserializationContract,
+    AccountTakeoverUnauthorizedError,
+    AccountTakeoverUnauthorizedErrorDeserializationContract,
+    AccountUpdateNotFoundError,
+    AccountUpdateNotFoundErrorDeserializationContract,
+    AccountUpdateRequest,
+    AccountUpdateResponse,
     BadGatewayError,
+    BadGatewayErrorDeserializationContract,
     BadRequestError,
+    BadRequestErrorDeserializationContract,
     ForbiddenError,
+    ForbiddenErrorDeserializationContract,
     GatewayTimeoutError,
+    GatewayTimeoutErrorDeserializationContract,
     InternalServerError,
+    InternalServerErrorDeserializationContract,
     NotFoundError,
+    NotFoundErrorDeserializationContract,
     OrderPurchaseScreenRequest,
     OrderPurchaseScreenResponse,
     OrderPurchaseUpdateNotFoundError,
+    OrderPurchaseUpdateNotFoundErrorDeserializationContract,
     OrderPurchaseUpdateRequest,
     OrderPurchaseUpdateResponse,
+    RetryableOrderPurchaseScreenFailure,
+    RetryableOrderPurchaseScreenFailureDeserializationContract,
+    RetryableOrderPurchaseUpdateFailure,
+    RetryableOrderPurchaseUpdateFailureDeserializationContract,
     ServiceUnavailableError,
+    ServiceUnavailableErrorDeserializationContract,
     TooManyRequestsError,
+    TooManyRequestsErrorDeserializationContract,
     UnauthorizedError,
+    UnauthorizedErrorDeserializationContract,
 )
 
 
@@ -51,13 +78,136 @@ class FraudPreventionV2Client:
         """
         python_version = platform.python_version()
         os_name, os_version, *_ = platform.platform().split("-")
-        sdk_metadata = "open-world-sdk-python-fraudpreventionv2/1.4.0"
+        sdk_metadata = "expediagroup-fraudpreventionv2-python-sdk/2.1.0"
 
-        self.__api_client = ApiClient(client_config, _OpenWorldAuthClient)
+        self.__api_client = ApiClient(client_config, _ExpediaGroupAuthClient)
 
         self.__user_agent = f"{sdk_metadata} (Python {python_version}; {os_name} {os_version})"
 
-    def screen(
+    def screen_account(
+        self, transaction_id: UUID = uuid4(), body: AccountScreenRequest = None
+    ) -> Union[
+        AccountScreenResponse,
+        AccountTakeoverBadRequestError,
+        AccountTakeoverUnauthorizedError,
+        ForbiddenError,
+        NotFoundError,
+        TooManyRequestsError,
+        InternalServerError,
+        BadGatewayError,
+        ServiceUnavailableError,
+        GatewayTimeoutError,
+    ]:
+        r"""The Account Screen API gives a Fraud recommendation for an account transaction. A recommendation can be ACCEPT, CHALLENGE, or REJECT. A transaction is marked as CHALLENGE whenever there are insufficient signals to recommend ACCEPT or REJECT. These CHALLENGE incidents are manually reviewed, and a corrected recommendation is made asynchronously.
+        Args:
+           body(AccountScreenRequest): ..."""
+        headers = {
+            header.TRANSACTION_ID: transaction_id,
+            header.USER_AGENT: self.__user_agent,
+        }
+
+        query = {key: value for key, value in {}.items() if value}
+
+        request_url = furl(self.__api_client.endpoint)
+        request_url /= "/fraud-prevention/v2/account/screen"
+        request_url.query.set(query)
+        request_url.path.normalize()
+
+        error_responses = {
+            400: AccountTakeoverBadRequestErrorDeserializationContract,
+            401: AccountTakeoverUnauthorizedErrorDeserializationContract,
+            403: ForbiddenErrorDeserializationContract,
+            404: NotFoundErrorDeserializationContract,
+            429: TooManyRequestsErrorDeserializationContract,
+            500: InternalServerErrorDeserializationContract,
+            502: BadGatewayErrorDeserializationContract,
+            503: ServiceUnavailableErrorDeserializationContract,
+            504: GatewayTimeoutErrorDeserializationContract,
+        }
+
+        return self.__api_client.call(
+            headers=headers,
+            method="post",
+            body=body,
+            response_models=[
+                AccountScreenResponse,
+                AccountTakeoverBadRequestError,
+                AccountTakeoverUnauthorizedError,
+                ForbiddenError,
+                NotFoundError,
+                TooManyRequestsError,
+                InternalServerError,
+                BadGatewayError,
+                ServiceUnavailableError,
+                GatewayTimeoutError,
+            ],
+            url=request_url,
+            error_responses=error_responses,
+        )
+
+    def notify_with_account_update(
+        self, transaction_id: UUID = uuid4(), body: AccountUpdateRequest = None
+    ) -> Union[
+        AccountUpdateResponse,
+        AccountTakeoverBadRequestError,
+        AccountTakeoverUnauthorizedError,
+        ForbiddenError,
+        AccountUpdateNotFoundError,
+        TooManyRequestsError,
+        InternalServerError,
+        BadGatewayError,
+        ServiceUnavailableError,
+        GatewayTimeoutError,
+    ]:
+        r"""The Account Update API is called when there is an account lifecycle transition such as a challenge outcome, account restoration, or remediation action completion. For example, if a user's account is disabled, deleted, or restored, the Account Update API is called to notify Expedia Group about the change. The Account Update API is also called when a user responds to a login Multi-Factor Authentication based on a Fraud recommendation.
+        Args:
+           body(AccountUpdateRequest): An AccountUpdate request may be of one of the following types `MULTI_FACTOR_AUTHENTICATION_UPDATE`, `REMEDIATION_UPDATE`.
+        """
+        headers = {
+            header.TRANSACTION_ID: transaction_id,
+            header.USER_AGENT: self.__user_agent,
+        }
+
+        query = {key: value for key, value in {}.items() if value}
+
+        request_url = furl(self.__api_client.endpoint)
+        request_url /= "/fraud-prevention/v2/account/update"
+        request_url.query.set(query)
+        request_url.path.normalize()
+
+        error_responses = {
+            400: AccountTakeoverBadRequestErrorDeserializationContract,
+            401: AccountTakeoverUnauthorizedErrorDeserializationContract,
+            403: ForbiddenErrorDeserializationContract,
+            404: AccountUpdateNotFoundErrorDeserializationContract,
+            429: TooManyRequestsErrorDeserializationContract,
+            500: InternalServerErrorDeserializationContract,
+            502: BadGatewayErrorDeserializationContract,
+            503: ServiceUnavailableErrorDeserializationContract,
+            504: GatewayTimeoutErrorDeserializationContract,
+        }
+
+        return self.__api_client.call(
+            headers=headers,
+            method="post",
+            body=body,
+            response_models=[
+                AccountUpdateResponse,
+                AccountTakeoverBadRequestError,
+                AccountTakeoverUnauthorizedError,
+                ForbiddenError,
+                AccountUpdateNotFoundError,
+                TooManyRequestsError,
+                InternalServerError,
+                BadGatewayError,
+                ServiceUnavailableError,
+                GatewayTimeoutError,
+            ],
+            url=request_url,
+            error_responses=error_responses,
+        )
+
+    def screen_order(
         self, transaction_id: UUID = uuid4(), body: OrderPurchaseScreenRequest = None
     ) -> Union[
         OrderPurchaseScreenResponse,
@@ -68,7 +218,7 @@ class FraudPreventionV2Client:
         TooManyRequestsError,
         InternalServerError,
         BadGatewayError,
-        ServiceUnavailableError,
+        RetryableOrderPurchaseScreenFailure,
         GatewayTimeoutError,
     ]:
         r"""The Order Purchase API gives a Fraud recommendation for a transaction. A recommendation can be Accept, Reject, or Review. A transaction is marked as Review whenever there are insufficient signals to recommend Accept or Reject. These incidents are manually reviewed, and a corrected recommendation is made asynchronously.
@@ -86,6 +236,18 @@ class FraudPreventionV2Client:
         request_url.query.set(query)
         request_url.path.normalize()
 
+        error_responses = {
+            400: BadRequestErrorDeserializationContract,
+            401: UnauthorizedErrorDeserializationContract,
+            403: ForbiddenErrorDeserializationContract,
+            404: NotFoundErrorDeserializationContract,
+            429: TooManyRequestsErrorDeserializationContract,
+            500: InternalServerErrorDeserializationContract,
+            502: BadGatewayErrorDeserializationContract,
+            503: RetryableOrderPurchaseScreenFailureDeserializationContract,
+            504: GatewayTimeoutErrorDeserializationContract,
+        }
+
         return self.__api_client.call(
             headers=headers,
             method="post",
@@ -99,13 +261,14 @@ class FraudPreventionV2Client:
                 TooManyRequestsError,
                 InternalServerError,
                 BadGatewayError,
-                ServiceUnavailableError,
+                RetryableOrderPurchaseScreenFailure,
                 GatewayTimeoutError,
             ],
             url=request_url,
+            error_responses=error_responses,
         )
 
-    def update(
+    def notify_with_order_update(
         self, transaction_id: UUID = uuid4(), body: OrderPurchaseUpdateRequest = None
     ) -> Union[
         OrderPurchaseUpdateResponse,
@@ -116,7 +279,7 @@ class FraudPreventionV2Client:
         TooManyRequestsError,
         InternalServerError,
         BadGatewayError,
-        ServiceUnavailableError,
+        RetryableOrderPurchaseUpdateFailure,
         GatewayTimeoutError,
     ]:
         r"""The Order Purchase Update API is called when the status of the order has changed.
@@ -140,6 +303,18 @@ class FraudPreventionV2Client:
         request_url.query.set(query)
         request_url.path.normalize()
 
+        error_responses = {
+            400: BadRequestErrorDeserializationContract,
+            401: UnauthorizedErrorDeserializationContract,
+            403: ForbiddenErrorDeserializationContract,
+            404: OrderPurchaseUpdateNotFoundErrorDeserializationContract,
+            429: TooManyRequestsErrorDeserializationContract,
+            500: InternalServerErrorDeserializationContract,
+            502: BadGatewayErrorDeserializationContract,
+            503: RetryableOrderPurchaseUpdateFailureDeserializationContract,
+            504: GatewayTimeoutErrorDeserializationContract,
+        }
+
         return self.__api_client.call(
             headers=headers,
             method="post",
@@ -153,8 +328,9 @@ class FraudPreventionV2Client:
                 TooManyRequestsError,
                 InternalServerError,
                 BadGatewayError,
-                ServiceUnavailableError,
+                RetryableOrderPurchaseUpdateFailure,
                 GatewayTimeoutError,
             ],
             url=request_url,
+            error_responses=error_responses,
         )
