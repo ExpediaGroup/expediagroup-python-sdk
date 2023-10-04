@@ -39,8 +39,8 @@ jobs:
           tar -xzf *.tar.gz
           rm *.tar.gz
           cp -r ./docs ../../../../release/"${{github.event.inputs.name}}"/
-          find ./ -name \*.py -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/src \;
-          find ./ -name \*.yaml -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/src \;
+          find ./ -name \*.py -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/src/ \;
+          find ./ -name \*.yaml -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/src/ \;
       - name: Format Code
         working-directory: release
         run: |
