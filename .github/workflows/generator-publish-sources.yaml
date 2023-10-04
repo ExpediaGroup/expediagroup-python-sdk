@@ -41,7 +41,7 @@ jobs:
       - name: Format Code
         working-directory: release
         run: |
-          pip install -r ../requirements-dev.txt
+          pip3 install -r ../requirements-dev.txt
           black .
       - name: Create PR
         uses: peter-evans/create-pull-request@v5
