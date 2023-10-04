@@ -35,7 +35,7 @@ jobs:
         working-directory: expediagroup/sdk/generator/package
         run: |
           rm -rf ../../../../release/"${{github.event.inputs.name}}"
-          mkdir -p ../../../../release/"${{github.event.inputs.name}}"
+          mkdir -p ../../../../release/"${{github.event.inputs.name}}/src"
           tar -xzf *.tar.gz
           rm *.tar.gz
           cp -r ./docs ../../../../release/"${{github.event.inputs.name}}"/
