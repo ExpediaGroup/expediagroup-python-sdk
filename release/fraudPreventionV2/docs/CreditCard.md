@@ -70,6 +70,16 @@ pydantic model CreditCard
 
 
 
+## Methods
+
+### dict
+```
+dict(
+    )
+```
+    
+
+
 
 
 

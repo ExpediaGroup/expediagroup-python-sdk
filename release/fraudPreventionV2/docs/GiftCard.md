@@ -38,6 +38,16 @@ pydantic model GiftCard
 
 
 
+## Methods
+
+### dict
+```
+dict(
+    )
+```
+    
+
+
 
 
 
