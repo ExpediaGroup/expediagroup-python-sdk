@@ -12,9 +12,10 @@
 {# See the License for the specific language governing permissions and#}
 {# limitations under the License.#}
 {{ model_imports }}
-from typing import Union, Any, Literal
+from typing import Union, Any, Literal, Optional
 from pydantic import Extra
 from pydantic.dataclasses import dataclass
+from expediagroup.sdk.core.util import log as log_util
 from expediagroup.sdk.core.model.exception.service import ExpediaGroupApiException
 
 
@@ -27,6 +28,16 @@ class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif
     r"""pydantic model {{ model.class_name }}{%- if model.description %}: {{ model.description }}{%- endif %}
 {# comment for new line #}
 """
+{% if model.class_name in omitted_log_fields.keys() %}
+    def dict(self, **kwargs):
+        omitted_fields = {{ omitted_log_fields[model.class_name] }}
+
+        dictionary = super().dict(**kwargs)
+        dictionary.update([(attribute, "<-- omitted -->") for attribute in omitted_fields])
+
+        return dictionary
+{% endif %}
+
 {%- if not model.fields %}
     pass
 {%- endif %}
