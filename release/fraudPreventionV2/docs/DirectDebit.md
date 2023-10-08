@@ -38,6 +38,16 @@ pydantic model DirectDebit
 
 
 
+## Methods
+
+### dict
+```
+dict(
+    )
+```
+    
+
+
 
 
 
