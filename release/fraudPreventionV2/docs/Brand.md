@@ -55,6 +55,10 @@ Incorrect `brand` - `card_type` combination will result in data quality issues a
 * `CHEAP_CASH`
 * `BONUS_PLUS`
 * `ULTIMATE_REWARDS`
+* `UATP`
+* `UATP_SUPPLY`
+* `AIR_PLUS`
+* `US_PASS_PLUS`
 
 'brand' with 'GiftCard' payment_type is an enum value with following:
 * `GIFT_CARD`
@@ -171,9 +175,18 @@ Incorrect `brand` - `card_type` combination will result in data quality issues a
     
         
     
+        
+    
+        
+    
+        
+    
+        
+    
 
 |            Name           | Type | Required | Description |
 |---------------------------|------|----------|-------------|
+|          AIR_PLUS         | Any  |   True   |     ...     |
 |        ALASKA_MILES       | Any  |   True   |     ...     |
 |      AMERICAN_EXPRESS     | Any  |   True   |     ...     |
 |        AMEX_POINTS        | Any  |   True   |     ...     |
@@ -212,8 +225,11 @@ Incorrect `brand` - `card_type` combination will result in data quality issues a
 |           SOFORT          | Any  |   True   |     ...     |
 |            SOLO           | Any  |   True   |     ...     |
 |           SWITCH          | Any  |   True   |     ...     |
+|            UATP           | Any  |   True   |     ...     |
+|        UATP_SUPPLY        | Any  |   True   |     ...     |
 |      ULTIMATE_REWARDS     | Any  |   True   |     ...     |
 |       UNITED_POINTS       | Any  |   True   |     ...     |
+|        US_PASS_PLUS       | Any  |   True   |     ...     |
 |            VISA           | Any  |   True   |     ...     |
 |        VISA_DANKORT       | Any  |   True   |     ...     |
 |         VISA_DELTA        | Any  |   True   |     ...     |

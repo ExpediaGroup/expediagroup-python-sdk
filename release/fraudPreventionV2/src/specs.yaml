@@ -29,7 +29,7 @@ paths:
       operationId: screenOrder
       security:
         - orderPurchaseScreenAuth:
-            - fraudandrisk.stub.order-purchase-screen
+            - fraudandrisk.fraud.order-purchase-screen
       requestBody:
         required: true
         content:
@@ -114,7 +114,7 @@ paths:
       operationId: notifyWithOrderUpdate
       security:
         - orderPurchaseUpdateAuth:
-            - fraudandrisk.stub.order-purchase-update
+            - fraudandrisk.fraud.order-purchase-update
       requestBody:
         required: true
         description: >
@@ -245,7 +245,7 @@ paths:
       operationId: screenAccount
       security:
         - accountScreenAuth:
-            - fraudandrisk.stub.account-screen
+            - fraudandrisk.fraud.account-screen
       requestBody:
         required: true
         content:
@@ -328,7 +328,7 @@ paths:
       operationId: notifyWithAccountUpdate
       security:
         - accountUpdateAuth:
-            - fraudandrisk.stub.account-update
+            - fraudandrisk.fraud.account-update
       requestBody:
         required: true
         description: An AccountUpdate request may be of one of the following types
@@ -1482,14 +1482,7 @@ components:
           maxLength: 200
           example: GCT
         address:
-          allOf:
-            - $ref: "#/components/schemas/Address"
-            - required:
-                - address_line1
-                - city
-                - state
-                - zip_code
-                - country_code
+          $ref: "#/components/schemas/Address"
         timezone:
           description: The timezone associated with the location of the station,
             specifying the local time offset from Coordinated Universal Time
@@ -1676,14 +1669,7 @@ components:
               type: integer
               format: int32
             address:
-              allOf:
-                - $ref: "#/components/schemas/HotelAddress"
-                - required:
-                    - address_line1
-                    - city
-                    - state
-                    - zip_code
-                    - country_code
+              $ref: "#/components/schemas/HotelAddress"
             checkin_time:
               description: Local date and time of the hotel check-in, in ISO-8601 date and
                 time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
@@ -1842,6 +1828,14 @@ components:
 
             * `ULTIMATE_REWARDS`
 
+            * `UATP`
+
+            * `UATP_SUPPLY`
+
+            * `AIR_PLUS`
+
+            * `US_PASS_PLUS`
+
 
             'brand' with 'GiftCard' payment_type is an enum value with following:
 
@@ -1909,6 +1903,10 @@ components:
             - CHEAP_CASH
             - BONUS_PLUS
             - ULTIMATE_REWARDS
+            - UATP
+            - UATP_SUPPLY
+            - AIR_PLUS
+            - US_PASS_PLUS
             - GIFT_CARD
             - IBP
             - LOCAL_DEBIT_CARD
@@ -3278,11 +3276,11 @@ components:
         clientCredentials:
           tokenUrl: https://api.expediagroup.com/identity/oauth2/v3/token?grant_type=client_credentials
           scopes:
-            fraudandrisk.stub.order-purchase-screen: Use Fraud Systems for screening orders
+            fraudandrisk.fraud.order-purchase-screen: Use Fraud Systems for screening orders
     orderPurchaseUpdateAuth:
       type: oauth2
       flows:
         clientCredentials:
           tokenUrl: https://api.expediagroup.com/identity/oauth2/v3/token?grant_type=client_credentials
           scopes:
-            fraudandrisk.stub.order-purchase-update: Use Fraud Systems for updating orders
+            fraudandrisk.fraud.order-purchase-update: Use Fraud Systems for updating orders
