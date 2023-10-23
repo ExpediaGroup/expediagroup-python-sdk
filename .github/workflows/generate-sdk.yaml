@@ -27,8 +27,6 @@ on:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    container:
-      image: amd64/ubuntu:latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
