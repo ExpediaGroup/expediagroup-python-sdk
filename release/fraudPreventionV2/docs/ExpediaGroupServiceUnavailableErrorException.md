@@ -1,20 +1,17 @@
-[index](index.md) / [expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md) / [ExpediaGroupServiceUnavailableErrorException](ExpediaGroupServiceUnavailableErrorException.md)
+[index](index.md) /
+[expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md)
+/
+[ExpediaGroupServiceUnavailableErrorException](ExpediaGroupServiceUnavailableErrorException.md)
+
 # class `expediagroup.sdk.fraudpreventionv2.model.ExpediaGroupServiceUnavailableErrorException`
-```
-ExpediaGroupServiceUnavailableErrorException(
-)
+
+```python
+ExpediaGroupServiceUnavailableErrorException()
 ```
 
 Exception wrapping a ServiceUnavailableError object.
 
-
-
-
-
-
-
-
-
-
 # Inheritance
-object > ExpediaGroupApiException > ExpediaGroupServiceUnavailableErrorException
+
+object > ExpediaGroupApiException >
+ExpediaGroupServiceUnavailableErrorException
