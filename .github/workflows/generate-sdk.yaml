@@ -60,8 +60,11 @@ jobs:
           python3 ./__main__.py -p ./temp -n "$namespace"
       - name: Install Pandoc
         run: |
+          pip3 install lastversion
+
           architecture="$(dpkg --print-architecture)"
-          curl -O -L "https://github.com/jgm/pandoc/releases/download/3.1.8/pandoc-3.1.8-1-$architecture.deb"
+          lastversion --assets --filter "$architecture.deb" download https://github.com/jgm/pandoc
+
           sudo dpkg -i *.deb
       - name: Format docs
         working-directory: expediagroup/sdk/docsgen/docs
