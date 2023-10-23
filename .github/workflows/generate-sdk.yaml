@@ -58,6 +58,14 @@ jobs:
           cp "../generator/package/expediagroup/sdk/$namespace/model.py" "./temp/expediagroup/sdk/$namespace/model.py"
 
           python3 ./__main__.py -p ./temp -n "$namespace"
+      - name: Install Pandoc
+        run: apt update && apt install pandoc
+      - name: Format docs
+        working-directory: expediagroup/sdk/docsgen/docs
+        run: |
+          npx prettier --write --parser markdown *.md
+          for file in *.md; do pandoc "$file" -f markdown -t gfm -o "${file%.md}.md"; done
+          mdformat .
       - uses: actions/upload-artifact@v3
         with:
           name: sdk
