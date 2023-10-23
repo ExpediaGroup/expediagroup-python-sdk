@@ -61,7 +61,9 @@ jobs:
 
           python3 ./__main__.py -p ./temp -n "$namespace"
       - name: Install Pandoc
-        run: sudo apt-get update && sudo apt-get install pandoc
+        run: |
+          curl -O -L https://github.com/jgm/pandoc/releases/download/3.1.8/pandoc-3.1.8-1-amd64.deb
+          dpkg -i *.deb
       - name: Format docs
         working-directory: expediagroup/sdk/docsgen/docs
         run: |
