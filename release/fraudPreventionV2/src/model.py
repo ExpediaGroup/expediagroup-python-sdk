@@ -3101,18 +3101,13 @@ OrderPurchaseTransaction.update_forward_refs()
 OrderPurchaseScreenRequest.update_forward_refs()
 
 
-class ExpediaGroupForbiddenErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a ForbiddenError object."""
-    pass
-
-
-class ExpediaGroupNotFoundErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a NotFoundError object."""
-    pass
-
-
 class ExpediaGroupTooManyRequestsErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a TooManyRequestsError object."""
+    pass
+
+
+class ExpediaGroupForbiddenErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a ForbiddenError object."""
     pass
 
 
@@ -3121,13 +3116,28 @@ class ExpediaGroupBadRequestErrorException(ExpediaGroupApiException):
     pass
 
 
-class ExpediaGroupRetryableOrderPurchaseUpdateFailureException(ExpediaGroupApiException):
-    r"""Exception wrapping a RetryableOrderPurchaseUpdateFailure object."""
+class ExpediaGroupRetryableOrderPurchaseScreenFailureException(ExpediaGroupApiException):
+    r"""Exception wrapping a RetryableOrderPurchaseScreenFailure object."""
+    pass
+
+
+class ExpediaGroupInternalServerErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a InternalServerError object."""
     pass
 
 
 class ExpediaGroupBadGatewayErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a BadGatewayError object."""
+    pass
+
+
+class ExpediaGroupGatewayTimeoutErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a GatewayTimeoutError object."""
+    pass
+
+
+class ExpediaGroupUnauthorizedErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a UnauthorizedError object."""
     pass
 
 
@@ -3141,23 +3151,8 @@ class ExpediaGroupAccountUpdateNotFoundErrorException(ExpediaGroupApiException):
     pass
 
 
-class ExpediaGroupAccountTakeoverUnauthorizedErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a AccountTakeoverUnauthorizedError object."""
-    pass
-
-
-class ExpediaGroupRetryableOrderPurchaseScreenFailureException(ExpediaGroupApiException):
-    r"""Exception wrapping a RetryableOrderPurchaseScreenFailure object."""
-    pass
-
-
-class ExpediaGroupUnauthorizedErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a UnauthorizedError object."""
-    pass
-
-
-class ExpediaGroupInternalServerErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a InternalServerError object."""
+class ExpediaGroupOrderPurchaseUpdateNotFoundErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a OrderPurchaseUpdateNotFoundError object."""
     pass
 
 
@@ -3166,26 +3161,19 @@ class ExpediaGroupAccountTakeoverBadRequestErrorException(ExpediaGroupApiExcepti
     pass
 
 
-class ExpediaGroupOrderPurchaseUpdateNotFoundErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a OrderPurchaseUpdateNotFoundError object."""
+class ExpediaGroupAccountTakeoverUnauthorizedErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a AccountTakeoverUnauthorizedError object."""
     pass
 
 
-class ExpediaGroupGatewayTimeoutErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a GatewayTimeoutError object."""
+class ExpediaGroupNotFoundErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a NotFoundError object."""
     pass
 
 
-@dataclass
-class ForbiddenErrorDeserializationContract:
-    exception: type = ExpediaGroupForbiddenErrorException
-    model: type = ForbiddenError
-
-
-@dataclass
-class NotFoundErrorDeserializationContract:
-    exception: type = ExpediaGroupNotFoundErrorException
-    model: type = NotFoundError
+class ExpediaGroupRetryableOrderPurchaseUpdateFailureException(ExpediaGroupApiException):
+    r"""Exception wrapping a RetryableOrderPurchaseUpdateFailure object."""
+    pass
 
 
 @dataclass
@@ -3195,21 +3183,45 @@ class TooManyRequestsErrorDeserializationContract:
 
 
 @dataclass
+class ForbiddenErrorDeserializationContract:
+    exception: type = ExpediaGroupForbiddenErrorException
+    model: type = ForbiddenError
+
+
+@dataclass
 class BadRequestErrorDeserializationContract:
     exception: type = ExpediaGroupBadRequestErrorException
     model: type = BadRequestError
 
 
 @dataclass
-class RetryableOrderPurchaseUpdateFailureDeserializationContract:
-    exception: type = ExpediaGroupRetryableOrderPurchaseUpdateFailureException
-    model: type = RetryableOrderPurchaseUpdateFailure
+class RetryableOrderPurchaseScreenFailureDeserializationContract:
+    exception: type = ExpediaGroupRetryableOrderPurchaseScreenFailureException
+    model: type = RetryableOrderPurchaseScreenFailure
+
+
+@dataclass
+class InternalServerErrorDeserializationContract:
+    exception: type = ExpediaGroupInternalServerErrorException
+    model: type = InternalServerError
 
 
 @dataclass
 class BadGatewayErrorDeserializationContract:
     exception: type = ExpediaGroupBadGatewayErrorException
     model: type = BadGatewayError
+
+
+@dataclass
+class GatewayTimeoutErrorDeserializationContract:
+    exception: type = ExpediaGroupGatewayTimeoutErrorException
+    model: type = GatewayTimeoutError
+
+
+@dataclass
+class UnauthorizedErrorDeserializationContract:
+    exception: type = ExpediaGroupUnauthorizedErrorException
+    model: type = UnauthorizedError
 
 
 @dataclass
@@ -3225,27 +3237,9 @@ class AccountUpdateNotFoundErrorDeserializationContract:
 
 
 @dataclass
-class AccountTakeoverUnauthorizedErrorDeserializationContract:
-    exception: type = ExpediaGroupAccountTakeoverUnauthorizedErrorException
-    model: type = AccountTakeoverUnauthorizedError
-
-
-@dataclass
-class RetryableOrderPurchaseScreenFailureDeserializationContract:
-    exception: type = ExpediaGroupRetryableOrderPurchaseScreenFailureException
-    model: type = RetryableOrderPurchaseScreenFailure
-
-
-@dataclass
-class UnauthorizedErrorDeserializationContract:
-    exception: type = ExpediaGroupUnauthorizedErrorException
-    model: type = UnauthorizedError
-
-
-@dataclass
-class InternalServerErrorDeserializationContract:
-    exception: type = ExpediaGroupInternalServerErrorException
-    model: type = InternalServerError
+class OrderPurchaseUpdateNotFoundErrorDeserializationContract:
+    exception: type = ExpediaGroupOrderPurchaseUpdateNotFoundErrorException
+    model: type = OrderPurchaseUpdateNotFoundError
 
 
 @dataclass
@@ -3255,12 +3249,18 @@ class AccountTakeoverBadRequestErrorDeserializationContract:
 
 
 @dataclass
-class OrderPurchaseUpdateNotFoundErrorDeserializationContract:
-    exception: type = ExpediaGroupOrderPurchaseUpdateNotFoundErrorException
-    model: type = OrderPurchaseUpdateNotFoundError
+class AccountTakeoverUnauthorizedErrorDeserializationContract:
+    exception: type = ExpediaGroupAccountTakeoverUnauthorizedErrorException
+    model: type = AccountTakeoverUnauthorizedError
 
 
 @dataclass
-class GatewayTimeoutErrorDeserializationContract:
-    exception: type = ExpediaGroupGatewayTimeoutErrorException
-    model: type = GatewayTimeoutError
+class NotFoundErrorDeserializationContract:
+    exception: type = ExpediaGroupNotFoundErrorException
+    model: type = NotFoundError
+
+
+@dataclass
+class RetryableOrderPurchaseUpdateFailureDeserializationContract:
+    exception: type = ExpediaGroupRetryableOrderPurchaseUpdateFailureException
+    model: type = RetryableOrderPurchaseUpdateFailure

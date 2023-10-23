@@ -1,5 +1,10 @@
-[index](index.md) / [expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md) / [NotFoundErrorDeserializationContract](NotFoundErrorDeserializationContract.md)
+[index](index.md) /
+[expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md)
+/
+[NotFoundErrorDeserializationContract](NotFoundErrorDeserializationContract.md)
+
 # class `expediagroup.sdk.fraudpreventionv2.model.NotFoundErrorDeserializationContract`
+
 ```
 NotFoundErrorDeserializationContract(
     exception: type,
@@ -7,31 +12,13 @@ NotFoundErrorDeserializationContract(
 )
 ```
 
-
-
-
-
 ## Attributes
-    
-    
-        
-    
-        
-    
 
-|    Name   | Type | Required | Description |
-|-----------|------|----------|-------------|
-| exception | type |   True   |     ...     |
-|   model   | type |   True   |     ...     |
-
-
-
-
-
-
-
-
-
+| Name      | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| exception | type | True     | …           |
+| model     | type | True     | …           |
 
 # Inheritance
-object  > NotFoundErrorDeserializationContract
+
+object > NotFoundErrorDeserializationContract

@@ -1,5 +1,10 @@
-[index](index.md) / [expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md) / [GatewayTimeoutErrorDeserializationContract](GatewayTimeoutErrorDeserializationContract.md)
+[index](index.md) /
+[expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md)
+/
+[GatewayTimeoutErrorDeserializationContract](GatewayTimeoutErrorDeserializationContract.md)
+
 # class `expediagroup.sdk.fraudpreventionv2.model.GatewayTimeoutErrorDeserializationContract`
+
 ```
 GatewayTimeoutErrorDeserializationContract(
     exception: type,
@@ -7,31 +12,13 @@ GatewayTimeoutErrorDeserializationContract(
 )
 ```
 
-
-
-
-
 ## Attributes
-    
-    
-        
-    
-        
-    
 
-|    Name   | Type | Required | Description |
-|-----------|------|----------|-------------|
-| exception | type |   True   |     ...     |
-|   model   | type |   True   |     ...     |
-
-
-
-
-
-
-
-
-
+| Name      | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| exception | type | True     | …           |
+| model     | type | True     | …           |
 
 # Inheritance
-object  > GatewayTimeoutErrorDeserializationContract
+
+object > GatewayTimeoutErrorDeserializationContract

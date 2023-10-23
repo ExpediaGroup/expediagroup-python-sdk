@@ -1,5 +1,9 @@
-[index](index.md) / [expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md) / [OrderPurchaseScreenRequest](OrderPurchaseScreenRequest.md)
+[index](index.md) /
+[expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md)
+/ [OrderPurchaseScreenRequest](OrderPurchaseScreenRequest.md)
+
 # class `expediagroup.sdk.fraudpreventionv2.model.OrderPurchaseScreenRequest`
+
 ```
 OrderPurchaseScreenRequest(
     transaction: OrderPurchaseTransaction,
@@ -8,26 +12,12 @@ OrderPurchaseScreenRequest(
 
 pydantic model OrderPurchaseScreenRequest
 
-
-
 ## Attributes
-    
-    
-        
-    
 
-|     Name    |                           Type                          | Required | Description |
-|-------------|---------------------------------------------------------|----------|-------------|
-| transaction | [OrderPurchaseTransaction](OrderPurchaseTransaction.md) |   True   |     ...     |
-
-
-
-
-
-
-
-
-
+| Name        | Type                                                    | Required | Description |
+| ----------- | ------------------------------------------------------- | -------- | ----------- |
+| transaction | [OrderPurchaseTransaction](OrderPurchaseTransaction.md) | True     | …           |
 
 # Inheritance
+
 object > BaseModel > OrderPurchaseScreenRequest

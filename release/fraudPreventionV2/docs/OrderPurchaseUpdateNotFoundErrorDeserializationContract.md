@@ -1,5 +1,10 @@
-[index](index.md) / [expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md) / [OrderPurchaseUpdateNotFoundErrorDeserializationContract](OrderPurchaseUpdateNotFoundErrorDeserializationContract.md)
+[index](index.md) /
+[expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md)
+/
+[OrderPurchaseUpdateNotFoundErrorDeserializationContract](OrderPurchaseUpdateNotFoundErrorDeserializationContract.md)
+
 # class `expediagroup.sdk.fraudpreventionv2.model.OrderPurchaseUpdateNotFoundErrorDeserializationContract`
+
 ```
 OrderPurchaseUpdateNotFoundErrorDeserializationContract(
     exception: type,
@@ -7,31 +12,13 @@ OrderPurchaseUpdateNotFoundErrorDeserializationContract(
 )
 ```
 
-
-
-
-
 ## Attributes
-    
-    
-        
-    
-        
-    
 
-|    Name   | Type | Required | Description |
-|-----------|------|----------|-------------|
-| exception | type |   True   |     ...     |
-|   model   | type |   True   |     ...     |
-
-
-
-
-
-
-
-
-
+| Name      | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| exception | type | True     | …           |
+| model     | type | True     | …           |
 
 # Inheritance
-object  > OrderPurchaseUpdateNotFoundErrorDeserializationContract
+
+object > OrderPurchaseUpdateNotFoundErrorDeserializationContract
