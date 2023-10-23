@@ -68,7 +68,6 @@ jobs:
           source ../env/bin/activate
           npx prettier --write --parser markdown *.md
           for file in *.md; do pandoc "$file" -f markdown -t gfm -o "${file%.md}.md"; done
-          npx prettier --write --parser markdown *.md
           mdformat .
       - uses: actions/upload-artifact@v3
         with:
