@@ -65,7 +65,7 @@ jobs:
           architecture="$(dpkg --print-architecture)"
           lastversion --assets --filter "$architecture.deb" download https://github.com/jgm/pandoc
 
-          sudo dpkg -i *.deb
+          sudo dpkg -i "$(ls | grep 'pandoc-.*\.deb')"
       - name: Format docs
         working-directory: expediagroup/sdk/docsgen/docs
         run: |
