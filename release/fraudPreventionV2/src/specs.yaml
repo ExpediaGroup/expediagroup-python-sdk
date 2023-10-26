@@ -1773,6 +1773,14 @@ components:
 
             * `CHINA_UNION_PAY`           : `CHINA_UNION_PAY`
 
+            * `UATP`                      : `UATP`
+
+            * `UATP_SUPPLY`               : `UATP`
+
+            * `AIR_PLUS`                  : `UATP`
+
+            * `UA_PASS_PLUS`              : `UATP`
+
             * `VISA`                      : `VISA`
 
             * `VISA_DELTA`                : `VISA`
@@ -1828,14 +1836,6 @@ components:
 
             * `ULTIMATE_REWARDS`
 
-            * `UATP`
-
-            * `UATP_SUPPLY`
-
-            * `AIR_PLUS`
-
-            * `US_PASS_PLUS`
-
 
             'brand' with 'GiftCard' payment_type is an enum value with following:
 
@@ -1877,6 +1877,10 @@ components:
             - SOLO
             - SWITCH
             - CHINA_UNION_PAY
+            - UATP
+            - UATP_SUPPLY
+            - AIR_PLUS
+            - UA_PASS_PLUS
             - VISA
             - VISA_DELTA
             - VISA_ELECTRON
@@ -1903,10 +1907,6 @@ components:
             - CHEAP_CASH
             - BONUS_PLUS
             - ULTIMATE_REWARDS
-            - UATP
-            - UATP_SUPPLY
-            - AIR_PLUS
-            - US_PASS_PLUS
             - GIFT_CARD
             - IBP
             - LOCAL_DEBIT_CARD
@@ -2191,6 +2191,14 @@ components:
 
                 * `CHINA_UNION_PAY`          : `CHINA_UNION_PAY`
 
+                * `UATP`                     : `UATP`
+
+                * `UATP`                     : `UATP_SUPPLY`
+
+                * `UATP`                     : `AIR_PLUS`
+
+                * `UATP`                     : `UA_PASS_PLUS`
+
                 * `VISA`                     : `VISA`
 
                 * `VISA`                     : `VISA_DELTA`
@@ -2215,6 +2223,7 @@ components:
                 - SWITCH
                 - MAESTRO
                 - CHINA_UNION_PAY
+                - UATP
                 - VISA
             card_number:
               description: All the digits (unencrypted) of the credit card number associated

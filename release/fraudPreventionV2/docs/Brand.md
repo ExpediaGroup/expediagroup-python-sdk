@@ -27,6 +27,10 @@ Incorrect `brand` - `card_type` combination will result in data quality issues a
 * `SWITCH`                    : `SWITCH`
 * `MAESTRO`                   : `MAESTRO`
 * `CHINA_UNION_PAY`           : `CHINA_UNION_PAY`
+* `UATP`                      : `UATP`
+* `UATP_SUPPLY`               : `UATP`
+* `AIR_PLUS`                  : `UATP`
+* `UA_PASS_PLUS`              : `UATP`
 * `VISA`                      : `VISA`
 * `VISA_DELTA`                : `VISA`
 * `VISA_ELECTRON`             : `VISA`
@@ -55,10 +59,6 @@ Incorrect `brand` - `card_type` combination will result in data quality issues a
 * `CHEAP_CASH`
 * `BONUS_PLUS`
 * `ULTIMATE_REWARDS`
-* `UATP`
-* `UATP_SUPPLY`
-* `AIR_PLUS`
-* `US_PASS_PLUS`
 
 'brand' with 'GiftCard' payment_type is an enum value with following:
 * `GIFT_CARD`
@@ -227,9 +227,9 @@ Incorrect `brand` - `card_type` combination will result in data quality issues a
 |           SWITCH          | Any  |   True   |     ...     |
 |            UATP           | Any  |   True   |     ...     |
 |        UATP_SUPPLY        | Any  |   True   |     ...     |
+|        UA_PASS_PLUS       | Any  |   True   |     ...     |
 |      ULTIMATE_REWARDS     | Any  |   True   |     ...     |
 |       UNITED_POINTS       | Any  |   True   |     ...     |
-|        US_PASS_PLUS       | Any  |   True   |     ...     |
 |            VISA           | Any  |   True   |     ...     |
 |        VISA_DANKORT       | Any  |   True   |     ...     |
 |         VISA_DELTA        | Any  |   True   |     ...     |
