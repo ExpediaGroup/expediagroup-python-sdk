@@ -1,20 +1,17 @@
-[index](index.md) / [expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md) / [ExpediaGroupForbiddenErrorException](ExpediaGroupForbiddenErrorException.md)
+[index](index.md) /
+[expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md)
+/
+[ExpediaGroupForbiddenErrorException](ExpediaGroupForbiddenErrorException.md)
+
 # class `expediagroup.sdk.fraudpreventionv2.model.ExpediaGroupForbiddenErrorException`
-```
-ExpediaGroupForbiddenErrorException(
-)
+
+```python
+ExpediaGroupForbiddenErrorException()
 ```
 
 Exception wrapping a ForbiddenError object.
 
-
-
-
-
-
-
-
-
-
 # Inheritance
-object > ExpediaGroupApiException > ExpediaGroupForbiddenErrorException
+
+object > ExpediaGroupApiException >
+ExpediaGroupForbiddenErrorException
