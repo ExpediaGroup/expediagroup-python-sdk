@@ -1,6 +1,6 @@
 {{ breadcrumbs }}
 # class `{{ module.name }}.{{ class.name }}`
-```python
+```
 {{ class.constructor.name }}({% for arg in class.constructor.arguments %}
     {{ arg.name }}: {{ arg.datatype }},{% endfor %}
 )
@@ -29,7 +29,7 @@
 ## Methods
 {% for method in class.methods %}
 ### {{ method.name }}
-```python
+```
 {{ method.name }}(
     {% for arg in method.arguments %}{{ arg.name }}: {{ arg.datatype }},
 {% endfor %})
