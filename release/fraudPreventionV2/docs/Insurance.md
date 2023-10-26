@@ -1,6 +1,10 @@
-[index](index.md) / [expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md) / [Insurance](Insurance.md)
+[index](index.md) /
+[expediagroup.sdk.fraudpreventionv2.model](expediagroup.sdk.fraudpreventionv2.model.md)
+/ [Insurance](Insurance.md)
+
 # class `expediagroup.sdk.fraudpreventionv2.model.Insurance`
-```
+
+```python
 Insurance(
     type: Literal["INSURANCE"],
 )
@@ -8,26 +12,12 @@ Insurance(
 
 pydantic model Insurance
 
-
-
 ## Attributes
-    
-    
-        
-    
 
-| Name |         Type         | Required | Description |
-|------|----------------------|----------|-------------|
-| type | Literal["INSURANCE"] |   True   |     ...     |
-
-
-
-
-
-
-
-
-
+| Name | Type                   | Required | Description |
+| ---- | ---------------------- | -------- | ----------- |
+| type | Literal\[“INSURANCE”\] | True     | …           |
 
 # Inheritance
+
 object > [TravelProductGeneric](TravelProductGeneric.md) > Insurance
