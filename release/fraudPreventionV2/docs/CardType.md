@@ -27,6 +27,10 @@ Incorrect `card_type` - `brand` combination will result in data quality issues a
 * `SWITCH`                   : `SWITCH`
 * `MAESTRO`                  : `MAESTRO`
 * `CHINA_UNION_PAY`          : `CHINA_UNION_PAY`
+* `UATP`                     : `UATP`
+* `UATP`                     : `UATP_SUPPLY`
+* `UATP`                     : `AIR_PLUS`
+* `UATP`                     : `UA_PASS_PLUS`
 * `VISA`                     : `VISA`
 * `VISA`                     : `VISA_DELTA`
 * `VISA`                     : `VISA_ELECTRON`
@@ -60,6 +64,8 @@ Incorrect `card_type` - `brand` combination will result in data quality issues a
     
         
     
+        
+    
 
 |       Name       | Type | Required | Description |
 |------------------|------|----------|-------------|
@@ -72,6 +78,7 @@ Incorrect `card_type` - `brand` combination will result in data quality issues a
 |   MASTER_CARD    | Any  |   True   |     ...     |
 |       SOLO       | Any  |   True   |     ...     |
 |      SWITCH      | Any  |   True   |     ...     |
+|       UATP       | Any  |   True   |     ...     |
 |       VISA       | Any  |   True   |     ...     |
 
 

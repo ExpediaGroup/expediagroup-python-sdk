@@ -580,6 +580,10 @@ class Brand(
     * `SWITCH`                    : `SWITCH`
     * `MAESTRO`                   : `MAESTRO`
     * `CHINA_UNION_PAY`           : `CHINA_UNION_PAY`
+    * `UATP`                      : `UATP`
+    * `UATP_SUPPLY`               : `UATP`
+    * `AIR_PLUS`                  : `UATP`
+    * `UA_PASS_PLUS`              : `UATP`
     * `VISA`                      : `VISA`
     * `VISA_DELTA`                : `VISA`
     * `VISA_ELECTRON`             : `VISA`
@@ -608,10 +612,6 @@ class Brand(
     * `CHEAP_CASH`
     * `BONUS_PLUS`
     * `ULTIMATE_REWARDS`
-    * `UATP`
-    * `UATP_SUPPLY`
-    * `AIR_PLUS`
-    * `US_PASS_PLUS`
 
     'brand' with 'GiftCard' payment_type is an enum value with following:
     * `GIFT_CARD`
@@ -642,6 +642,10 @@ class Brand(
     SOLO: Any = "SOLO"
     SWITCH: Any = "SWITCH"
     CHINA_UNION_PAY: Any = "CHINA_UNION_PAY"
+    UATP: Any = "UATP"
+    UATP_SUPPLY: Any = "UATP_SUPPLY"
+    AIR_PLUS: Any = "AIR_PLUS"
+    UA_PASS_PLUS: Any = "UA_PASS_PLUS"
     VISA: Any = "VISA"
     VISA_DELTA: Any = "VISA_DELTA"
     VISA_ELECTRON: Any = "VISA_ELECTRON"
@@ -668,10 +672,6 @@ class Brand(
     CHEAP_CASH: Any = "CHEAP_CASH"
     BONUS_PLUS: Any = "BONUS_PLUS"
     ULTIMATE_REWARDS: Any = "ULTIMATE_REWARDS"
-    UATP: Any = "UATP"
-    UATP_SUPPLY: Any = "UATP_SUPPLY"
-    AIR_PLUS: Any = "AIR_PLUS"
-    US_PASS_PLUS: Any = "US_PASS_PLUS"
     GIFT_CARD: Any = "GIFT_CARD"
     IBP: Any = "IBP"
     LOCAL_DEBIT_CARD: Any = "LOCAL_DEBIT_CARD"
@@ -789,6 +789,10 @@ class CardType(
     * `SWITCH`                   : `SWITCH`
     * `MAESTRO`                  : `MAESTRO`
     * `CHINA_UNION_PAY`          : `CHINA_UNION_PAY`
+    * `UATP`                     : `UATP`
+    * `UATP`                     : `UATP_SUPPLY`
+    * `UATP`                     : `AIR_PLUS`
+    * `UATP`                     : `UA_PASS_PLUS`
     * `VISA`                     : `VISA`
     * `VISA`                     : `VISA_DELTA`
     * `VISA`                     : `VISA_ELECTRON`
@@ -808,6 +812,7 @@ class CardType(
     SWITCH: Any = "SWITCH"
     MAESTRO: Any = "MAESTRO"
     CHINA_UNION_PAY: Any = "CHINA_UNION_PAY"
+    UATP: Any = "UATP"
     VISA: Any = "VISA"
 
 
@@ -2496,6 +2501,10 @@ class PaymentGeneric(
     * `SWITCH`                    : `SWITCH`
     * `MAESTRO`                   : `MAESTRO`
     * `CHINA_UNION_PAY`           : `CHINA_UNION_PAY`
+    * `UATP`                      : `UATP`
+    * `UATP_SUPPLY`               : `UATP`
+    * `AIR_PLUS`                  : `UATP`
+    * `UA_PASS_PLUS`              : `UATP`
     * `VISA`                      : `VISA`
     * `VISA_DELTA`                : `VISA`
     * `VISA_ELECTRON`             : `VISA`
@@ -2524,10 +2533,6 @@ class PaymentGeneric(
     * `CHEAP_CASH`
     * `BONUS_PLUS`
     * `ULTIMATE_REWARDS`
-    * `UATP`
-    * `UATP_SUPPLY`
-    * `AIR_PLUS`
-    * `US_PASS_PLUS`
 
     'brand' with 'GiftCard' payment_type is an enum value with following:
     * `GIFT_CARD`
@@ -2599,6 +2604,10 @@ class CreditCard(
     * `SWITCH`                   : `SWITCH`
     * `MAESTRO`                  : `MAESTRO`
     * `CHINA_UNION_PAY`          : `CHINA_UNION_PAY`
+    * `UATP`                     : `UATP`
+    * `UATP`                     : `UATP_SUPPLY`
+    * `UATP`                     : `AIR_PLUS`
+    * `UATP`                     : `UA_PASS_PLUS`
     * `VISA`                     : `VISA`
     * `VISA`                     : `VISA_DELTA`
     * `VISA`                     : `VISA_ELECTRON`
@@ -3101,53 +3110,8 @@ OrderPurchaseTransaction.update_forward_refs()
 OrderPurchaseScreenRequest.update_forward_refs()
 
 
-class ExpediaGroupForbiddenErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a ForbiddenError object."""
-    pass
-
-
 class ExpediaGroupNotFoundErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a NotFoundError object."""
-    pass
-
-
-class ExpediaGroupTooManyRequestsErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a TooManyRequestsError object."""
-    pass
-
-
-class ExpediaGroupBadRequestErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a BadRequestError object."""
-    pass
-
-
-class ExpediaGroupRetryableOrderPurchaseUpdateFailureException(ExpediaGroupApiException):
-    r"""Exception wrapping a RetryableOrderPurchaseUpdateFailure object."""
-    pass
-
-
-class ExpediaGroupBadGatewayErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a BadGatewayError object."""
-    pass
-
-
-class ExpediaGroupServiceUnavailableErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a ServiceUnavailableError object."""
-    pass
-
-
-class ExpediaGroupAccountUpdateNotFoundErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a AccountUpdateNotFoundError object."""
-    pass
-
-
-class ExpediaGroupAccountTakeoverUnauthorizedErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a AccountTakeoverUnauthorizedError object."""
-    pass
-
-
-class ExpediaGroupRetryableOrderPurchaseScreenFailureException(ExpediaGroupApiException):
-    r"""Exception wrapping a RetryableOrderPurchaseScreenFailure object."""
     pass
 
 
@@ -3156,8 +3120,8 @@ class ExpediaGroupUnauthorizedErrorException(ExpediaGroupApiException):
     pass
 
 
-class ExpediaGroupInternalServerErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a InternalServerError object."""
+class ExpediaGroupForbiddenErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a ForbiddenError object."""
     pass
 
 
@@ -3166,8 +3130,53 @@ class ExpediaGroupAccountTakeoverBadRequestErrorException(ExpediaGroupApiExcepti
     pass
 
 
+class ExpediaGroupRetryableOrderPurchaseScreenFailureException(ExpediaGroupApiException):
+    r"""Exception wrapping a RetryableOrderPurchaseScreenFailure object."""
+    pass
+
+
+class ExpediaGroupInternalServerErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a InternalServerError object."""
+    pass
+
+
+class ExpediaGroupAccountUpdateNotFoundErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a AccountUpdateNotFoundError object."""
+    pass
+
+
+class ExpediaGroupRetryableOrderPurchaseUpdateFailureException(ExpediaGroupApiException):
+    r"""Exception wrapping a RetryableOrderPurchaseUpdateFailure object."""
+    pass
+
+
+class ExpediaGroupAccountTakeoverUnauthorizedErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a AccountTakeoverUnauthorizedError object."""
+    pass
+
+
+class ExpediaGroupBadRequestErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a BadRequestError object."""
+    pass
+
+
+class ExpediaGroupServiceUnavailableErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a ServiceUnavailableError object."""
+    pass
+
+
+class ExpediaGroupTooManyRequestsErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a TooManyRequestsError object."""
+    pass
+
+
 class ExpediaGroupOrderPurchaseUpdateNotFoundErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a OrderPurchaseUpdateNotFoundError object."""
+    pass
+
+
+class ExpediaGroupBadGatewayErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a BadGatewayError object."""
     pass
 
 
@@ -3177,63 +3186,9 @@ class ExpediaGroupGatewayTimeoutErrorException(ExpediaGroupApiException):
 
 
 @dataclass
-class ForbiddenErrorDeserializationContract:
-    exception: type = ExpediaGroupForbiddenErrorException
-    model: type = ForbiddenError
-
-
-@dataclass
 class NotFoundErrorDeserializationContract:
     exception: type = ExpediaGroupNotFoundErrorException
     model: type = NotFoundError
-
-
-@dataclass
-class TooManyRequestsErrorDeserializationContract:
-    exception: type = ExpediaGroupTooManyRequestsErrorException
-    model: type = TooManyRequestsError
-
-
-@dataclass
-class BadRequestErrorDeserializationContract:
-    exception: type = ExpediaGroupBadRequestErrorException
-    model: type = BadRequestError
-
-
-@dataclass
-class RetryableOrderPurchaseUpdateFailureDeserializationContract:
-    exception: type = ExpediaGroupRetryableOrderPurchaseUpdateFailureException
-    model: type = RetryableOrderPurchaseUpdateFailure
-
-
-@dataclass
-class BadGatewayErrorDeserializationContract:
-    exception: type = ExpediaGroupBadGatewayErrorException
-    model: type = BadGatewayError
-
-
-@dataclass
-class ServiceUnavailableErrorDeserializationContract:
-    exception: type = ExpediaGroupServiceUnavailableErrorException
-    model: type = ServiceUnavailableError
-
-
-@dataclass
-class AccountUpdateNotFoundErrorDeserializationContract:
-    exception: type = ExpediaGroupAccountUpdateNotFoundErrorException
-    model: type = AccountUpdateNotFoundError
-
-
-@dataclass
-class AccountTakeoverUnauthorizedErrorDeserializationContract:
-    exception: type = ExpediaGroupAccountTakeoverUnauthorizedErrorException
-    model: type = AccountTakeoverUnauthorizedError
-
-
-@dataclass
-class RetryableOrderPurchaseScreenFailureDeserializationContract:
-    exception: type = ExpediaGroupRetryableOrderPurchaseScreenFailureException
-    model: type = RetryableOrderPurchaseScreenFailure
 
 
 @dataclass
@@ -3243,9 +3198,9 @@ class UnauthorizedErrorDeserializationContract:
 
 
 @dataclass
-class InternalServerErrorDeserializationContract:
-    exception: type = ExpediaGroupInternalServerErrorException
-    model: type = InternalServerError
+class ForbiddenErrorDeserializationContract:
+    exception: type = ExpediaGroupForbiddenErrorException
+    model: type = ForbiddenError
 
 
 @dataclass
@@ -3255,9 +3210,63 @@ class AccountTakeoverBadRequestErrorDeserializationContract:
 
 
 @dataclass
+class RetryableOrderPurchaseScreenFailureDeserializationContract:
+    exception: type = ExpediaGroupRetryableOrderPurchaseScreenFailureException
+    model: type = RetryableOrderPurchaseScreenFailure
+
+
+@dataclass
+class InternalServerErrorDeserializationContract:
+    exception: type = ExpediaGroupInternalServerErrorException
+    model: type = InternalServerError
+
+
+@dataclass
+class AccountUpdateNotFoundErrorDeserializationContract:
+    exception: type = ExpediaGroupAccountUpdateNotFoundErrorException
+    model: type = AccountUpdateNotFoundError
+
+
+@dataclass
+class RetryableOrderPurchaseUpdateFailureDeserializationContract:
+    exception: type = ExpediaGroupRetryableOrderPurchaseUpdateFailureException
+    model: type = RetryableOrderPurchaseUpdateFailure
+
+
+@dataclass
+class AccountTakeoverUnauthorizedErrorDeserializationContract:
+    exception: type = ExpediaGroupAccountTakeoverUnauthorizedErrorException
+    model: type = AccountTakeoverUnauthorizedError
+
+
+@dataclass
+class BadRequestErrorDeserializationContract:
+    exception: type = ExpediaGroupBadRequestErrorException
+    model: type = BadRequestError
+
+
+@dataclass
+class ServiceUnavailableErrorDeserializationContract:
+    exception: type = ExpediaGroupServiceUnavailableErrorException
+    model: type = ServiceUnavailableError
+
+
+@dataclass
+class TooManyRequestsErrorDeserializationContract:
+    exception: type = ExpediaGroupTooManyRequestsErrorException
+    model: type = TooManyRequestsError
+
+
+@dataclass
 class OrderPurchaseUpdateNotFoundErrorDeserializationContract:
     exception: type = ExpediaGroupOrderPurchaseUpdateNotFoundErrorException
     model: type = OrderPurchaseUpdateNotFoundError
+
+
+@dataclass
+class BadGatewayErrorDeserializationContract:
+    exception: type = ExpediaGroupBadGatewayErrorException
+    model: type = BadGatewayError
 
 
 @dataclass
