@@ -103,7 +103,6 @@ class ApiClient:
         """
         self.__auth_client.refresh_token()
         request_headers = ApiClient.__prepare_request_headers(headers)
-        request_body = dict()
 
         if not body:
             response = requests.request(
@@ -126,7 +125,7 @@ class ApiClient:
 
         request_log_message = log_util.request_log(
             headers=request_headers,
-            body=str(request_body),
+            body=str(body.dict()) if LOG.getEffectiveLevel() <= logging.DEBUG else body.json(),
             endpoint=url,
             method=method,
             response=response,
