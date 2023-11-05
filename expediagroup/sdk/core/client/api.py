@@ -16,7 +16,7 @@ import json
 import logging
 import uuid
 from http import HTTPStatus
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import pydantic
 import pydantic.schema
@@ -123,9 +123,13 @@ class ApiClient:
                 timeout=self.request_timeout,
             )
 
+        logged_body: Union[dict, str, None] = None
+        if body:
+            logged_body = str(body.dict()) if LOG.getEffectiveLevel() <= logging.DEBUG else body.json()
+
         request_log_message = log_util.request_log(
             headers=request_headers,
-            body=str(body.dict()) if LOG.getEffectiveLevel() <= logging.DEBUG else body.json(),
+            body=logged_body,
             endpoint=url,
             method=method,
             response=response,

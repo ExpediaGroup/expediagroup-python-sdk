@@ -45,7 +45,7 @@ def request_log(headers: dict, body: str, endpoint: str, method: str, response: 
 
     result = f"\nRequest: {endpoint}\n" f"Method: {method.upper()}\n" + log.HTTP_HEADERS_LOG_MESSAGE_TEMPLATE.format(
         headers_log
-    ) + log.HTTP_BODY_LOG_MESSAGE_TEMPLATE.format("\t\t" + body + "\n") + response_log(response)
+    ) + log.HTTP_BODY_LOG_MESSAGE_TEMPLATE.format("\t\t" + str(body) + "\n") + response_log(response)
 
     return result
 
