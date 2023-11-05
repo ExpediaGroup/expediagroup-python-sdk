@@ -17,6 +17,8 @@ from pydantic import Extra, validator, SecretStr, SecretBytes
 from pydantic.dataclasses import dataclass
 from expediagroup.sdk.core.model.exception.service import ExpediaGroupApiException
 
+SecretStr.__str__ = lambda self: '<-- omitted -->' if self.get_secret_value() else ''
+
 class PydanticModelConfig:
     JSON_ENCODERS = {
         SecretStr: lambda v: v.get_secret_value() if v else None,
