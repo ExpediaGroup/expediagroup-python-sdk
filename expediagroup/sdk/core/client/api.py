@@ -123,11 +123,11 @@ class ApiClient:
                 timeout=self.request_timeout,
             )
 
-        should_logs_masking: bool = LOG.getEffectiveLevel() > logging.DEBUG or LOG.getEffectiveLevel() == logging
+        should_mask_logs: bool = LOG.getEffectiveLevel() > logging.DEBUG or LOG.getEffectiveLevel() == logging.NOTSET
 
         logged_body: Union[dict, str, None] = None
         if body:
-            logged_body = str(body.dict()) if should_logs_masking else json.loads(body.json())
+            logged_body = str(body.dict()) if should_mask_logs else json.loads(body.json())
 
         request_log_message = log_util.request_log(
             headers=request_headers,
