@@ -20,6 +20,8 @@ from expediagroup.sdk.core.model.exception.service import ExpediaGroupApiExcepti
 SecretStr.__str__ = lambda self: '<-- omitted -->' if self.get_secret_value() else ''
 
 class PydanticModelConfig:
+    r"""List of configurations for all SDK models."""
+
     JSON_ENCODERS = {
         SecretStr: lambda v: v.get_secret_value() if v else None,
         SecretBytes: lambda v: v.get_secret_value() if v else None,
