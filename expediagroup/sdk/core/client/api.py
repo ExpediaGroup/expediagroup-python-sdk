@@ -16,7 +16,7 @@ import json
 import logging
 import uuid
 from http import HTTPStatus
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import pydantic
 import pydantic.schema
