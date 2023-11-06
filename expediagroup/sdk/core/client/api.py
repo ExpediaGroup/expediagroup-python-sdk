@@ -125,13 +125,13 @@ class ApiClient:
 
         should_mask_logs: bool = LOG.getEffectiveLevel() > logging.DEBUG or LOG.getEffectiveLevel() == logging.NOTSET
 
-        logged_body: Union[dict, str, None] = None
+        logged_body: dict = dict()
         if body:
-            logged_body = str(body.dict()) if should_mask_logs else json.loads(body.json())
+            logged_body = body.dict() if should_mask_logs else json.loads(body.json())
 
         request_log_message = log_util.request_log(
             headers=request_headers,
-            body=logged_body,
+            body=str(logged_body),
             endpoint=url,
             method=method,
             response=response,
