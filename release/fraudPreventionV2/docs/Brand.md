@@ -118,6 +118,7 @@ following:
 
 - `ELV`
 - `INTER_COMPANY`
+- `SEPA_ELV`
 
 ## Attributes
 
@@ -159,6 +160,7 @@ following:
 | POSTEPAY_VISA_ELECTRON    | Any  | True     | …           |
 | QIWI                      | Any  | True     | …           |
 | RBC_REWARDS               | Any  | True     | …           |
+| SEPA_ELV                  | Any  | True     | …           |
 | SOFORT                    | Any  | True     | …           |
 | SOLO                      | Any  | True     | …           |
 | SWITCH                    | Any  | True     | …           |

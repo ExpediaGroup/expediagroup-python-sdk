@@ -42,10 +42,22 @@ pydantic model CreditCard
 
 ## Methods
 
-### dict
+### \_\_card_number_validator
 
 ```python
-dict()
+__card_number_validator()
+```
+
+### \_\_card_cvv_response_validator
+
+```python
+__card_cvv_response_validator()
+```
+
+### \_\_card_avs_response_validator
+
+```python
+__card_avs_response_validator()
 ```
 
 # Inheritance

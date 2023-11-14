@@ -24,10 +24,10 @@ pydantic model GiftCard
 
 ## Methods
 
-### dict
+### \_\_pin_validator
 
 ```python
-dict()
+__pin_validator()
 ```
 
 # Inheritance
