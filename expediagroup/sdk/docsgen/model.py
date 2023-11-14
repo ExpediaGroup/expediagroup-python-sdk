@@ -156,6 +156,9 @@ class Attribute(DocumentedObject):
         if not other:
             raise ValueError(str(other))
 
+        if not other.datatype:
+            other.datatype = str(Any)
+
         return Attribute(
             name=other.name,
             datatype=other.datatype,

@@ -12,7 +12,7 @@
 {# See the License for the specific language governing permissions and#}
 {# limitations under the License.#}
 {{ model_imports }}
-from typing import Union, Any, Literal
+from typing import Union, Any, Literal, Callable
 from pydantic import Extra, validator, SecretStr, SecretBytes
 from pydantic.dataclasses import dataclass
 from expediagroup.sdk.core.model.exception.service import ExpediaGroupApiException
@@ -22,7 +22,7 @@ SecretStr.__str__ = lambda self: '<-- omitted -->' if self.get_secret_value() el
 class PydanticModelConfig:
     r"""List of configurations for all SDK pydantic models."""
 
-    JSON_ENCODERS = {
+    JSON_ENCODERS: dict[type, Callable] = {
         SecretStr: lambda v: v.get_secret_value() if v else None,
         SecretBytes: lambda v: v.get_secret_value() if v else None,
     }
