@@ -14,9 +14,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Literal, Optional, Union
+from typing import Any, Literal, Optional, Union
 
 from pydantic import (
     BaseModel,
@@ -2587,10 +2588,10 @@ class DirectDebit(
     """
     mandate_type: Optional[MandateType] = None
     """
-    The `mandate_type` is required if given `brand` as `SEPA_ELV` under `DirectDebit`. 
-    It is used for the wire transfer or direct debit transaction whose `routing_number` could not be provided or not supported.  
-    Allows values: 
-    - `ONE_OFF` 
+    The `mandate_type` is required if given `brand` as `SEPA_ELV` under `DirectDebit`.
+    It is used for the wire transfer or direct debit transaction whose `routing_number` could not be provided or not supported.
+    Allows values:
+    - `ONE_OFF`
     - `RECURRING`
 
     """
@@ -2668,261 +2669,175 @@ AccountUpdateRequest = Union[MultiFactorAuthenticationUpdate, RemediationUpdate,
 
 AccountTakeoverTransactionDetails = Union[LoginTransactionDetails, AccountTakeoverTransactionDetailsGeneric]
 
-
 Error.update_forward_refs()
-
 
 UnauthorizedError.update_forward_refs()
 
-
 OrderPurchaseUpdateNotFoundError.update_forward_refs()
-
 
 RetryableOrderPurchaseScreenFailure.update_forward_refs()
 
-
 RetryableOrderPurchaseUpdateFailure.update_forward_refs()
-
 
 Cause.update_forward_refs()
 
-
 BadRequestError.update_forward_refs()
-
 
 CancellationReason.update_forward_refs()
 
-
 InsultDetail.update_forward_refs()
-
 
 OrderPurchaseUpdateResponse.update_forward_refs()
 
-
 SiteInfo.update_forward_refs()
-
 
 DeviceDetails.update_forward_refs()
 
-
 Address.update_forward_refs()
-
 
 TravelersReference.update_forward_refs()
 
-
 OperatingCompany.update_forward_refs()
-
 
 RailwayStationDetails.update_forward_refs()
 
-
 AirSegment.update_forward_refs()
-
 
 HotelAddress.update_forward_refs()
 
-
 PaymentThreeDSCriteria.update_forward_refs()
-
 
 Name.update_forward_refs()
 
-
 Email.update_forward_refs()
-
 
 Amount.update_forward_refs()
 
-
 AccountTakeoverError.update_forward_refs()
-
 
 AccountTakeoverUnauthorizedError.update_forward_refs()
 
-
 AccountUpdateNotFoundError.update_forward_refs()
-
 
 ServiceUnavailableError.update_forward_refs()
 
-
 Cause1.update_forward_refs()
-
 
 AccountTakeoverBadRequestError.update_forward_refs()
 
-
 RemediationUpdateAction.update_forward_refs()
-
 
 AccountUpdateResponse.update_forward_refs()
 
-
 AccountTakeoverSiteInfo.update_forward_refs()
-
 
 AccountTakeoverDeviceDetails.update_forward_refs()
 
-
 AccountTakeoverName.update_forward_refs()
-
 
 ChallengeDetail.update_forward_refs()
 
-
 ForbiddenError.update_forward_refs()
-
 
 NotFoundError.update_forward_refs()
 
-
 TooManyRequestsError.update_forward_refs()
-
 
 InternalServerError.update_forward_refs()
 
-
 BadGatewayError.update_forward_refs()
-
 
 GatewayTimeoutError.update_forward_refs()
 
-
 OrderUpdate.update_forward_refs()
-
 
 InsultFeedback.update_forward_refs()
 
-
 IssuedRefundUpdateDetails.update_forward_refs()
-
 
 SettledRefundUpdateDetails.update_forward_refs()
 
-
 PaymentUpdate.update_forward_refs()
-
 
 ChargebackDetail.update_forward_refs()
 
-
 OrderPurchaseScreenResponse.update_forward_refs()
-
 
 RailSegments.update_forward_refs()
 
-
 Air.update_forward_refs()
-
 
 Cruise.update_forward_refs()
 
-
 Car.update_forward_refs()
-
 
 Hotel.update_forward_refs()
 
-
 PaymentOutcome.update_forward_refs()
-
 
 Insurance.update_forward_refs()
 
-
 Telephone.update_forward_refs()
-
 
 MultiFactorAuthenticationAttempt.update_forward_refs()
 
-
 RemediationUpdate.update_forward_refs()
-
 
 AccountScreenResponse.update_forward_refs()
 
-
 AccountTakeoverCustomerAccount.update_forward_refs()
-
 
 CurrentUserSession.update_forward_refs()
 
-
 ChargebackFeedback.update_forward_refs()
-
 
 IssuedRefundUpdate.update_forward_refs()
 
-
 SettledRefundUpdate.update_forward_refs()
-
 
 CustomerAccount.update_forward_refs()
 
-
 Traveler.update_forward_refs()
-
 
 Rail.update_forward_refs()
 
-
 PaymentOperation.update_forward_refs()
-
 
 MultiFactorAuthenticationUpdate.update_forward_refs()
 
-
 LoginTransactionDetails.update_forward_refs()
-
 
 Verify.update_forward_refs()
 
-
 Authorize.update_forward_refs()
-
 
 AuthorizeReversal.update_forward_refs()
 
-
 Capture.update_forward_refs()
-
 
 Refund.update_forward_refs()
 
-
 AccountTransaction.update_forward_refs()
-
 
 Operations.update_forward_refs()
 
-
 AccountScreenRequest.update_forward_refs()
-
 
 CreditCard.update_forward_refs()
 
-
 PayPal.update_forward_refs()
-
 
 Points.update_forward_refs()
 
-
 GiftCard.update_forward_refs()
-
 
 InternetBankPayment.update_forward_refs()
 
-
 DirectDebit.update_forward_refs()
-
 
 TransactionDetails.update_forward_refs()
 
-
 OrderPurchaseTransaction.update_forward_refs()
-
 
 OrderPurchaseScreenRequest.update_forward_refs()
 
