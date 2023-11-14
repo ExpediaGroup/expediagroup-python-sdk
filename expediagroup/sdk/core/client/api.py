@@ -103,7 +103,6 @@ class ApiClient:
         """
         self.__auth_client.refresh_token()
         request_headers = ApiClient.__prepare_request_headers(headers)
-        request_body = dict()
 
         if not body:
             response = requests.request(
@@ -124,9 +123,11 @@ class ApiClient:
                 timeout=self.request_timeout,
             )
 
+        logged_body: dict[str, Any] = dict() if not body else body.dict()
+
         request_log_message = log_util.request_log(
             headers=request_headers,
-            body=str(request_body),
+            body=str(logged_body),
             endpoint=url,
             method=method,
             response=response,
