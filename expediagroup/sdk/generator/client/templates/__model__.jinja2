@@ -13,9 +13,23 @@
 {# limitations under the License.#}
 {{ model_imports }}
 from typing import Union, Any, Literal
-from pydantic import Extra
+from pydantic import Extra, validator, SecretStr, SecretBytes
 from pydantic.dataclasses import dataclass
 from expediagroup.sdk.core.model.exception.service import ExpediaGroupApiException
+
+SecretStr.__str__ = lambda self: '<-- omitted -->' if self.get_secret_value() else ''
+
+class PydanticModelConfig:
+    r"""List of configurations for all SDK pydantic models."""
+
+    JSON_ENCODERS = {
+        SecretStr: lambda v: v.get_secret_value() if v else None,
+        SecretBytes: lambda v: v.get_secret_value() if v else None,
+    }
+
+    EXTRA: bool = Extra.forbid
+
+    SMART_UNION: bool = True
 
 
 {% for model in models %}
@@ -23,18 +37,16 @@ from expediagroup.sdk.core.model.exception.service import ExpediaGroupApiExcepti
 {{ decorator }}
 {% endfor -%}
 
-class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif %}({{ model.base_class }}{% if is_aliased[model.base_class] %}Generic{% endif %},{% if model.base_class != 'Enum' %} smart_union=True, extra=Extra.forbid,{% endif %}): {% if comment is defined %}  # {{ model.comment }}{% endif %}
+class {{ model.class_name }}{% if is_aliased[model.class_name] %}Generic{% endif %}({{ model.base_class }}{% if is_aliased[model.base_class] %}Generic{% endif %},{% if model.base_class != 'Enum' %} smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS{% endif %}): {% if comment is defined %}  # {{ model.comment }}{% endif %}
     r"""pydantic model {{ model.class_name }}{%- if model.description %}: {{ model.description }}{%- endif %}
 {# comment for new line #}
 """
 {% if model.class_name in omitted_log_fields.keys() %}
-    def dict(self, **kwargs):
-        omitted_fields = {{ omitted_log_fields[model.class_name] }}
-
-        dictionary = super().dict(**kwargs)
-        dictionary.update([(attribute, "<-- omitted -->") for attribute in omitted_fields])
-
-        return dictionary
+    {% for field in omitted_log_fields[model.class_name] %}
+    @validator("{{ field }}")
+    def __{{ field }}_validator(cls, {{ field }}):
+        return SecretStr(str({{ field }}))
+    {% endfor %}
 {% endif %}
 
 {%- if not model.fields %}
