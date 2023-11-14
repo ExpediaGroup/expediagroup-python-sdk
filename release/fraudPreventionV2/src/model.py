@@ -16,12 +16,36 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Literal, Optional, Union
+from typing import Any, Callable, Literal, Optional, Union
 
-from pydantic import BaseModel, EmailStr, Extra, Field, constr
+from pydantic import (
+    BaseModel,
+    EmailStr,
+    Extra,
+    Field,
+    SecretBytes,
+    SecretStr,
+    constr,
+    validator,
+)
 from pydantic.dataclasses import dataclass
 
 from expediagroup.sdk.core.model.exception.service import ExpediaGroupApiException
+
+SecretStr.__str__ = lambda self: "<-- omitted -->" if self.get_secret_value() else ""
+
+
+class PydanticModelConfig:
+    r"""List of configurations for all SDK pydantic models."""
+
+    JSON_ENCODERS: dict[type, Callable] = {
+        SecretStr: lambda v: v.get_secret_value() if v else None,
+        SecretBytes: lambda v: v.get_secret_value() if v else None,
+    }
+
+    EXTRA: bool = Extra.forbid
+
+    SMART_UNION: bool = True
 
 
 class Code(
@@ -42,11 +66,7 @@ class Code(
     BAD_REQUEST: Any = "BAD_REQUEST"
 
 
-class Error(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Error(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Error: The object used to describe an error, containing both human-readable and machine-readable information."""
 
     code: Code = Field(..., example="BAD_REQUEST")
@@ -59,20 +79,14 @@ class Error(
     """
 
 
-class UnauthorizedError(
-    Error,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class UnauthorizedError(Error, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model UnauthorizedError: Indicates that the token sent in the 'Authorization' header is either invalid or missing. Please check the value in the token field along with the token expiration time before retrying."""
 
     pass
 
 
 class OrderPurchaseUpdateNotFoundError(
-    Error,
-    smart_union=True,
-    extra=Extra.forbid,
+    Error, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model OrderPurchaseUpdateNotFoundError: Indicates that the API cannot find the resource that is either being requested or against which the operation is being performed."""
 
@@ -80,9 +94,7 @@ class OrderPurchaseUpdateNotFoundError(
 
 
 class RetryableOrderPurchaseScreenFailure(
-    Error,
-    smart_union=True,
-    extra=Extra.forbid,
+    Error, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model RetryableOrderPurchaseScreenFailure: Indicates that the API is either down for maintenance or overloaded and cannot fulfill the request at the current time. This is a temporary error and retrying the same request after a certain delay could eventually result in success.
     There will be a Retry-After HTTP header in API response specifying how long to wait to retry the request. If there is no Retry-After HTTP header then retry can happen immediately. If the error persists after retrying with delay, please reach out to <support team>."
@@ -93,9 +105,7 @@ class RetryableOrderPurchaseScreenFailure(
 
 
 class RetryableOrderPurchaseUpdateFailure(
-    Error,
-    smart_union=True,
-    extra=Extra.forbid,
+    Error, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model RetryableOrderPurchaseUpdateFailure: Indicates that the API is either down for maintenance or overloaded and cannot fulfill the request at the current time. This is a temporary error and retrying the same request after a certain delay could eventually result in success.
     There will be a Retry-After HTTP header in API response specifying how long to wait to retry the request. If there is no Retry-After HTTP header then retry can happen immediately. If the error persists after retrying with delay, please reach out to <support team>."
@@ -115,11 +125,7 @@ class Code1(
     INVALID_FORMAT: Any = "INVALID_FORMAT"
 
 
-class Cause(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Cause(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Cause"""
 
     code: Optional[Code1] = Field(None, example="MISSING_MANDATORY_PARAM")
@@ -130,11 +136,7 @@ class Cause(
     message: Optional[str] = Field(None, example="The value of a field should not be null.")
 
 
-class BadRequestError(
-    Error,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class BadRequestError(Error, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model BadRequestError: Indicates that a bad request occurred. Typically it is an invalid parameter."""
 
     causes: Optional[list[Cause]] = None
@@ -153,9 +155,7 @@ class UpdateType(
 
 
 class CancellationReason(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model CancellationReason: Reason of order update cancellation."""
 
@@ -212,11 +212,7 @@ class ChargebackReason(
     NON_FRAUD: Any = "NON_FRAUD"
 
 
-class InsultDetail(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class InsultDetail(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model InsultDetail: Details related to the insult."""
 
     insult_reported_date_time: Optional[datetime] = None
@@ -249,9 +245,7 @@ class Status(
 
 
 class OrderPurchaseUpdateResponse(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model OrderPurchaseUpdateResponse"""
 
@@ -271,11 +265,7 @@ class FraudDecision(
     REJECT: Any = "REJECT"
 
 
-class SiteInfo(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class SiteInfo(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model SiteInfo"""
 
     country_code: constr(regex=r"^[A-Z]{3}$") = Field(..., example="USA")
@@ -288,11 +278,7 @@ class SiteInfo(
     """
 
 
-class DeviceDetails(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class DeviceDetails(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model DeviceDetails"""
 
     source: Optional[constr(max_length=50)] = None
@@ -363,11 +349,7 @@ class AddressType(
     WORK: Any = "WORK"
 
 
-class Address(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Address(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Address"""
 
     address_type: Optional[AddressType] = None
@@ -411,9 +393,7 @@ class InventorySource(
 
 
 class TravelersReference(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model TravelersReference"""
 
@@ -459,9 +439,7 @@ class TransportationMethod(
 
 
 class OperatingCompany(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model OperatingCompany: This attribute captures the name or identifier of the company responsible for operating the Rail product. It represents the specific operating entity, such as Amtrak, British Railways, or a bus company."""
 
@@ -481,9 +459,7 @@ class Type(
 
 
 class RailwayStationDetails(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model RailwayStationDetails"""
 
@@ -516,11 +492,7 @@ class FlightType(
     MULTIPLE_DESTINATION: Any = "MULTIPLE_DESTINATION"
 
 
-class AirSegment(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class AirSegment(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model AirSegment"""
 
     airline_code: constr(max_length=10) = None
@@ -545,11 +517,7 @@ class AirSegment(
     """
 
 
-class HotelAddress(
-    Address,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class HotelAddress(Address, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model HotelAddress: Address of a hotel."""
 
     pass
@@ -628,6 +596,7 @@ class Brand(
     'brand' with 'DirectDebit' payment_type is an enum value with following:
     * `ELV`
     * `INTER_COMPANY`
+    * `SEPA_ELV`
 
     """
 
@@ -682,12 +651,11 @@ class Brand(
     BITCOIN: Any = "BITCOIN"
     ELV: Any = "ELV"
     INTER_COMPANY: Any = "INTER_COMPANY"
+    SEPA_ELV: Any = "SEPA_ELV"
 
 
 class PaymentThreeDSCriteria(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model PaymentThreeDSCriteria: Payment ThreeDS criteria attributes."""
 
@@ -816,11 +784,22 @@ class CardType(
     VISA: Any = "VISA"
 
 
-class Name(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+class MandateType(
+    Enum,
 ):
+    r"""pydantic model MandateType: The `mandate_type` is required if given `brand` as `SEPA_ELV` under `DirectDebit`.
+    It is used for the wire transfer or direct debit transaction whose `routing_number` could not be provided or not supported.
+    Allows values:
+    - `ONE_OFF`
+    - `RECURRING`
+
+    """
+
+    ONE_OFF: Any = "ONE_OFF"
+    RECURRING: Any = "RECURRING"
+
+
+class Name(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Name: Group of attributes intended to hold information about a customer or traveler's name for the order."""
 
     last_name: constr(max_length=200) = None
@@ -867,11 +846,7 @@ class TelephonePlatformType(
     VOIP: Any = "VOIP"
 
 
-class Email(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Email(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Email: Group of attributes intended to hold information about email address associated with the transaction."""
 
     email_address: Optional[EmailStr] = None
@@ -880,11 +855,7 @@ class Email(
     """
 
 
-class Amount(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Amount(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Amount"""
 
     value: float = None
@@ -916,9 +887,7 @@ class Code2(
 
 
 class AccountTakeoverError(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountTakeoverError: The object used to describe an error, containing both human-readable and machine-readable information."""
 
@@ -933,9 +902,7 @@ class AccountTakeoverError(
 
 
 class AccountTakeoverUnauthorizedError(
-    AccountTakeoverError,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountTakeoverError, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountTakeoverUnauthorizedError: Indicates that the token sent in the 'Authorization' header is either invalid or missing. Please check the value in the token field along with the token expiration time before retrying."""
 
@@ -943,9 +910,7 @@ class AccountTakeoverUnauthorizedError(
 
 
 class AccountUpdateNotFoundError(
-    AccountTakeoverError,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountTakeoverError, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountUpdateNotFoundError: Indicates that the API cannot find the resource that is either being requested or against which the operation is being performed."""
 
@@ -953,9 +918,7 @@ class AccountUpdateNotFoundError(
 
 
 class ServiceUnavailableError(
-    AccountTakeoverError,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountTakeoverError, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model ServiceUnavailableError: Indicates that the API is either down for maintenance or overloaded and cannot fulfill the request at the current time. This is a temporary error and retrying the same request after a certain delay could eventually result in success.
     There will be a Retry-After HTTP header in API response specifying how long to wait to retry the request. If there is no Retry-After HTTP header then retry can happen immediately. If the error persists after retrying with delay, please reach out to <support team>."
@@ -975,11 +938,7 @@ class Code3(
     INVALID_FORMAT: Any = "INVALID_FORMAT"
 
 
-class Cause1(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Cause1(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Cause1"""
 
     code: Optional[Code3] = Field(None, example="MISSING_MANDATORY_PARAM")
@@ -991,9 +950,7 @@ class Cause1(
 
 
 class AccountTakeoverBadRequestError(
-    AccountTakeoverError,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountTakeoverError, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountTakeoverBadRequestError: Indicates that a bad request occurred. Typically it is an invalid parameter."""
 
@@ -1010,9 +967,7 @@ class Type1(
 
 
 class AccountUpdateRequestGeneric(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountUpdateRequest: The `type` field value is used as a discriminator, with the following mapping:
     * `MULTI_FACTOR_AUTHENTICATION_UPDATE`: `MultiFactorAuthenticationUpdate`
@@ -1085,9 +1040,7 @@ class Status2(
 
 
 class RemediationUpdateAction(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model RemediationUpdateAction: Information specific to the remediation action initiated by the Partner's system to a user."""
 
@@ -1113,9 +1066,7 @@ class RemediationUpdateAction(
 
 
 class AccountUpdateResponse(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountUpdateResponse"""
 
@@ -1154,9 +1105,7 @@ class PlacementName(
 
 
 class AccountTakeoverSiteInfo(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountTakeoverSiteInfo: Information specific to the Partner's website through which a transaction was made."""
 
@@ -1201,9 +1150,7 @@ class Type2(
 
 
 class AccountTakeoverDeviceDetails(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountTakeoverDeviceDetails: Information specific to the Partner's device through which a transaction was made."""
 
@@ -1268,9 +1215,7 @@ class AccountRole(
 
 
 class AccountTakeoverName(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountTakeoverName: Group of attributes intended to hold information about a customer or traveler''s name for the account."""
 
@@ -1401,11 +1346,7 @@ class Status3(
     FAILED: Any = "FAILED"
 
 
-class ChallengeDetail(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class ChallengeDetail(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model ChallengeDetail: Information related to challenges initiated by the Partner's system to a user before calling Expedia's Fraud Prevention Service."""
 
     displayed_flag: bool = None
@@ -1429,9 +1370,7 @@ class ChallengeDetail(
 
 
 class ForbiddenError(
-    AccountTakeoverError,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountTakeoverError, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model ForbiddenError: Indicates that the API cannot fulfill the request because while the client is correctly authenticated, the client doesn't have the permission to execute the specified operation. This error type does not imply that the request is valid, or that the resource against which the operation being performed exists or satisfies other pre-conditions."""
 
@@ -1439,9 +1378,7 @@ class ForbiddenError(
 
 
 class NotFoundError(
-    AccountTakeoverError,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountTakeoverError, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model NotFoundError: Indicates that the API cannot find the resource that is either being requested or against which the operation is being performed. Please check the request again to make sure that the request is valid."""
 
@@ -1449,9 +1386,7 @@ class NotFoundError(
 
 
 class TooManyRequestsError(
-    AccountTakeoverError,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountTakeoverError, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model TooManyRequestsError: Indicates that the API cannot fulfill the request because server resources have been exhausted. Perhaps the client has sent too many requests in a given amount of time or has reached some specific quota. Please check the rate limits for the product and adjust as necessary before retries. If you believe the rate limit was incorrect or if you need a different rate limit, please reach out to the <support team> regarding the next steps."""
 
@@ -1459,9 +1394,7 @@ class TooManyRequestsError(
 
 
 class InternalServerError(
-    AccountTakeoverError,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountTakeoverError, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model InternalServerError: Indicates that the API encountered an unexpected condition that prevented it from fulfilling the request. Sometimes used as a generic catch-allerror type when no other error types can be used. Retrying the same request will usually result in the same error. Please reach out to support team as next step for this error resolution."""
 
@@ -1469,9 +1402,7 @@ class InternalServerError(
 
 
 class BadGatewayError(
-    AccountTakeoverError,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountTakeoverError, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model BadGatewayError: Indicates that the server received an invalid response from the upstream server. Causes could be incorrectly configured target server at gateway, EOF exception, incorrectly configured keep-alive timeouts. Please reach out to support team as next step for this error resolution."""
 
@@ -1479,9 +1410,7 @@ class BadGatewayError(
 
 
 class GatewayTimeoutError(
-    AccountTakeoverError,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountTakeoverError, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model GatewayTimeoutError: Indicates that the API gateway has issues completing the request on time. Request can be retried if it is idempotent, If the issue persists, please reach out to support. For non-idempotent requests, please reach out to <support team> to know the status of your request before attempting retries."""
 
@@ -1489,9 +1418,7 @@ class GatewayTimeoutError(
 
 
 class OrderPurchaseUpdateRequestGeneric(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model OrderPurchaseUpdateRequest: The `type` field value is used as a discriminator, with the following mapping:
     * `ORDER_UPDATE`: `OrderUpdate`
@@ -1511,8 +1438,9 @@ class OrderPurchaseUpdateRequestGeneric(
 
 class OrderUpdate(
     OrderPurchaseUpdateRequestGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    smart_union=PydanticModelConfig.SMART_UNION,
+    extra=PydanticModelConfig.EXTRA,
+    json_encoders=PydanticModelConfig.JSON_ENCODERS,
 ):
     r"""pydantic model OrderUpdate: Order related data that should be updated."""
 
@@ -1531,8 +1459,9 @@ class OrderUpdate(
 
 class InsultFeedback(
     OrderPurchaseUpdateRequestGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    smart_union=PydanticModelConfig.SMART_UNION,
+    extra=PydanticModelConfig.EXTRA,
+    json_encoders=PydanticModelConfig.JSON_ENCODERS,
 ):
     r"""pydantic model InsultFeedback: Feedback from EG external partners regarding a false positive recommendation that from Fraud Prevention system gave for their customer."""
 
@@ -1542,8 +1471,9 @@ class InsultFeedback(
 
 class RefundUpdateGeneric(
     OrderPurchaseUpdateRequestGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    smart_union=PydanticModelConfig.SMART_UNION,
+    extra=PydanticModelConfig.EXTRA,
+    json_encoders=PydanticModelConfig.JSON_ENCODERS,
 ):
     r"""pydantic model RefundUpdate: Refund related data. Update should be sent when refund is issued or settled. Amounts should include all fees and taxes."""
 
@@ -1558,9 +1488,7 @@ class RefundUpdateGeneric(
 
 
 class IssuedRefundUpdateDetails(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model IssuedRefundUpdateDetails: Data that describes issued refund that should be updated."""
 
@@ -1572,9 +1500,7 @@ class IssuedRefundUpdateDetails(
 
 
 class SettledRefundUpdateDetails(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model SettledRefundUpdateDetails: Data that describes settled refund that should be updated."""
 
@@ -1602,8 +1528,9 @@ class SettledRefundUpdateDetails(
 
 class PaymentUpdate(
     OrderPurchaseUpdateRequestGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    smart_union=PydanticModelConfig.SMART_UNION,
+    extra=PydanticModelConfig.EXTRA,
+    json_encoders=PydanticModelConfig.JSON_ENCODERS,
 ):
     r"""pydantic model PaymentUpdate: Payment related data that should be updated."""
 
@@ -1615,9 +1542,7 @@ class PaymentUpdate(
 
 
 class ChargebackDetail(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model ChargebackDetail: Details related to the chargeback."""
 
@@ -1644,9 +1569,7 @@ class ChargebackDetail(
 
 
 class OrderPurchaseScreenResponse(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model OrderPurchaseScreenResponse"""
 
@@ -1658,9 +1581,7 @@ class OrderPurchaseScreenResponse(
 
 
 class TravelProductGeneric(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model TravelProduct: The `type` field value is used as a discriminator, with the following mapping:
     * `CRUISE`: `Cruise`
@@ -1745,11 +1666,7 @@ class TravelProductGeneric(
     """
 
 
-class RailSegments(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class RailSegments(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model RailSegments"""
 
     departure_time: datetime = None
@@ -1780,11 +1697,7 @@ class RailSegments(
     """
 
 
-class Air(
-    TravelProductGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Air(TravelProductGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Air"""
 
     departure_time: datetime = None
@@ -1815,9 +1728,7 @@ class Air(
 
 
 class Cruise(
-    TravelProductGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    TravelProductGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model Cruise"""
 
@@ -1844,11 +1755,7 @@ class Cruise(
     type: Literal["CRUISE"] = "CRUISE"
 
 
-class Car(
-    TravelProductGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Car(TravelProductGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Car"""
 
     pick_up_location: constr(max_length=200) = None
@@ -1871,9 +1778,7 @@ class Car(
 
 
 class Hotel(
-    TravelProductGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    TravelProductGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model Hotel"""
 
@@ -1905,11 +1810,7 @@ class Hotel(
     type: Literal["HOTEL"] = "HOTEL"
 
 
-class PaymentOutcome(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class PaymentOutcome(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model PaymentOutcome"""
 
     status: Optional[PaymentStatus] = None
@@ -1924,20 +1825,14 @@ class PaymentOutcome(
 
 
 class Insurance(
-    TravelProductGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    TravelProductGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model Insurance"""
 
     type: Literal["INSURANCE"] = "INSURANCE"
 
 
-class Telephone(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Telephone(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Telephone: Group of attributes intended to hold information about phone number associated with the transaction.  A user can have one to many phone numbers (home, work, mobile, etc.)."""
 
     type: Optional[TelephoneType] = None
@@ -1973,9 +1868,7 @@ class Telephone(
 
 
 class MultiFactorAuthenticationAttempt(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model MultiFactorAuthenticationAttempt: Information specific to the update event by a user."""
 
@@ -2019,9 +1912,7 @@ class MultiFactorAuthenticationAttempt(
 
 
 class RemediationUpdate(
-    AccountUpdateRequestGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountUpdateRequestGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model RemediationUpdate: Information specific to remediation actions initiated by the Partner's system to a user as a result of a fraud recommendation."""
 
@@ -2033,9 +1924,7 @@ class RemediationUpdate(
 
 
 class AccountScreenResponse(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountScreenResponse: Response for an account transaction provided by Expedia's Fraud Prevention Service."""
 
@@ -2047,9 +1936,7 @@ class AccountScreenResponse(
 
 
 class AccountTakeoverCustomerAccount(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountTakeoverCustomerAccount: Information about a user's account."""
 
@@ -2098,9 +1985,7 @@ class AccountTakeoverCustomerAccount(
 
 
 class CurrentUserSession(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model CurrentUserSession: The current user session prior to this transaction, which contains details related to any challenge initiated by the Partner''s system to a user before calling Expedia''s Fraud Prevention Service.
     An example is if the Partner''s system sent a Captcha challenge to the user before calling Expedia''s Fraud Prevention Service.
@@ -2120,8 +2005,9 @@ class CurrentUserSession(
 
 class ChargebackFeedback(
     OrderPurchaseUpdateRequestGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    smart_union=PydanticModelConfig.SMART_UNION,
+    extra=PydanticModelConfig.EXTRA,
+    json_encoders=PydanticModelConfig.JSON_ENCODERS,
 ):
     r"""pydantic model ChargebackFeedback: Feedback from EG external partners if they receive a chargeback for a false negative recommendation from Fraud Prevention system."""
 
@@ -2130,9 +2016,7 @@ class ChargebackFeedback(
 
 
 class IssuedRefundUpdate(
-    RefundUpdateGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    RefundUpdateGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model IssuedRefundUpdate: Data related to the issued refund that should be updated."""
 
@@ -2147,9 +2031,7 @@ class IssuedRefundUpdate(
 
 
 class SettledRefundUpdate(
-    RefundUpdateGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    RefundUpdateGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model SettledRefundUpdate: Data related to the settled refund that should be updated."""
 
@@ -2163,11 +2045,7 @@ class SettledRefundUpdate(
     """
 
 
-class CustomerAccount(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class CustomerAccount(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model CustomerAccount"""
 
     user_id: Optional[str] = None
@@ -2196,11 +2074,7 @@ class CustomerAccount(
     """
 
 
-class Traveler(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Traveler(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Traveler"""
 
     traveler_name: Name = None
@@ -2231,11 +2105,7 @@ class Traveler(
     """
 
 
-class Rail(
-    TravelProductGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Rail(TravelProductGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Rail"""
 
     route_type: RouteType = None
@@ -2251,9 +2121,7 @@ class Rail(
 
 
 class PaymentOperation(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model PaymentOperation"""
 
@@ -2263,9 +2131,7 @@ class PaymentOperation(
 
 
 class MultiFactorAuthenticationUpdate(
-    AccountUpdateRequestGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    AccountUpdateRequestGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model MultiFactorAuthenticationUpdate: Information specific to a user's response to a Multi-Factor Authentication initiated by the Partner's system as a result of a fraud recommendation."""
 
@@ -2277,9 +2143,7 @@ class MultiFactorAuthenticationUpdate(
 
 
 class AccountTakeoverTransactionDetailsGeneric(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountTakeoverTransactionDetails: The `transaction_type` field value is used as a discriminator, with the following mapping:
     * `LOGIN`: `LoginTransactionDetails`
@@ -2303,8 +2167,9 @@ class AccountTakeoverTransactionDetailsGeneric(
 
 class LoginTransactionDetails(
     AccountTakeoverTransactionDetailsGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    smart_union=PydanticModelConfig.SMART_UNION,
+    extra=PydanticModelConfig.EXTRA,
+    json_encoders=PydanticModelConfig.JSON_ENCODERS,
 ):
     r"""pydantic model LoginTransactionDetails"""
 
@@ -2363,20 +2228,14 @@ class LoginTransactionDetails(
     """
 
 
-class Verify(
-    PaymentOperation,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Verify(PaymentOperation, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Verify: A verify operation represents the intent to verify the payment associated with this transaction."""
 
     type: Optional[VerificationType] = None
 
 
 class Authorize(
-    PaymentOperation,
-    smart_union=True,
-    extra=Extra.forbid,
+    PaymentOperation, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model Authorize: Authorize operation on the payment. An authorize operation represents placing the funds on hold with the specified form of payment."""
 
@@ -2384,39 +2243,27 @@ class Authorize(
 
 
 class AuthorizeReversal(
-    PaymentOperation,
-    smart_union=True,
-    extra=Extra.forbid,
+    PaymentOperation, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AuthorizeReversal: Authorize Reversal operation on the payment. An authorize reversal operation represents a notification received usually from a 3rd party payment processor to indicate that an authorization hold should be released as a result of a sale being partially or completely cancelled."""
 
     pass
 
 
-class Capture(
-    PaymentOperation,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Capture(PaymentOperation, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Capture: Capture operation on the payment. A capture operation represents a notification received usually from a 3rd party payment processor to indicate that the funds placed on hold will be captured and the funds transfer process will occur from the customer's funds to the merchant's funds."""
 
     pass
 
 
-class Refund(
-    PaymentOperation,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Refund(PaymentOperation, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Refund: Refund operation on the payment. A refund operation represents the intent to refund a previous charge."""
 
     pass
 
 
 class AccountTransaction(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountTransaction: Information for an account transaction."""
 
@@ -2426,11 +2273,7 @@ class AccountTransaction(
     transaction_details: AccountTakeoverTransactionDetails = None
 
 
-class Operations(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Operations(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Operations: All operations related to a payment throughout its lifespan. An operation represents an event external to Fraud Prevention Service that specifies to perform a payment operation. Possible operation types include:
 
     - `Verify`
@@ -2453,20 +2296,14 @@ class Operations(
 
 
 class AccountScreenRequest(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model AccountScreenRequest: Information for account screening by Expedia's Fraud Prevention Service."""
 
     transaction: AccountTransaction = None
 
 
-class PaymentGeneric(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class PaymentGeneric(BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Payment: The `method` field value is used as a discriminator, with the following mapping:
     * `CREDIT_CARD`: `CreditCard`
     * `PAYPAL`: `PayPal`
@@ -2549,6 +2386,7 @@ class PaymentGeneric(
     'brand' with 'DirectDebit' payment_type is an enum value with following:
     * `ELV`
     * `INTER_COMPANY`
+    * `SEPA_ELV`
 
     """
     method: PaymentMethod = None
@@ -2565,20 +2403,20 @@ class PaymentGeneric(
     operations: Optional[Operations] = None
 
 
-class CreditCard(
-    PaymentGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class CreditCard(PaymentGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model CreditCard"""
 
-    def dict(self, **kwargs):
-        omitted_fields = ["card_number", "card_cvv_response", "card_avs_response"]
+    @validator("card_number")
+    def __card_number_validator(cls, card_number):
+        return SecretStr(str(card_number))
 
-        dictionary = super().dict(**kwargs)
-        dictionary.update([(attribute, "<-- omitted -->") for attribute in omitted_fields])
+    @validator("card_cvv_response")
+    def __card_cvv_response_validator(cls, card_cvv_response):
+        return SecretStr(str(card_cvv_response))
 
-        return dictionary
+    @validator("card_avs_response")
+    def __card_avs_response_validator(cls, card_avs_response):
+        return SecretStr(str(card_avs_response))
 
     card_type: CardType = None
     """
@@ -2660,11 +2498,7 @@ class CreditCard(
     method: Literal["CREDIT_CARD"] = "CREDIT_CARD"
 
 
-class PayPal(
-    PaymentGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class PayPal(PaymentGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model PayPal"""
 
     payer_id: constr(max_length=200) = None
@@ -2682,11 +2516,7 @@ class PayPal(
     method: Literal["PAYPAL"] = "PAYPAL"
 
 
-class Points(
-    PaymentGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class Points(PaymentGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model Points"""
 
     account_id: constr(max_length=200) = None
@@ -2696,20 +2526,12 @@ class Points(
     method: Literal["POINTS"] = "POINTS"
 
 
-class GiftCard(
-    PaymentGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
-):
+class GiftCard(PaymentGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS):
     r"""pydantic model GiftCard"""
 
-    def dict(self, **kwargs):
-        omitted_fields = ["pin"]
-
-        dictionary = super().dict(**kwargs)
-        dictionary.update([(attribute, "<-- omitted -->") for attribute in omitted_fields])
-
-        return dictionary
+    @validator("pin")
+    def __pin_validator(cls, pin):
+        return SecretStr(str(pin))
 
     card_number: constr(regex=r"^[0-9A-Za-z]{4,16}$", max_length=16) = Field(..., example="123456ABCDabcd")
     """
@@ -2727,9 +2549,7 @@ class GiftCard(
 
 
 class InternetBankPayment(
-    PaymentGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    PaymentGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model InternetBankPayment"""
 
@@ -2749,27 +2569,30 @@ class InternetBankPayment(
 
 
 class DirectDebit(
-    PaymentGeneric,
-    smart_union=True,
-    extra=Extra.forbid,
+    PaymentGeneric, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model DirectDebit"""
 
-    def dict(self, **kwargs):
-        omitted_fields = ["account_number"]
+    @validator("account_number")
+    def __account_number_validator(cls, account_number):
+        return SecretStr(str(account_number))
 
-        dictionary = super().dict(**kwargs)
-        dictionary.update([(attribute, "<-- omitted -->") for attribute in omitted_fields])
-
-        return dictionary
-
-    routing_number: constr(max_length=15) = Field(..., example="100000000")
+    routing_number: Optional[constr(max_length=15)] = Field(None, example="100000000")
     """
-    A code that identifies the financial institution for a specific bank account.
+    A code that identifies the financial institution for a specific bank account. `routing_number` is required if given `INTER_COMPANY` or `ELV` as `brand`.
     """
     account_number: constr(max_length=100) = None
     """
     Cleartext (unencrypted) DirectDebit bank account number associated with the payment instrument.
+    """
+    mandate_type: Optional[MandateType] = None
+    """
+    The `mandate_type` is required if given `brand` as `SEPA_ELV` under `DirectDebit`. 
+    It is used for the wire transfer or direct debit transaction whose `routing_number` could not be provided or not supported.  
+    Allows values: 
+    - `ONE_OFF` 
+    - `RECURRING`
+
     """
     telephones: list[Telephone] = Field(..., maxItems=20, minItems=1)
     """
@@ -2779,9 +2602,7 @@ class DirectDebit(
 
 
 class TransactionDetails(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model TransactionDetails"""
 
@@ -2817,9 +2638,7 @@ class TransactionDetails(
 
 
 class OrderPurchaseTransaction(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model OrderPurchaseTransaction"""
 
@@ -2830,9 +2649,7 @@ class OrderPurchaseTransaction(
 
 
 class OrderPurchaseScreenRequest(
-    BaseModel,
-    smart_union=True,
-    extra=Extra.forbid,
+    BaseModel, smart_union=PydanticModelConfig.SMART_UNION, extra=PydanticModelConfig.EXTRA, json_encoders=PydanticModelConfig.JSON_ENCODERS
 ):
     r"""pydantic model OrderPurchaseScreenRequest"""
 
@@ -3110,53 +2927,8 @@ OrderPurchaseTransaction.update_forward_refs()
 OrderPurchaseScreenRequest.update_forward_refs()
 
 
-class ExpediaGroupServiceUnavailableErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a ServiceUnavailableError object."""
-    pass
-
-
-class ExpediaGroupRetryableOrderPurchaseScreenFailureException(ExpediaGroupApiException):
-    r"""Exception wrapping a RetryableOrderPurchaseScreenFailure object."""
-    pass
-
-
-class ExpediaGroupOrderPurchaseUpdateNotFoundErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a OrderPurchaseUpdateNotFoundError object."""
-    pass
-
-
-class ExpediaGroupAccountTakeoverBadRequestErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a AccountTakeoverBadRequestError object."""
-    pass
-
-
-class ExpediaGroupTooManyRequestsErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a TooManyRequestsError object."""
-    pass
-
-
-class ExpediaGroupRetryableOrderPurchaseUpdateFailureException(ExpediaGroupApiException):
-    r"""Exception wrapping a RetryableOrderPurchaseUpdateFailure object."""
-    pass
-
-
-class ExpediaGroupGatewayTimeoutErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a GatewayTimeoutError object."""
-    pass
-
-
-class ExpediaGroupInternalServerErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a InternalServerError object."""
-    pass
-
-
-class ExpediaGroupBadGatewayErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a BadGatewayError object."""
-    pass
-
-
-class ExpediaGroupAccountUpdateNotFoundErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a AccountUpdateNotFoundError object."""
+class ExpediaGroupNotFoundErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a NotFoundError object."""
     pass
 
 
@@ -3165,18 +2937,18 @@ class ExpediaGroupBadRequestErrorException(ExpediaGroupApiException):
     pass
 
 
-class ExpediaGroupAccountTakeoverUnauthorizedErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a AccountTakeoverUnauthorizedError object."""
+class ExpediaGroupBadGatewayErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a BadGatewayError object."""
     pass
 
 
-class ExpediaGroupNotFoundErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a NotFoundError object."""
+class ExpediaGroupRetryableOrderPurchaseScreenFailureException(ExpediaGroupApiException):
+    r"""Exception wrapping a RetryableOrderPurchaseScreenFailure object."""
     pass
 
 
-class ExpediaGroupUnauthorizedErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a UnauthorizedError object."""
+class ExpediaGroupTooManyRequestsErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a TooManyRequestsError object."""
     pass
 
 
@@ -3185,76 +2957,49 @@ class ExpediaGroupForbiddenErrorException(ExpediaGroupApiException):
     pass
 
 
-@dataclass
-class ServiceUnavailableErrorDeserializationContract:
-    exception: type = ExpediaGroupServiceUnavailableErrorException
-    model: type = ServiceUnavailableError
+class ExpediaGroupUnauthorizedErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a UnauthorizedError object."""
+    pass
 
 
-@dataclass
-class RetryableOrderPurchaseScreenFailureDeserializationContract:
-    exception: type = ExpediaGroupRetryableOrderPurchaseScreenFailureException
-    model: type = RetryableOrderPurchaseScreenFailure
+class ExpediaGroupServiceUnavailableErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a ServiceUnavailableError object."""
+    pass
 
 
-@dataclass
-class OrderPurchaseUpdateNotFoundErrorDeserializationContract:
-    exception: type = ExpediaGroupOrderPurchaseUpdateNotFoundErrorException
-    model: type = OrderPurchaseUpdateNotFoundError
+class ExpediaGroupOrderPurchaseUpdateNotFoundErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a OrderPurchaseUpdateNotFoundError object."""
+    pass
 
 
-@dataclass
-class AccountTakeoverBadRequestErrorDeserializationContract:
-    exception: type = ExpediaGroupAccountTakeoverBadRequestErrorException
-    model: type = AccountTakeoverBadRequestError
+class ExpediaGroupAccountUpdateNotFoundErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a AccountUpdateNotFoundError object."""
+    pass
 
 
-@dataclass
-class TooManyRequestsErrorDeserializationContract:
-    exception: type = ExpediaGroupTooManyRequestsErrorException
-    model: type = TooManyRequestsError
+class ExpediaGroupGatewayTimeoutErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a GatewayTimeoutError object."""
+    pass
 
 
-@dataclass
-class RetryableOrderPurchaseUpdateFailureDeserializationContract:
-    exception: type = ExpediaGroupRetryableOrderPurchaseUpdateFailureException
-    model: type = RetryableOrderPurchaseUpdateFailure
+class ExpediaGroupRetryableOrderPurchaseUpdateFailureException(ExpediaGroupApiException):
+    r"""Exception wrapping a RetryableOrderPurchaseUpdateFailure object."""
+    pass
 
 
-@dataclass
-class GatewayTimeoutErrorDeserializationContract:
-    exception: type = ExpediaGroupGatewayTimeoutErrorException
-    model: type = GatewayTimeoutError
+class ExpediaGroupInternalServerErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a InternalServerError object."""
+    pass
 
 
-@dataclass
-class InternalServerErrorDeserializationContract:
-    exception: type = ExpediaGroupInternalServerErrorException
-    model: type = InternalServerError
+class ExpediaGroupAccountTakeoverUnauthorizedErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a AccountTakeoverUnauthorizedError object."""
+    pass
 
 
-@dataclass
-class BadGatewayErrorDeserializationContract:
-    exception: type = ExpediaGroupBadGatewayErrorException
-    model: type = BadGatewayError
-
-
-@dataclass
-class AccountUpdateNotFoundErrorDeserializationContract:
-    exception: type = ExpediaGroupAccountUpdateNotFoundErrorException
-    model: type = AccountUpdateNotFoundError
-
-
-@dataclass
-class BadRequestErrorDeserializationContract:
-    exception: type = ExpediaGroupBadRequestErrorException
-    model: type = BadRequestError
-
-
-@dataclass
-class AccountTakeoverUnauthorizedErrorDeserializationContract:
-    exception: type = ExpediaGroupAccountTakeoverUnauthorizedErrorException
-    model: type = AccountTakeoverUnauthorizedError
+class ExpediaGroupAccountTakeoverBadRequestErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a AccountTakeoverBadRequestError object."""
+    pass
 
 
 @dataclass
@@ -3264,12 +3009,84 @@ class NotFoundErrorDeserializationContract:
 
 
 @dataclass
-class UnauthorizedErrorDeserializationContract:
-    exception: type = ExpediaGroupUnauthorizedErrorException
-    model: type = UnauthorizedError
+class BadRequestErrorDeserializationContract:
+    exception: type = ExpediaGroupBadRequestErrorException
+    model: type = BadRequestError
+
+
+@dataclass
+class BadGatewayErrorDeserializationContract:
+    exception: type = ExpediaGroupBadGatewayErrorException
+    model: type = BadGatewayError
+
+
+@dataclass
+class RetryableOrderPurchaseScreenFailureDeserializationContract:
+    exception: type = ExpediaGroupRetryableOrderPurchaseScreenFailureException
+    model: type = RetryableOrderPurchaseScreenFailure
+
+
+@dataclass
+class TooManyRequestsErrorDeserializationContract:
+    exception: type = ExpediaGroupTooManyRequestsErrorException
+    model: type = TooManyRequestsError
 
 
 @dataclass
 class ForbiddenErrorDeserializationContract:
     exception: type = ExpediaGroupForbiddenErrorException
     model: type = ForbiddenError
+
+
+@dataclass
+class UnauthorizedErrorDeserializationContract:
+    exception: type = ExpediaGroupUnauthorizedErrorException
+    model: type = UnauthorizedError
+
+
+@dataclass
+class ServiceUnavailableErrorDeserializationContract:
+    exception: type = ExpediaGroupServiceUnavailableErrorException
+    model: type = ServiceUnavailableError
+
+
+@dataclass
+class OrderPurchaseUpdateNotFoundErrorDeserializationContract:
+    exception: type = ExpediaGroupOrderPurchaseUpdateNotFoundErrorException
+    model: type = OrderPurchaseUpdateNotFoundError
+
+
+@dataclass
+class AccountUpdateNotFoundErrorDeserializationContract:
+    exception: type = ExpediaGroupAccountUpdateNotFoundErrorException
+    model: type = AccountUpdateNotFoundError
+
+
+@dataclass
+class GatewayTimeoutErrorDeserializationContract:
+    exception: type = ExpediaGroupGatewayTimeoutErrorException
+    model: type = GatewayTimeoutError
+
+
+@dataclass
+class RetryableOrderPurchaseUpdateFailureDeserializationContract:
+    exception: type = ExpediaGroupRetryableOrderPurchaseUpdateFailureException
+    model: type = RetryableOrderPurchaseUpdateFailure
+
+
+@dataclass
+class InternalServerErrorDeserializationContract:
+    exception: type = ExpediaGroupInternalServerErrorException
+    model: type = InternalServerError
+
+
+@dataclass
+class AccountTakeoverUnauthorizedErrorDeserializationContract:
+    exception: type = ExpediaGroupAccountTakeoverUnauthorizedErrorException
+    model: type = AccountTakeoverUnauthorizedError
+
+
+@dataclass
+class AccountTakeoverBadRequestErrorDeserializationContract:
+    exception: type = ExpediaGroupAccountTakeoverBadRequestErrorException
+    model: type = AccountTakeoverBadRequestError

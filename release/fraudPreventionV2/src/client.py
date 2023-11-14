@@ -78,7 +78,7 @@ class FraudPreventionV2Client:
         """
         python_version = platform.python_version()
         os_name, os_version, *_ = platform.platform().split("-")
-        sdk_metadata = "expediagroup-fraudpreventionv2-python-sdk/3.0.0"
+        sdk_metadata = "expediagroup-fraudpreventionv2-python-sdk/3.1.0"
 
         self.__api_client = ApiClient(client_config, _ExpediaGroupAuthClient)
 
