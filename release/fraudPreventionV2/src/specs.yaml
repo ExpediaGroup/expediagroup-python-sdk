@@ -8,10 +8,7 @@ info:
     email: RiskTechVerge@expedia.com
   x-eg-lifecycle: PLANNED
 servers:
-  - url: https://api.expediagroup.com/fraud-prevention/v2
   - url: https://api.sandbox.expediagroup.com/fraud-prevention/v2
-  - url: https://test-api.expediagroup.com/fraud-prevention/v2
-  - url: https://test-api.sandbox.expediagroup.com/fraud-prevention/v2
 tags:
   - name: fraudPreventionV2
 paths:
@@ -1864,6 +1861,8 @@ components:
             * `ELV`
 
             * `INTER_COMPANY`
+
+            * `SEPA_ELV`
           type: string
           enum:
             - AMERICAN_EXPRESS
@@ -1917,6 +1916,7 @@ components:
             - BITCOIN
             - ELV
             - INTER_COMPANY
+            - SEPA_ELV
         method:
           $ref: "#/components/schemas/PaymentMethod"
         reason:
@@ -2378,13 +2378,13 @@ components:
         - type: object
           required:
             - method
-            - routing_number
             - account_number
             - telephones
           properties:
             routing_number:
               description: A code that identifies the financial institution for a specific
-                bank account.
+                bank account. `routing_number` is required if given
+                `INTER_COMPANY` or `ELV` as `brand`.
               type: string
               maxLength: 15
               example: "100000000"
@@ -2393,6 +2393,22 @@ components:
                 with the payment instrument.
               type: string
               maxLength: 100
+            mandate_type:
+              description: >
+                The `mandate_type` is required if given `brand` as `SEPA_ELV`
+                under `DirectDebit`. 
+
+                It is used for the wire transfer or direct debit transaction whose `routing_number` could not be provided or not supported.  
+
+                Allows values: 
+
+                - `ONE_OFF` 
+
+                - `RECURRING`
+              type: string
+              enum:
+                - ONE_OFF
+                - RECURRING
             telephones:
               description: Telephone(s) associated with direct debit payment provider.
               type: array
