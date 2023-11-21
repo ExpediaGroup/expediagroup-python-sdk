@@ -1944,6 +1944,11 @@ components:
           $ref: "#/components/schemas/PaymentThreeDSCriteria"
         operations:
           $ref: "#/components/schemas/Operations"
+        extensions:
+          type: object
+          additionalProperties:
+            type: string
+          description: A key-value pair map to hold additional attributes.
     PaymentThreeDSCriteria:
       title: PaymentThreeDSCriteria
       description: Payment ThreeDS criteria attributes.
