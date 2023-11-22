@@ -1,1 +1,0 @@
-{{#unless required}}Optional[{{/unless}}{{#if (eq format "double")}}Union[{{/if}}{{#if (eq type "number")}}Union[{{/if}}{{#if (eq datatype "int, float")}}Union[{{/if}}{{#if isArray}}List{{/if}}{{{datatype}}}{{#if (eq format "double")}}]{{/if}}{{#if (eq type "number")}}]{{/if}}{{#if (eq datatype "int, float")}}]{{/if}}{{#unless required}}]{{/unless}}
