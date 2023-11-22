@@ -15,10 +15,9 @@ from pathlib import Path
 from typing import Optional
 
 import typer
+from generator import ExpediaGroupDocumentationGenerator
 from pydoc_markdown.contrib.loaders.python import PythonLoader
 from pydoc_markdown.interfaces import Context
-
-from generator import ExpediaGroupDocumentationGenerator
 
 app = typer.Typer()
 
