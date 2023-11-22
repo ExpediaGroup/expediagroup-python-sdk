@@ -10,7 +10,7 @@ count = True
 pep585-activation = always
 
 per-file-ignores =
-    release/*: BLK100, E501, F722, W391, W505
+    release/*: BLK100, E501, F722, W391, W505, W291
 
 ignore =
     B008
