@@ -44,7 +44,7 @@ jobs:
       - name: Format Code
         run: |
           pip3 install -r requirements-dev.txt
-          sudo docformatter --recursive --black --in-place --close-quotes-on-newline --config pyproject.toml release
+          docformatter --recursive --in-place --close-quotes-on-newline --config pyproject.toml release
           isort release
           black release
       - name: Create PR
