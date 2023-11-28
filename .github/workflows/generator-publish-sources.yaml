@@ -44,9 +44,9 @@ jobs:
       - name: Format Code
         run: |
           pip3 install -r requirements-dev.txt
-          docformatter --recursive --black --in-place --close-quotes-on-newline release
           isort release
           black release
+          docformatter --recursive --black --in-place --close-quotes-on-newline release
       - name: Create PR
         uses: peter-evans/create-pull-request@v5
         with:
