@@ -43,7 +43,6 @@ jobs:
           find ./ -name \*.yaml -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/src/ \;
       - name: Format Code
         run: |
-          sudo pip3 install --upgrade pip
           sudo pip3 install -r requirements-dev.txt
 
           sudo python3 -m docformatter --recursive --black --in-place --close-quotes-on-newline release
