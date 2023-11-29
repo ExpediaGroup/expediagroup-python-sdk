@@ -13,13 +13,8 @@
 # limitations under the License.
 name: Quality Checks
 on:
-  workflow_run:
-    workflows: ["Do Lint"]
-    types: [completed]
-    branches:
-      - '*'
-      - '*/*'
-      - '**'
+  repository_dispatch:
+    types: [lint-completed]
 jobs:
   flake8-lint:
     runs-on: ubuntu-latest

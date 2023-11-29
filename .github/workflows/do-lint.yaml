@@ -38,3 +38,14 @@ jobs:
           black .
           docformatter --check --config pyproject.toml . || true
           docformatter --in-place --config pyproject.toml . || true
+  dispatch:
+    runs-on: ubuntu-latest
+    name: Dispatch Completion Event
+    outputs:
+      workflow_run_id: ${{ github.run_id }}
+    steps:
+      - name: Dispatch Completion Event
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: lint-completed
