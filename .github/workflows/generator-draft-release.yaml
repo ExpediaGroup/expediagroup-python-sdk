@@ -1,0 +1,17 @@
+name: Publish Release
+on:
+  workflow_call:
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.18.2
+      - name: Install dependencies
+        run: npm install
+      - name: Create draft release
+        run: npx semantic-release
