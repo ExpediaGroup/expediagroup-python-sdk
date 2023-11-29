@@ -46,7 +46,8 @@ jobs:
           pip3 install -r requirements-dev.txt
           isort release
           black release
-          docformatter --recursive --black --in-place --close-quotes-on-newline release
+          docformatter --check --config pyproject.toml release || true
+          docformatter --in-place --config pyproject.toml release || true
       - name: Create PR
         uses: peter-evans/create-pull-request@v5
         with:

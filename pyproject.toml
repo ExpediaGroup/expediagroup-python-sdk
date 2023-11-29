@@ -4,3 +4,10 @@ line-length = 160
 [tool.isort]
 profile = "black"
 multi_line_output = 1
+
+[tool.docformatter]
+recursive = true
+black = true
+close-quotes-on-newline = true
+blank = true
+pre-summary-newline = true
