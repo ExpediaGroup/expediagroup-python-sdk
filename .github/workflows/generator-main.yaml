@@ -69,3 +69,7 @@ jobs:
     secrets: inherit
     with:
       production_release: ${{ github.event.inputs.production_release == 'true' }}
+
+  draft_release:
+    needs: [ generate_sdk ]
+    uses: ./.github/workflows/generator-draft-release.yaml
