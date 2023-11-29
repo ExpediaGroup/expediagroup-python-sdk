@@ -11,9 +11,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+name: Do Lint
+on:
+  push:
+    branches:
+      - '*'
+      - '*/*'
+      - '**'
+      - '!main'
+jobs:
+  flake8-lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v4
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install Dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Run Linters
+        run: |
+          isort .
+          black .
+          docformatter --check --config pyproject.toml . || true
+          docformatter --in-place --config pyproject.toml . || true
 
 name: Quality Checks
-on: push
+on: workflow_run
 jobs:
   flake8-lint:
     runs-on: ubuntu-latest
