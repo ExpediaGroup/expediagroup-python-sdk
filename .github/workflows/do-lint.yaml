@@ -20,7 +20,7 @@ on:
       - '*/*'
       - '**'
 jobs:
-  flake8-lint:
+  lint:
     runs-on: ubuntu-latest
     name: Lint
     steps:
@@ -41,6 +41,7 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     name: Dispatch Completion Event
+    needs: [lint]
     outputs:
       workflow_run_id: ${{ github.run_id }}
     steps:
