@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 name: Quality Checks
-on:
-  push: {}
-  pull_request: {}
+on: push
 jobs:
   flake8-lint:
     name: Lint Validation
