@@ -36,7 +36,7 @@ from .model import (
     AccountTakeoverUnauthorizedErrorDeserializationContract,
     AccountUpdateNotFoundError,
     AccountUpdateNotFoundErrorDeserializationContract,
-    AccountUpdateRequest,
+    AccountUpdatePostRequest,
     AccountUpdateResponse,
     BadGatewayError,
     BadGatewayErrorDeserializationContract,
@@ -54,7 +54,7 @@ from .model import (
     OrderPurchaseScreenResponse,
     OrderPurchaseUpdateNotFoundError,
     OrderPurchaseUpdateNotFoundErrorDeserializationContract,
-    OrderPurchaseUpdateRequest,
+    OrderPurchaseUpdatePostRequest,
     OrderPurchaseUpdateResponse,
     RetryableOrderPurchaseScreenFailure,
     RetryableOrderPurchaseScreenFailureDeserializationContract,
@@ -78,7 +78,7 @@ class FraudPreventionV2Client:
         """
         python_version = platform.python_version()
         os_name, os_version, *_ = platform.platform().split("-")
-        sdk_metadata = "expediagroup-fraudpreventionv2-python-sdk/3.2.0"
+        sdk_metadata = "expediagroup-fraudpreventionv2-python-sdk/1.0.0"
 
         self.__api_client = ApiClient(client_config, _ExpediaGroupAuthClient)
 
@@ -98,13 +98,9 @@ class FraudPreventionV2Client:
         ServiceUnavailableError,
         GatewayTimeoutError,
     ]:
-        r"""The Account Screen API gives a Fraud recommendation for an account
-        transaction.
-
-        A recommendation can be ACCEPT, CHALLENGE, or REJECT. A transaction is marked as CHALLENGE whenever there are insufficient signals to recommend ACCEPT or REJECT. These CHALLENGE incidents are manually reviewed, and a corrected recommendation is made asynchronously.
+        r"""The Account Screen API gives a Fraud recommendation for an account transaction. A recommendation can be ACCEPT, CHALLENGE, or REJECT. A transaction is marked as CHALLENGE whenever there are insufficient signals to recommend ACCEPT or REJECT. These CHALLENGE incidents are manually reviewed, and a corrected recommendation is made asynchronously.
         Args:
-           body(AccountScreenRequest): ...
-        """
+           body(AccountScreenRequest): ..."""
         headers = {
             header.TRANSACTION_ID: transaction_id,
             header.USER_AGENT: self.__user_agent,
@@ -113,7 +109,7 @@ class FraudPreventionV2Client:
         query = {key: value for key, value in {}.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
-        request_url /= "/fraud-prevention/v2/account/screen"
+        request_url /= "/account/screen"
         request_url.query.set(query)
         request_url.path.normalize()
 
@@ -150,7 +146,7 @@ class FraudPreventionV2Client:
         )
 
     def notify_with_account_update(
-        self, transaction_id: UUID = uuid4(), body: AccountUpdateRequest = None
+        self, transaction_id: UUID = uuid4(), body: AccountUpdatePostRequest = None
     ) -> Union[
         AccountUpdateResponse,
         AccountTakeoverBadRequestError,
@@ -163,13 +159,9 @@ class FraudPreventionV2Client:
         ServiceUnavailableError,
         GatewayTimeoutError,
     ]:
-        r"""The Account Update API is called when there is an account lifecycle
-        transition such as a challenge outcome, account restoration, or remediation
-        action completion.
-
-        For example, if a user's account is disabled, deleted, or restored, the Account Update API is called to notify Expedia Group about the change. The Account Update API is also called when a user responds to a login Multi-Factor Authentication based on a Fraud recommendation.
+        r"""The Account Update API is called when there is an account lifecycle transition such as a challenge outcome, account restoration, or remediation action completion. For example, if a user's account is disabled, deleted, or restored, the Account Update API is called to notify Expedia Group about the change. The Account Update API is also called when a user responds to a login Multi-Factor Authentication based on a Fraud recommendation.
         Args:
-           body(AccountUpdateRequest): An AccountUpdate request may be of one of the following types `MULTI_FACTOR_AUTHENTICATION_UPDATE`, `REMEDIATION_UPDATE`.
+           body(AccountUpdatePostRequest): An AccountUpdate request may be of one of the following types `MULTI_FACTOR_AUTHENTICATION_UPDATE`, `REMEDIATION_UPDATE`.
         """
         headers = {
             header.TRANSACTION_ID: transaction_id,
@@ -179,7 +171,7 @@ class FraudPreventionV2Client:
         query = {key: value for key, value in {}.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
-        request_url /= "/fraud-prevention/v2/account/update"
+        request_url /= "/account/update"
         request_url.query.set(query)
         request_url.path.normalize()
 
@@ -229,12 +221,9 @@ class FraudPreventionV2Client:
         RetryableOrderPurchaseScreenFailure,
         GatewayTimeoutError,
     ]:
-        r"""The Order Purchase API gives a Fraud recommendation for a transaction.
-
-        A recommendation can be Accept, Reject, or Review. A transaction is marked as Review whenever there are insufficient signals to recommend Accept or Reject. These incidents are manually reviewed, and a corrected recommendation is made asynchronously.
+        r"""The Order Purchase API gives a Fraud recommendation for a transaction. A recommendation can be Accept, Reject, or Review. A transaction is marked as Review whenever there are insufficient signals to recommend Accept or Reject. These incidents are manually reviewed, and a corrected recommendation is made asynchronously.
         Args:
-           body(OrderPurchaseScreenRequest): ...
-        """
+           body(OrderPurchaseScreenRequest): ..."""
         headers = {
             header.TRANSACTION_ID: transaction_id,
             header.USER_AGENT: self.__user_agent,
@@ -243,7 +232,7 @@ class FraudPreventionV2Client:
         query = {key: value for key, value in {}.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
-        request_url /= "/fraud-prevention/v2/order/purchase/screen"
+        request_url /= "/order/purchase/screen"
         request_url.query.set(query)
         request_url.path.normalize()
 
@@ -280,7 +269,7 @@ class FraudPreventionV2Client:
         )
 
     def notify_with_order_update(
-        self, transaction_id: UUID = uuid4(), body: OrderPurchaseUpdateRequest = None
+        self, transaction_id: UUID = uuid4(), body: OrderPurchaseUpdatePostRequest = None
     ) -> Union[
         OrderPurchaseUpdateResponse,
         BadRequestError,
@@ -293,15 +282,14 @@ class FraudPreventionV2Client:
         RetryableOrderPurchaseUpdateFailure,
         GatewayTimeoutError,
     ]:
-        r"""The Order Purchase Update API is called when the status of the order has
-        changed.
+        r"""The Order Purchase Update API is called when the status of the order has changed.
 
         For example, if the customer cancels the reservation, changes reservation in any way, or adds additional products or travelers to the reservation, the Order Purchase Update API is called to notify Expedia Group about the change.
 
         The Order Purchase Update API is also called when the merchant cancels or changes an order based on a Fraud recommendation.
 
         Args:
-           body(OrderPurchaseUpdateRequest): An OrderPurchaseUpdate request may be of one of the following types `ORDER_UPDATE`, `CHARGEBACK_FEEDBACK`, `INSULT_FEEDBACK`, `REFUND_UPDATE`, `PAYMENT_UPDATE`.
+           body(OrderPurchaseUpdatePostRequest): An OrderPurchaseUpdate request may be of one of the following types `ORDER_UPDATE`, `CHARGEBACK_FEEDBACK`, `INSULT_FEEDBACK`, `REFUND_UPDATE`, `PAYMENT_UPDATE`.
         """
         headers = {
             header.TRANSACTION_ID: transaction_id,
@@ -311,7 +299,7 @@ class FraudPreventionV2Client:
         query = {key: value for key, value in {}.items() if value}
 
         request_url = furl(self.__api_client.endpoint)
-        request_url /= "/fraud-prevention/v2/order/purchase/update"
+        request_url /= "/order/purchase/update"
         request_url.query.set(query)
         request_url.path.normalize()
 
