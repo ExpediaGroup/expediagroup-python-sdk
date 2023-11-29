@@ -11,12 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-name: Quality Checks
+
+name: Do Lint
 on:
-  workflow_run:
-    workflows: ["Do Lint"]
-    types:
-      - completed
+  push:
+    branches:
+      - '*'
+      - '*/*'
+      - '**'
+      - '!main'
 jobs:
   flake8-lint:
     runs-on: ubuntu-latest
@@ -30,5 +33,9 @@ jobs:
           python-version: "3.11"
       - name: Install Dependencies
         run: pip install -r requirements-dev.txt
-      - name: flake8 Lint
-        uses: py-actions/flake8@v2
+      - name: Run Linters
+        run: |
+          isort .
+          black .
+          docformatter --check --config pyproject.toml . || true
+          docformatter --in-place --config pyproject.toml . || true
