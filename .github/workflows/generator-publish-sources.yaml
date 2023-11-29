@@ -41,11 +41,6 @@ jobs:
           cp -r ./docs ../../../../release/"${{github.event.inputs.name}}"/
           find ./ -name \*.py -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/src/ \;
           find ./ -name \*.yaml -exec cp {} ../../../../release/"${{github.event.inputs.name}}"/src/ \;
-      - name: Format Code
-        run: |
-          pip3 install -r requirements-dev.txt
-          isort release
-          black release
       - name: Create PR
         uses: peter-evans/create-pull-request@v5
         with:
