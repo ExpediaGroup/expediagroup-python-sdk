@@ -13,7 +13,12 @@
 # limitations under the License.
 
 name: Do Lint
-on: push
+on:
+  push:
+    branches:
+      - '*'
+      - '*/*'
+      - '**'
 jobs:
   flake8-lint:
     runs-on: ubuntu-latest

@@ -14,8 +14,12 @@
 name: Quality Checks
 on:
   workflow_run:
-    workflows: [Do Lint]
+    workflows: ["Do Lint"]
     types: [completed]
+    branches:
+      - '*'
+      - '*/*'
+      - '**'
 jobs:
   flake8-lint:
     runs-on: ubuntu-latest
