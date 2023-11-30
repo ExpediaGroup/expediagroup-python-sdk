@@ -56,7 +56,7 @@ class MockResponse:
         response.url = auth_constant.AUTH_ENDPOINT
         response.code = "ok"
         response.headers = dict()
-        response._content = json.dumps(HELLO_WORLD_OBJECT, default=pydantic.schema.pydantic_encoder).encode()
+        response._content = HELLO_WORLD_OBJECT.model_dump_json().encode()
         return response
 
     @staticmethod
@@ -65,5 +65,5 @@ class MockResponse:
         response.status_code = HTTPStatus.BAD_REQUEST
         response.url = auth_constant.AUTH_ENDPOINT
         response.code = "Bad Request"
-        response._content = json.dumps(ERROR_OBJECT, default=pydantic.schema.pydantic_encoder).encode()
+        response._content = ERROR_OBJECT.model_dump_json().encode()
         return response

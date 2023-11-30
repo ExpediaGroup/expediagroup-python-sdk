@@ -16,7 +16,7 @@ import datetime
 import logging
 from dataclasses import dataclass
 from multiprocessing import Lock
-from typing import Optional
+from typing import Optional, Union
 
 import pydantic.schema
 import requests
@@ -40,7 +40,7 @@ class _TokenResponse(pydantic.BaseModel):
     """A model of an API response."""
 
     access_token: str
-    expires_in: int
+    expires_in: Union[int, float]
     scope: str
     token_type: str
     id_token: Optional[str] = None
@@ -53,7 +53,7 @@ class Token:
 
         :param data: token data
         """
-        self.__token: _TokenResponse = _TokenResponse.parse_obj(data)
+        self.__token: _TokenResponse = _TokenResponse.model_validate(data)
         self.lock = Lock()
         self.__expiration_time = datetime.datetime.now() + datetime.timedelta(seconds=self.__token.expires_in)
         self.__auth_header = HttpBearerAuth(self.__token.access_token)

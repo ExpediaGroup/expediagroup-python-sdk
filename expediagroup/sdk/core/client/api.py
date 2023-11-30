@@ -11,23 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import enum
-import json
 import logging
-import uuid
+from copy import deepcopy
 from http import HTTPStatus
 from typing import Any, Optional
 
-import pydantic
-import pydantic.schema
 import requests
-from pydantic import BaseModel
+from pydantic import BaseModel, TypeAdapter
 
 from expediagroup.sdk.core.client.auth_client import AuthClient
 from expediagroup.sdk.core.configuration.client_config import ClientConfig
 from expediagroup.sdk.core.constant import header as header_constant
 from expediagroup.sdk.core.constant import log as log_constant
 from expediagroup.sdk.core.constant.constant import OK_STATUS_CODES_RANGE
+from expediagroup.sdk.core.model.api import RequestHeaders
 from expediagroup.sdk.core.model.error import Error
 from expediagroup.sdk.core.model.exception import service as service_exception
 from expediagroup.sdk.core.util import log as log_util
@@ -52,18 +49,18 @@ class ApiClient:
     @staticmethod
     def __build_response(
         response: requests.Response,
-        response_models: list[pydantic.BaseModel],
+        response_models: list[type],
         error_responses: dict[int, Any],
     ):
         if response.status_code not in OK_STATUS_CODES_RANGE:
             exception: service_exception.ExpediaGroupApiException
 
             if response.status_code in error_responses.keys():
-                error_object = pydantic.parse_obj_as(error_responses[response.status_code].model, response.json())
+                error_object = error_responses[response.status_code].model.model_validate(response.json())
                 exception = error_responses[response.status_code].exception.of(error=error_object, error_code=HTTPStatus(response.status_code))
             else:
                 exception = service_exception.ExpediaGroupApiException.of(
-                    error=Error.parse_obj(response.json()),
+                    error=Error.model_validate(response.json()),
                     error_code=HTTPStatus(response.status_code),
                 )
 
@@ -74,7 +71,7 @@ class ApiClient:
             if not model:
                 continue
             try:
-                response_object = pydantic.parse_obj_as(model, response.json())
+                response_object = TypeAdapter(model).validate_python(response.json())
                 return response_object
             except Exception:
                 continue
@@ -85,10 +82,10 @@ class ApiClient:
         self,
         method: str,
         url: str,
-        body: pydantic.BaseModel,
-        headers: dict = dict(),  # noqa
-        response_models: Optional[list[Any]] = [None],  # noqa
-        error_responses: dict[int, Any] = {},  # noqa
+        body: BaseModel,
+        headers: RequestHeaders = RequestHeaders(),  # noqa
+        response_models: Optional[list[Any]] = list(),  # noqa
+        error_responses: dict[int, Any] = dict(),  # noqa
     ) -> Any:
         r"""Sends HTTP request to API.
 
@@ -113,7 +110,7 @@ class ApiClient:
                 timeout=self.request_timeout,
             )
         else:
-            request_body = body.json(exclude_none=True)
+            request_body = body.model_dump_json(exclude_none=True)
             response = requests.request(
                 method=method.upper(),
                 url=url,
@@ -123,7 +120,7 @@ class ApiClient:
                 timeout=self.request_timeout,
             )
 
-        logged_body: dict[str, Any] = dict() if not body else body.dict()
+        logged_body: dict[str, Any] = dict() if not body else body.model_dump()
 
         request_log_message = log_util.request_log(
             headers=request_headers,
@@ -146,24 +143,15 @@ class ApiClient:
     @staticmethod
     def __fill_request_headers(request_headers: dict):
         if not request_headers:
-            request_headers = dict()
+            return header_constant.API_REQUEST
 
-        request_header_keys = request_headers.keys()
-        for key, value in header_constant.API_REQUEST.items():
-            if key in request_header_keys:
-                continue
+        headers: dict = deepcopy(header_constant.API_REQUEST)
+        headers.update(request_headers)
 
-            request_headers[key] = value
-
-        return request_headers
+        return headers
 
     @staticmethod
-    def __prepare_request_headers(headers: dict) -> dict:
-        request_headers = dict()
-        for header_key, header_value in headers.items():
-            if not header_value:
-                continue
-            needs_serialization: bool = isinstance(header_value, BaseModel) or isinstance(header_value, enum.Enum) or isinstance(header_value, uuid.UUID)
-            request_headers[header_key] = json.dumps(header_value, default=pydantic.schema.pydantic_encoder) if needs_serialization else header_value
+    def __prepare_request_headers(headers: RequestHeaders) -> dict:
+        request_headers: dict = headers.unwrap()
 
         return ApiClient.__fill_request_headers(request_headers)

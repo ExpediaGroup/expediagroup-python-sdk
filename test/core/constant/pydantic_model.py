@@ -1,18 +1,30 @@
 from typing import Literal, Union
 
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel, ConfigDict, Extra
 
 
 class PolygonPydanticModels:
-    class Polygon(BaseModel, smart_union=True, extra=Extra.forbid):
+    class Polygon(BaseModel):
+        model_config = ConfigDict(
+            extra=Extra.forbid,
+        )
+
         type: Literal["Polygon"]
         coordinates: list[list[int]]
 
-    class MultiPolygon(BaseModel, smart_union=True, extra=Extra.forbid):
+    class MultiPolygon(BaseModel):
+        model_config = ConfigDict(
+            extra=Extra.forbid,
+        )
+
         type: Literal["MultiPolygon"]
         coordinates: list[list[list[int]]]
 
-    class FloatCoordinatesPolygon(BaseModel, smart_union=True, extra=Extra.forbid):
+    class FloatCoordinatesPolygon(BaseModel):
+        model_config = ConfigDict(
+            extra=Extra.forbid,
+        )
+
         type: Literal["FloatCoordinatesPolygon"]
         coordinates: list[list[float]]
 
@@ -21,12 +33,16 @@ class TypeAliases:
     BoundingPolygon = Union[PolygonPydanticModels.Polygon, PolygonPydanticModels.MultiPolygon]
 
 
-PolygonPydanticModels.Polygon.update_forward_refs()
-PolygonPydanticModels.MultiPolygon.update_forward_refs()
+PolygonPydanticModels.Polygon.model_rebuild()
+PolygonPydanticModels.MultiPolygon.model_rebuild()
 
 
 class PolymorphicPydanticModels:
-    class PolygonWrapper(BaseModel, smart_union=True):
+    class PolygonWrapper(BaseModel):
+        model_config = ConfigDict(
+            extra=Extra.forbid,
+        )
+
         polygon: TypeAliases.BoundingPolygon
 
 

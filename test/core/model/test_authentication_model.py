@@ -28,7 +28,7 @@ from expediagroup.sdk.core.model.authentication import (
 
 class TokenTest(unittest.TestCase):
     def test_token_response_model(self):
-        token_response: _TokenResponse = _TokenResponse.parse_obj(auth_constant.TOKEN_RESPONSE_DATA)
+        token_response: _TokenResponse = _TokenResponse.model_validate(auth_constant.TOKEN_RESPONSE_DATA)
 
         self.assertIsNotNone(token_response)
         self.assertIsNotNone(token_response.expires_in)

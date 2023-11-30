@@ -1,7 +1,6 @@
 import unittest
 from test.core.constant.pydantic_model import *
 
-from pydantic import parse_obj_as
 from pydantic.error_wrappers import ValidationError
 
 
@@ -60,7 +59,7 @@ class PydanticModelsTest(unittest.TestCase):
             wrapped_polygon: PolymorphicPydanticModels.PolygonWrapper = PolymorphicPydanticModels.PolygonWrapper(polygon=float_coordinates_polygon)
 
     def test_serialize_objects(self):
-        serialized_polygon = PolygonObjects.POLYGON.dict()
+        serialized_polygon = PolygonObjects.POLYGON.model_dump()
 
         self.assertIsNotNone(serialized_polygon)
         self.assertIsNotNone(serialized_polygon["type"])
@@ -69,7 +68,7 @@ class PydanticModelsTest(unittest.TestCase):
         self.assertEqual(serialized_polygon, PolygonDictData.POLYGON)
 
     def test_deserialize_object(self):
-        deserialized_polygon = parse_obj_as(PolygonPydanticModels.Polygon, PolygonDictData.POLYGON)
+        deserialized_polygon = PolygonPydanticModels.Polygon.model_validate(PolygonDictData.POLYGON)
 
         self.assertIsNotNone(deserialized_polygon)
         self.assertIsNotNone(deserialized_polygon.type)
@@ -81,11 +80,11 @@ class PydanticModelsTest(unittest.TestCase):
 
     def test_test_deserialize_object_invalid_data(self):
         with self.assertRaises(ValidationError):
-            deserialized_polygon = parse_obj_as(PolygonPydanticModels.MultiPolygon, PolygonDictData.POLYGON)
+            deserialized_polygon = PolygonPydanticModels.MultiPolygon.model_validate(PolygonDictData.POLYGON)
 
     def test_deserialize_polymorphic_object(self):
         # Case 1
-        wrapped_polygon: PolymorphicPydanticModels.PolygonWrapper = parse_obj_as(PolymorphicPydanticModels.PolygonWrapper, PolygonDictData.WRAPPED_POLYGON)
+        wrapped_polygon: PolymorphicPydanticModels.PolygonWrapper = PolymorphicPydanticModels.PolygonWrapper.model_validate(PolygonDictData.WRAPPED_POLYGON)
 
         self.assertIsNotNone(wrapped_polygon)
         self.assertIsNotNone(wrapped_polygon.polygon)
@@ -96,8 +95,8 @@ class PydanticModelsTest(unittest.TestCase):
         self.assertTrue(isinstance(wrapped_polygon.polygon, PolygonPydanticModels.Polygon))
 
         # Case 2
-        wrapped_multi_polygon: PolymorphicPydanticModels.PolygonWrapper = parse_obj_as(
-            PolymorphicPydanticModels.PolygonWrapper, PolygonDictData.WRAPPED_MULTI_POLYGON
+        wrapped_multi_polygon: PolymorphicPydanticModels.PolygonWrapper = PolymorphicPydanticModels.PolygonWrapper.model_validate(
+            PolygonDictData.WRAPPED_MULTI_POLYGON
         )
 
         self.assertIsNotNone(wrapped_multi_polygon)
