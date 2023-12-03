@@ -19,9 +19,26 @@ from pydantic import BaseModel, Field
 
 
 class RequestHeaders(BaseModel):
+    """
+    RequestHeaders class represents the headers of an HTTP request.
+
+    Attributes:
+        headers (Any): The HTTP request headers. It can be of any type.
+    """
     headers: Any = Field(default=None)
 
     def unwrap(self) -> dict[str, Any]:
+        """
+        Unwraps the headers from the model.
+
+        Returns:
+            A dictionary containing the headers.
+
+        Example:
+            >>> headers = RequestHeaders()
+            >>> headers.unwrap()
+            {'Content-Type': 'application/json', 'Authorization': 'Bearer token'}
+        """
         if not self.headers:
             return dict()
 
