@@ -61,6 +61,7 @@ from datamodel_code_generator.parser.openapi import (
     RequestBodyObject,
 )
 from datamodel_code_generator.types import DataType, DataTypeManager, StrictTypes, Types
+from datatype_manager import PydanticV2DataTypeManager
 from fastapi_code_generator import parser
 from model import Argument, Operation, ParamTypes
 from stringcase import snakecase
@@ -73,7 +74,7 @@ class OpenApiParser(parser.OpenAPIParser, JsonSchemaParser):
         *,
         data_model_type: type[DataModel] = pydantic_model.BaseModel,
         data_model_root_type: type[DataModel] = pydantic_model.CustomRootType,
-        data_type_manager_type: type[DataTypeManager] = pydantic_model.DataTypeManager,
+        data_type_manager_type: type[DataTypeManager] = PydanticV2DataTypeManager,
         data_model_field_type: type[DataModelFieldBase] = pydantic_model.DataModelField,
         base_class: Optional[str] = None,
         custom_template_dir: Optional[pathlib.Path] = None,

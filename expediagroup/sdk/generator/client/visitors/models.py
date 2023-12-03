@@ -13,6 +13,7 @@
 # limitations under the License.
 import collections
 import dataclasses
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -246,6 +247,21 @@ def get_error_models(parser: OpenAPIParser) -> list:
     return list(error_models)
 
 
+def delete_root_models(models: dict[str, DataModel]):
+    """
+    Deletes root models from a dictionary of DataModel objects.
+
+    Args:
+        models (dict[str, DataModel]): A dictionary containing DataModel objects, where the keys are the class names.
+
+    """
+    is_root_model: Callable = lambda model: len(model.fields) == 1 and not model.fields[0].name
+    root_models_classnames: list[str] = list(map(lambda model: model.class_name, filter(is_root_model, models.values())))
+
+    for root_model_classname in root_models_classnames:
+        models.pop(root_model_classname)
+
+
 def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     r"""A visitor that exposes models and related data to `jinja2` templates.
 
@@ -256,10 +272,11 @@ def get_models(parser: OpenAPIParser, model_path: Path) -> dict[str, object]:
     Returns:
         dict[str, object]: Data to be exposed to `jinja2` templates.
     """
-
-    _, sorted_models, __ = sort_data_models(unsorted_data_models=[result for result in parser.results if isinstance(result, DataModel)])
-
     models: dict[str, DataModel] = parse_datamodels(parser)
+    delete_root_models(models)
+
+    _, sorted_models, __ = sort_data_models(unsorted_data_models=list(models.values()))
+
     discriminators: list[Discriminator] = parse_discriminators(parser=parser, models=models)
 
     set_other_responses_models([operation for operation in parser.operations.values()])
