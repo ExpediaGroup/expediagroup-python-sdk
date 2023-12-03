@@ -25,6 +25,7 @@ class RequestHeaders(BaseModel):
     Attributes:
         headers (Any): The HTTP request headers. It can be of any type.
     """
+
     headers: Any = Field(default=None)
 
     def unwrap(self) -> dict[str, Any]:
