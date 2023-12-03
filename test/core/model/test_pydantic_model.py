@@ -1,7 +1,7 @@
 import unittest
 from test.core.constant.pydantic_model import *
 
-from pydantic.error_wrappers import ValidationError
+from pydantic import ValidationError
 
 
 class PydanticModelsTest(unittest.TestCase):
