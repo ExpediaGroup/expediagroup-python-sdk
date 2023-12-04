@@ -53,7 +53,6 @@ class PydanticV2DataTypeManager(datamodel_code_generator_pydantic.DataTypeManage
 
         for key, value in PYDANTIC_V2_MIGRATION_CONSTRAINTS_MAPPING.items():
             if migrated_data_type_kwargs.get(key):
-                print("called")
                 migrated_data_type_kwargs.update([(value, migrated_data_type_kwargs.get(key))])
                 migrated_data_type_kwargs.pop(key)
 
