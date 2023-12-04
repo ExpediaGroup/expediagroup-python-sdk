@@ -80,7 +80,7 @@ class MockResponse:
         response.status_code = HTTPStatus.OK
         response.url = AUTH_ENDPOINT
         response.code = "ok"
-        response._content = json.dumps(TOKEN_RESPONSE_DATA.copy(), default=pydantic.schema.pydantic_encoder).encode()
+        response._content = json.dumps(TOKEN_RESPONSE_DATA.copy()).encode()
 
         return response
 
@@ -93,7 +93,7 @@ class MockResponse:
 
         content = TOKEN_RESPONSE_DATA.copy()
         content[EXPIRES_IN] = 11
-        response._content = json.dumps(content, default=pydantic.schema.pydantic_encoder).encode()
+        response._content = json.dumps(content).encode()
         return response
 
     @staticmethod

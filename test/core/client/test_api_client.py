@@ -11,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import datetime
-import time
 import unittest
 from test.core.constant import api as api_constant
 from test.core.constant import authentication as auth_constant
@@ -25,6 +23,7 @@ from expediagroup.sdk.core.client.expediagroup_auth_client import (
 )
 from expediagroup.sdk.core.configuration.client_config import ClientConfig
 from expediagroup.sdk.core.constant import header as header_constant
+from expediagroup.sdk.core.model.api import RequestHeaders
 from expediagroup.sdk.core.model.exception import service as service_exception
 
 
@@ -78,7 +77,7 @@ class ApiClientTest(unittest.TestCase):
             body=api_constant.HELLO_WORLD_OBJECT,
             response_models=[api_constant.HelloWorld],
             url=api_constant.ENDPOINT,
-            headers=dict(),
+            headers=RequestHeaders(),
         )
 
         self.assertEqual(response_obj.message, api_constant.HELLO_WORLD_MESSAGE)
@@ -103,7 +102,9 @@ class ApiClientTest(unittest.TestCase):
         api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         with self.assertRaises(Exception) as call_missing_url_test:
-            api_client.call(body=api_constant.HELLO_WORLD_OBJECT, method=api_constant.METHOD, response_models=[api_constant.HelloWorld], headers=dict())
+            api_client.call(
+                body=api_constant.HELLO_WORLD_OBJECT, method=api_constant.METHOD, response_models=[api_constant.HelloWorld], headers=RequestHeaders()
+            )
 
     @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
     @mock.patch("expediagroup.sdk.core.client.api.requests.request", Mocks.hello_world_request_response_mock)
@@ -111,7 +112,7 @@ class ApiClientTest(unittest.TestCase):
         api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         response_obj: api_constant.HelloWorld = api_client.call(
-            method=api_constant.METHOD, body=api_constant.HELLO_WORLD_OBJECT, url=api_constant.ENDPOINT, headers=dict()
+            method=api_constant.METHOD, body=api_constant.HELLO_WORLD_OBJECT, url=api_constant.ENDPOINT, headers=RequestHeaders()
         )
 
         self.assertIsNone(response_obj)
@@ -121,7 +122,7 @@ class ApiClientTest(unittest.TestCase):
         api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         with self.assertRaises(Exception) as call_missing_obj_test:
-            api_client.call(method=api_constant.METHOD, url=api_constant.ENDPOINT, response_models=[api_constant.HelloWorld], headers=dict())
+            api_client.call(method=api_constant.METHOD, url=api_constant.ENDPOINT, response_models=[api_constant.HelloWorld], headers=RequestHeaders())
 
     @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
     @mock.patch("expediagroup.sdk.core.client.api.requests.request", Mocks.invalid_request_response_mock)
@@ -134,7 +135,7 @@ class ApiClientTest(unittest.TestCase):
                 method=api_constant.METHOD,
                 url=api_constant.ENDPOINT,
                 response_models=[api_constant.HelloWorld],
-                headers=dict(),
+                headers=RequestHeaders(),
             )
 
     @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
@@ -146,7 +147,7 @@ class ApiClientTest(unittest.TestCase):
                 body=api_constant.HELLO_WORLD_OBJECT,
                 url=api_constant.ENDPOINT,
                 response_models=[api_constant.HelloWorld],
-                headers=dict(),
+                headers=RequestHeaders(),
             )
 
     @mock.patch.object(_ExpediaGroupAuthClient, "_ExpediaGroupAuthClient__retrieve_token", Mocks.authorized_retrieve_token_mock)
@@ -155,7 +156,7 @@ class ApiClientTest(unittest.TestCase):
         api_client = ApiClient(Configs.client_config, _ExpediaGroupAuthClient)
 
         response_obj: api_constant.HelloWorld = api_client.call(
-            method=api_constant.METHOD, response_models=[api_constant.HelloWorld], url=api_constant.ENDPOINT, headers=dict(), body=None
+            method=api_constant.METHOD, response_models=[api_constant.HelloWorld], url=api_constant.ENDPOINT, headers=RequestHeaders(), body=None
         )
 
         self.assertEqual(response_obj.message, api_constant.HELLO_WORLD_MESSAGE)
