@@ -36,6 +36,7 @@ class MarkdownRenderer:
         resolvers (dict[str, Any]): A dictionary of resolver functions to assist in rendering.
         master_filename (str): The filename for the master documentation file.
     """
+
     master: Master
     modules: list[Module]
     environment: Environment

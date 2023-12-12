@@ -25,19 +25,15 @@ UNSUCCESSFUL_RESPONSE_MESSAGE_TEMPLATE: str = "Unsuccessful response [{0}]"
 
 NEW_TOKEN_EXPIRATION_TEMPLATE: str = "New token expires in {0} seconds"
 
-HTTP_HEADERS_LOG_MESSAGE_TEMPLATE: str = dedent(
-    """\tHeaders:
+HTTP_HEADERS_LOG_MESSAGE_TEMPLATE: str = dedent("""\tHeaders:
     \t--- BEGIN ---
     {0}
     \t--- END ---
-    """
-)
+    """)
 
-HTTP_BODY_LOG_MESSAGE_TEMPLATE: str = dedent(
-    """
+HTTP_BODY_LOG_MESSAGE_TEMPLATE: str = dedent("""
     \tBody:
     \t--- BEGIN ---
     {0}
     \t--- END ---
-    """
-)
+    """)
