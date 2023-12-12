@@ -84,9 +84,7 @@ class FraudPreventionV2Client:
 
         self.__user_agent = f"{sdk_metadata} (Python {python_version}; {os_name} {os_version})"
 
-    def screen_account(
-        self, transaction_id: UUID = uuid4(), body: AccountScreenRequest = None
-    ) -> Union[
+    def screen_account(self, transaction_id: UUID = uuid4(), body: AccountScreenRequest = None) -> Union[
         AccountScreenResponse,
         AccountTakeoverBadRequestError,
         AccountTakeoverUnauthorizedError,
@@ -149,9 +147,7 @@ class FraudPreventionV2Client:
             error_responses=error_responses,
         )
 
-    def notify_with_account_update(
-        self, transaction_id: UUID = uuid4(), body: AccountUpdateRequest = None
-    ) -> Union[
+    def notify_with_account_update(self, transaction_id: UUID = uuid4(), body: AccountUpdateRequest = None) -> Union[
         AccountUpdateResponse,
         AccountTakeoverBadRequestError,
         AccountTakeoverUnauthorizedError,
@@ -215,9 +211,7 @@ class FraudPreventionV2Client:
             error_responses=error_responses,
         )
 
-    def screen_order(
-        self, transaction_id: UUID = uuid4(), body: OrderPurchaseScreenRequest = None
-    ) -> Union[
+    def screen_order(self, transaction_id: UUID = uuid4(), body: OrderPurchaseScreenRequest = None) -> Union[
         OrderPurchaseScreenResponse,
         BadRequestError,
         UnauthorizedError,
@@ -279,9 +273,7 @@ class FraudPreventionV2Client:
             error_responses=error_responses,
         )
 
-    def notify_with_order_update(
-        self, transaction_id: UUID = uuid4(), body: OrderPurchaseUpdateRequest = None
-    ) -> Union[
+    def notify_with_order_update(self, transaction_id: UUID = uuid4(), body: OrderPurchaseUpdateRequest = None) -> Union[
         OrderPurchaseUpdateResponse,
         BadRequestError,
         UnauthorizedError,

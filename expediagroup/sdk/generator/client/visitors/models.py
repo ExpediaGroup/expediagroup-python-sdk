@@ -45,6 +45,7 @@ class Alias:
         order(int): A value used in sorting alias position among other aliases, depending on its position in the
         inheritance hierarchy.
     """
+
     parent_classname: str
     children_classnames: list[str]
     order: int = 1
