@@ -23,7 +23,7 @@ on:
       - review_requested
       - auto_merge_enabled
   push:
-    branches: *
+    branches: '*'
 jobs:
   pull-request-title:
     name: Pull Request Title Validation
