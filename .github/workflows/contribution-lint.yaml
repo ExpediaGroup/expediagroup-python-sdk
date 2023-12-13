@@ -36,6 +36,7 @@ jobs:
       - name: Run Pull Request Title Validation
         uses: JulienKode/pull-request-name-linter-action@v0.5.0
       - name: Run Latest Commit Message Validation
-        uses: wagoid/commitlint-github-action@v5
+        uses: wagoid/commitlint-github-action@v5.4.4
         with:
+          configFile: commitlint.config.js
           commitDepth: 1
