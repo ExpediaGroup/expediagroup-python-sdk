@@ -32,13 +32,10 @@ jobs:
       - name: Check out source repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
       - name: Install Dependencies
-        run: npm install @commitlint/config-conventional
+        run: npm install commitlint@latest @commitlint/config-conventional
       - name: Run Pull Request Title Validation
         uses: JulienKode/pull-request-name-linter-action@v0.5.0
       - name: Run Latest Commit Message Validation
-        uses: wagoid/commitlint-github-action@v5
-        with:
-          configFile: commitlint.config.js
-          commitDepth: 1
+        run: npx commitlint --config commitlint.config.js --from HEAD~1 --to HEAD --verbose
