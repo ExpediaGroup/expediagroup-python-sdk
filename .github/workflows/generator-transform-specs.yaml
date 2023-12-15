@@ -16,7 +16,7 @@ jobs:
           name: raw-specs
       - run: |
           npx --yes -p @expediagroup/spec-transformer cli ${{ inputs.configurations }} -i raw-specs.yaml -o specs.yaml
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: specs
           path: specs.yaml

@@ -14,7 +14,7 @@ jobs:
       - id: download_specs
         run: |
           curl -L ${{ inputs.url }} -o raw-specs.yaml
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: raw-specs
           path: raw-specs.yaml
