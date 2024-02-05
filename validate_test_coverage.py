@@ -19,19 +19,23 @@ from textwrap import dedent
 from prettytable import PrettyTable
 
 MINIMUM_REQUIRED_COVERAGE_PERCENTAGE: int = 90
-FAILURE_MESSAGE_TEMPLATE: str = dedent("""
+FAILURE_MESSAGE_TEMPLATE: str = dedent(
+    """
     > Coverage Validation Failed!
     >> Minimum Required Total Coverage Percentage: {0}%
     >> Current Total Coverage Percentage: {1}%
     >>> Full Coverage Report:
     {2}
-    """)
-SUCCESS_MESSAGE_TEMPLATE: str = dedent("""
+    """
+)
+SUCCESS_MESSAGE_TEMPLATE: str = dedent(
+    """
     > Coverage Validation Succeed!
     >> Current Total Coverage Percentage: {0}%
     >>> Full Coverage Report:
     {1}
-    """)
+    """
+)
 
 
 def validate_test_coverage(report: dict):
