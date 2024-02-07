@@ -16,18 +16,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: sdk
           path: expediagroup/sdk/generator/package
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: specs
           path: expediagroup/sdk/generator/package
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: docs
           path: expediagroup/sdk/generator/package/docs
@@ -49,7 +49,7 @@ jobs:
           docformatter --check --config pyproject.toml release || true
           docformatter --in-place --config pyproject.toml release || true
       - name: Create PR
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
           branch: "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           commit-message: "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"

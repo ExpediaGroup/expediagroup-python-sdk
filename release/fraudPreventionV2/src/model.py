@@ -2793,76 +2793,91 @@ OrderPurchaseScreenRequest.update_forward_refs()
 
 class ExpediaGroupForbiddenErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a ForbiddenError object."""
+
     pass
 
 
 class ExpediaGroupOrderPurchaseUpdateNotFoundErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a OrderPurchaseUpdateNotFoundError object."""
+
     pass
 
 
 class ExpediaGroupGatewayTimeoutErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a GatewayTimeoutError object."""
+
     pass
 
 
 class ExpediaGroupBadRequestErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a BadRequestError object."""
+
     pass
 
 
 class ExpediaGroupAccountTakeoverUnauthorizedErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a AccountTakeoverUnauthorizedError object."""
+
     pass
 
 
 class ExpediaGroupAccountUpdateNotFoundErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a AccountUpdateNotFoundError object."""
+
     pass
 
 
 class ExpediaGroupTooManyRequestsErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a TooManyRequestsError object."""
+
     pass
 
 
 class ExpediaGroupServiceUnavailableErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a ServiceUnavailableError object."""
+
     pass
 
 
 class ExpediaGroupUnauthorizedErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a UnauthorizedError object."""
+
     pass
 
 
 class ExpediaGroupAccountTakeoverBadRequestErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a AccountTakeoverBadRequestError object."""
+
     pass
 
 
 class ExpediaGroupNotFoundErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a NotFoundError object."""
+
     pass
 
 
 class ExpediaGroupRetryableOrderPurchaseScreenFailureException(ExpediaGroupApiException):
     r"""Exception wrapping a RetryableOrderPurchaseScreenFailure object."""
+
     pass
 
 
 class ExpediaGroupRetryableOrderPurchaseUpdateFailureException(ExpediaGroupApiException):
     r"""Exception wrapping a RetryableOrderPurchaseUpdateFailure object."""
+
     pass
 
 
 class ExpediaGroupBadGatewayErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a BadGatewayError object."""
+
     pass
 
 
 class ExpediaGroupInternalServerErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a InternalServerError object."""
+
     pass
 
 
