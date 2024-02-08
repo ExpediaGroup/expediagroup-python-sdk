@@ -26,4 +26,4 @@ pydantic model CancellationReason: Reason of order update cancellation.
 
 # Inheritance
 
-object > BaseModel > CancellationReason
+object > [PydanticModel](PydanticModel.md) > CancellationReason

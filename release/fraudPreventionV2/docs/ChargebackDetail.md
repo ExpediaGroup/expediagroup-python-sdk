@@ -28,4 +28,4 @@ pydantic model ChargebackDetail: Details related to the chargeback.
 
 # Inheritance
 
-object > BaseModel > ChargebackDetail
+object > [PydanticModel](PydanticModel.md) > ChargebackDetail

@@ -24,4 +24,4 @@ pydantic model PaymentOutcome
 
 # Inheritance
 
-object > BaseModel > PaymentOutcome
+object > [PydanticModel](PydanticModel.md) > PaymentOutcome

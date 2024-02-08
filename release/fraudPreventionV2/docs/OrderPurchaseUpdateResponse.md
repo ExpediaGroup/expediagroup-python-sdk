@@ -20,4 +20,5 @@ pydantic model OrderPurchaseUpdateResponse
 
 # Inheritance
 
-object > BaseModel > OrderPurchaseUpdateResponse
+object > [PydanticModel](PydanticModel.md) >
+OrderPurchaseUpdateResponse

@@ -41,4 +41,5 @@ user’s account.
 
 # Inheritance
 
-object > BaseModel > AccountTakeoverCustomerAccount
+object > [PydanticModel](PydanticModel.md) >
+AccountTakeoverCustomerAccount

@@ -22,4 +22,5 @@ pydantic model OrderPurchaseScreenResponse
 
 # Inheritance
 
-object > BaseModel > OrderPurchaseScreenResponse
+object > [PydanticModel](PydanticModel.md) >
+OrderPurchaseScreenResponse

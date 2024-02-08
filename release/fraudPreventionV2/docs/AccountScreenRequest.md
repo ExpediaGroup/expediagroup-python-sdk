@@ -21,4 +21,4 @@ by Expedia’s Fraud Prevention Service.
 
 # Inheritance
 
-object > BaseModel > AccountScreenRequest
+object > [PydanticModel](PydanticModel.md) > AccountScreenRequest

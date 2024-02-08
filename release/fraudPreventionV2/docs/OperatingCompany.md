@@ -23,4 +23,4 @@ Railways, or a bus company.
 
 # Inheritance
 
-object > BaseModel > OperatingCompany
+object > [PydanticModel](PydanticModel.md) > OperatingCompany

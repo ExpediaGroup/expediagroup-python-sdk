@@ -7,9 +7,9 @@
 ```python
 DeviceDetails(
     source: Optional[constr(max_length=50)],
-    device_box: Optional[constr(max_length=16000)],
+    device_box: Optional[str],
     ip_address: constr(
-        regex=r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$"
+        pattern=r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$"
     ),
 )
 ```
@@ -18,12 +18,12 @@ pydantic model DeviceDetails
 
 ## Attributes
 
-| Name       | Type                                                                                                                                                                                          | Required | Description                                               |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------- |
-| device_box | Optional\[constr(max_length=16000)\]                                                                                                                                                          | False    | Device related information retrieved from TrustWidget.    |
-| ip_address | constr(<br/> regex=r”^(?:(?:25\[0-5\]\|2\[0-4\]\[0-9\]\|\[01\]?\[0-9\]\[0-9\]?).){3}(?:25\[0-5\]\|2\[0-4\]\[0-9\]\|\[01\]?\[0-9\]\[0-9\]?)$\|^(?:\[A-F0-9\]{1,4}:){7}\[A-F0-9\]{1,4}$“<br/> ) | True     | IP address of the device used for booking.                |
-| source     | Optional\[constr(max_length=50)\]                                                                                                                                                             | False    | Source of the device_box. Default value is `TrustWidget`. |
+| Name       | Type                                                                                                                                                                                            | Required | Description                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------- |
+| device_box | Optional\[str\]                                                                                                                                                                                 | False    | Device related information retrieved from TrustWidget.    |
+| ip_address | constr(<br/> pattern=r”^(?:(?:25\[0-5\]\|2\[0-4\]\[0-9\]\|\[01\]?\[0-9\]\[0-9\]?).){3}(?:25\[0-5\]\|2\[0-4\]\[0-9\]\|\[01\]?\[0-9\]\[0-9\]?)$\|^(?:\[A-F0-9\]{1,4}:){7}\[A-F0-9\]{1,4}$“<br/> ) | True     | IP address of the device used for booking.                |
+| source     | Optional\[constr(max_length=50)\]                                                                                                                                                               | False    | Source of the device_box. Default value is `TrustWidget`. |
 
 # Inheritance
 
-object > BaseModel > DeviceDetails
+object > [PydanticModel](PydanticModel.md) > DeviceDetails

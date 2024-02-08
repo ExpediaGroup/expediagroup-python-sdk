@@ -27,4 +27,4 @@ transaction.
 
 # Inheritance
 
-object > BaseModel > AccountTransaction
+object > [PydanticModel](PydanticModel.md) > AccountTransaction

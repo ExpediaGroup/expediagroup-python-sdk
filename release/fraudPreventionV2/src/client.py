@@ -26,6 +26,7 @@ from expediagroup.sdk.core.client.expediagroup_auth_client import (
 )
 from expediagroup.sdk.core.configuration.client_config import ClientConfig
 from expediagroup.sdk.core.constant import header
+from expediagroup.sdk.core.model.api import RequestHeaders
 
 from .model import (
     AccountScreenRequest,
@@ -71,14 +72,16 @@ from .model import (
 
 class FraudPreventionV2Client:
     def __init__(self, client_config: ClientConfig):
-        r"""Fraud Prevention V2 API Client.
+        r"""
+        Fraud Prevention V2 API Client.
 
         Args:
             client_config(ClientConfig): SDK Client Configurations Holder.
+
         """
         python_version = platform.python_version()
         os_name, os_version, *_ = platform.platform().split("-")
-        sdk_metadata = "expediagroup-fraudpreventionv2-python-sdk/3.2.0"
+        sdk_metadata = "expediagroup-fraudpreventionv2-python-sdk/3.4.0"
 
         self.__api_client = ApiClient(client_config, _ExpediaGroupAuthClient)
 
@@ -98,17 +101,20 @@ class FraudPreventionV2Client:
         ServiceUnavailableError,
         GatewayTimeoutError,
     ]:
-        r"""The Account Screen API gives a Fraud recommendation for an account
-        transaction.
+        r"""
+        The Account Screen API gives a Fraud recommendation for an account transaction.
 
         A recommendation can be ACCEPT, CHALLENGE, or REJECT. A transaction is marked as CHALLENGE whenever there are insufficient signals to recommend ACCEPT or REJECT. These CHALLENGE incidents are manually reviewed, and a corrected recommendation is made asynchronously.
         Args:
            body(AccountScreenRequest): ...
+
         """
-        headers = {
-            header.TRANSACTION_ID: transaction_id,
-            header.USER_AGENT: self.__user_agent,
-        }
+        headers = RequestHeaders(
+            headers={
+                header.TRANSACTION_ID: transaction_id,
+                header.USER_AGENT: self.__user_agent,
+            }
+        )
 
         query = {key: value for key, value in {}.items() if value}
 
@@ -163,18 +169,22 @@ class FraudPreventionV2Client:
         ServiceUnavailableError,
         GatewayTimeoutError,
     ]:
-        r"""The Account Update API is called when there is an account lifecycle
-        transition such as a challenge outcome, account restoration, or remediation
-        action completion.
+        r"""
+        The Account Update API is called when there is an account lifecycle transition
+        such as a challenge outcome, account restoration, or remediation action
+        completion.
 
         For example, if a user's account is disabled, deleted, or restored, the Account Update API is called to notify Expedia Group about the change. The Account Update API is also called when a user responds to a login Multi-Factor Authentication based on a Fraud recommendation.
         Args:
            body(AccountUpdateRequest): An AccountUpdate request may be of one of the following types `MULTI_FACTOR_AUTHENTICATION_UPDATE`, `REMEDIATION_UPDATE`.
+
         """
-        headers = {
-            header.TRANSACTION_ID: transaction_id,
-            header.USER_AGENT: self.__user_agent,
-        }
+        headers = RequestHeaders(
+            headers={
+                header.TRANSACTION_ID: transaction_id,
+                header.USER_AGENT: self.__user_agent,
+            }
+        )
 
         query = {key: value for key, value in {}.items() if value}
 
@@ -229,16 +239,20 @@ class FraudPreventionV2Client:
         RetryableOrderPurchaseScreenFailure,
         GatewayTimeoutError,
     ]:
-        r"""The Order Purchase API gives a Fraud recommendation for a transaction.
+        r"""
+        The Order Purchase API gives a Fraud recommendation for a transaction.
 
         A recommendation can be Accept, Reject, or Review. A transaction is marked as Review whenever there are insufficient signals to recommend Accept or Reject. These incidents are manually reviewed, and a corrected recommendation is made asynchronously.
         Args:
            body(OrderPurchaseScreenRequest): ...
+
         """
-        headers = {
-            header.TRANSACTION_ID: transaction_id,
-            header.USER_AGENT: self.__user_agent,
-        }
+        headers = RequestHeaders(
+            headers={
+                header.TRANSACTION_ID: transaction_id,
+                header.USER_AGENT: self.__user_agent,
+            }
+        )
 
         query = {key: value for key, value in {}.items() if value}
 
@@ -293,7 +307,8 @@ class FraudPreventionV2Client:
         RetryableOrderPurchaseUpdateFailure,
         GatewayTimeoutError,
     ]:
-        r"""The Order Purchase Update API is called when the status of the order has
+        r"""
+        The Order Purchase Update API is called when the status of the order has
         changed.
 
         For example, if the customer cancels the reservation, changes reservation in any way, or adds additional products or travelers to the reservation, the Order Purchase Update API is called to notify Expedia Group about the change.
@@ -302,11 +317,14 @@ class FraudPreventionV2Client:
 
         Args:
            body(OrderPurchaseUpdateRequest): An OrderPurchaseUpdate request may be of one of the following types `ORDER_UPDATE`, `CHARGEBACK_FEEDBACK`, `INSULT_FEEDBACK`, `REFUND_UPDATE`, `PAYMENT_UPDATE`.
+
         """
-        headers = {
-            header.TRANSACTION_ID: transaction_id,
-            header.USER_AGENT: self.__user_agent,
-        }
+        headers = RequestHeaders(
+            headers={
+                header.TRANSACTION_ID: transaction_id,
+                header.USER_AGENT: self.__user_agent,
+            }
+        )
 
         query = {key: value for key, value in {}.items() if value}
 

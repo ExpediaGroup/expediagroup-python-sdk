@@ -991,7 +991,6 @@ components:
           description: Source of the device_box. Default value is `TrustWidget`.
         device_box:
           type: string
-          maxLength: 16000
           description: Device related information retrieved from TrustWidget.
         ip_address:
           type: string
@@ -2952,7 +2951,6 @@ components:
           description: Source of the device_box. Default value is `TrustWidget`.
         device_box:
           type: string
-          maxLength: 16000
           description: Device related information retrieved from TrustWidget.
         ip_address:
           type: string
@@ -2963,7 +2961,6 @@ components:
           type: string
           description: The application type, operating system, software vendor, or
             software version of the originating request.
-          maxLength: 200
           example: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
             like Gecko) Chrome/114.0.0.0 Safari/537.36
         type:
