@@ -7,6 +7,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+      - name: Clean release tags
+        run: ./clean-release-tags.sh
+      - name: Get latest tag
+        run: |
+          latest_tag=$(git show-ref -s "$(./get-latest-tag.sh)")
+          echo "LATEST_TAG=$latest_tag" >> $GITHUB_ENV
+      - name: Create tag
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/v1.0.0',
+              sha: '${{ env.LATEST_TAG}}'
+            })
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -17,3 +36,6 @@ jobs:
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Clean release tags
+        if: always()
+        run: ./clean-release-tags.sh
