@@ -20,4 +20,4 @@ pydantic model InsultDetail: Details related to the insult.
 
 # Inheritance
 
-object > BaseModel > InsultDetail
+object > [PydanticModel](PydanticModel.md) > InsultDetail

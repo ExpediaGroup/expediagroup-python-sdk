@@ -32,4 +32,4 @@ pydantic model CustomerAccount
 
 # Inheritance
 
-object > BaseModel > CustomerAccount
+object > [PydanticModel](PydanticModel.md) > CustomerAccount

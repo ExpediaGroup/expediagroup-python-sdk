@@ -58,7 +58,7 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     python_requires=">=3.8",
-    install_requires=["pydantic==1.10.12", "uri", "requests", "python-dateutil"],
+    install_requires=["pydantic", "uri", "requests", "python-dateutil"],
     description="Expedia Group SDK Core Library for Python",
     long_description=readme(),
     long_description_content_type="text/markdown",

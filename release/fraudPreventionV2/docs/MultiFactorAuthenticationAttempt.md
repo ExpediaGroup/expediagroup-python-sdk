@@ -38,4 +38,5 @@ the update event by a user.
 
 # Inheritance
 
-object > BaseModel > MultiFactorAuthenticationAttempt
+object > [PydanticModel](PydanticModel.md) >
+MultiFactorAuthenticationAttempt

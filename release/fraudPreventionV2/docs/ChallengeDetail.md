@@ -26,4 +26,4 @@ Fraud Prevention Service.
 
 # Inheritance
 
-object > BaseModel > ChallengeDetail
+object > [PydanticModel](PydanticModel.md) > ChallengeDetail

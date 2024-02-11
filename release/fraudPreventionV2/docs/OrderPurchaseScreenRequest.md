@@ -20,4 +20,5 @@ pydantic model OrderPurchaseScreenRequest
 
 # Inheritance
 
-object > BaseModel > OrderPurchaseScreenRequest
+object > [PydanticModel](PydanticModel.md) >
+OrderPurchaseScreenRequest

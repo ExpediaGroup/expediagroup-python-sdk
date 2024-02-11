@@ -23,4 +23,4 @@ error, containing both human-readable and machine-readable information.
 
 # Inheritance
 
-object > BaseModel > AccountTakeoverError
+object > [PydanticModel](PydanticModel.md) > AccountTakeoverError

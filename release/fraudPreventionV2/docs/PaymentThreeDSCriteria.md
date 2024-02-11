@@ -23,4 +23,4 @@ attributes.
 
 # Inheritance
 
-object > BaseModel > PaymentThreeDSCriteria
+object > [PydanticModel](PydanticModel.md) > PaymentThreeDSCriteria

@@ -23,4 +23,4 @@ both human-readable and machine-readable information.
 
 # Inheritance
 
-object > BaseModel > Error
+object > [PydanticModel](PydanticModel.md) > Error

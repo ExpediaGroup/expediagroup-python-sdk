@@ -23,4 +23,4 @@ refund that should be updated.
 
 # Inheritance
 
-object > BaseModel > IssuedRefundUpdateDetails
+object > [PydanticModel](PydanticModel.md) > IssuedRefundUpdateDetails

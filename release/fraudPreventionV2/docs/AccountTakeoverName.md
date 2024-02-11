@@ -29,4 +29,4 @@ information about a customer or traveler’’s name for the account.
 
 # Inheritance
 
-object > BaseModel > AccountTakeoverName
+object > [PydanticModel](PydanticModel.md) > AccountTakeoverName

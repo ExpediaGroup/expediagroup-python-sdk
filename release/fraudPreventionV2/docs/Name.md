@@ -29,4 +29,4 @@ about a customer or traveler’s name for the order.
 
 # Inheritance
 
-object > BaseModel > Name
+object > [PydanticModel](PydanticModel.md) > Name

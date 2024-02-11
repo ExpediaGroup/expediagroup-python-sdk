@@ -24,4 +24,4 @@ pydantic model Cause
 
 # Inheritance
 
-object > BaseModel > Cause
+object > [PydanticModel](PydanticModel.md) > Cause

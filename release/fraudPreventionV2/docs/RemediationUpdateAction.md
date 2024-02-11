@@ -25,4 +25,4 @@ remediation action initiated by the Partner’s system to a user.
 
 # Inheritance
 
-object > BaseModel > RemediationUpdateAction
+object > [PydanticModel](PydanticModel.md) > RemediationUpdateAction
