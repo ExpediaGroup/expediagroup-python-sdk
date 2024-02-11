@@ -41,4 +41,4 @@ Possible operation types include:
 
 # Inheritance
 
-object > BaseModel > Operations
+object > [PydanticModel](PydanticModel.md) > Operations

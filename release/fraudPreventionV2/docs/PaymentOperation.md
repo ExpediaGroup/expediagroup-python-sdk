@@ -24,4 +24,4 @@ pydantic model PaymentOperation
 
 # Inheritance
 
-object > BaseModel > PaymentOperation
+object > [PydanticModel](PydanticModel.md) > PaymentOperation

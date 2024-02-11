@@ -30,4 +30,5 @@ used as a discriminator, with the following mapping:
 
 # Inheritance
 
-object > BaseModel > OrderPurchaseUpdateRequestGeneric
+object > [PydanticModel](PydanticModel.md) >
+OrderPurchaseUpdateRequestGeneric

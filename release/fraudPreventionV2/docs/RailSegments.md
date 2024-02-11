@@ -30,4 +30,4 @@ pydantic model RailSegments
 
 # Inheritance
 
-object > BaseModel > RailSegments
+object > [PydanticModel](PydanticModel.md) > RailSegments

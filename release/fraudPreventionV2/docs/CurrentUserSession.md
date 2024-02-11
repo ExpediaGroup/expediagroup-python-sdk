@@ -29,4 +29,4 @@ Service.
 
 # Inheritance
 
-object > BaseModel > CurrentUserSession
+object > [PydanticModel](PydanticModel.md) > CurrentUserSession

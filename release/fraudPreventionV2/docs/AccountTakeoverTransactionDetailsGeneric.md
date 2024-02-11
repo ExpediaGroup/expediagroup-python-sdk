@@ -30,4 +30,5 @@ field value is used as a discriminator, with the following mapping:
 
 # Inheritance
 
-object > BaseModel > AccountTakeoverTransactionDetailsGeneric
+object > [PydanticModel](PydanticModel.md) >
+AccountTakeoverTransactionDetailsGeneric

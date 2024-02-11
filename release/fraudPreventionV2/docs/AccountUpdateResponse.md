@@ -20,4 +20,4 @@ pydantic model AccountUpdateResponse
 
 # Inheritance
 
-object > BaseModel > AccountUpdateResponse
+object > [PydanticModel](PydanticModel.md) > AccountUpdateResponse

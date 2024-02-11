@@ -26,4 +26,4 @@ pydantic model OrderPurchaseTransaction
 
 # Inheritance
 
-object > BaseModel > OrderPurchaseTransaction
+object > [PydanticModel](PydanticModel.md) > OrderPurchaseTransaction

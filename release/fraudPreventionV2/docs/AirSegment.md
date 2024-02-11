@@ -28,4 +28,4 @@ pydantic model AirSegment
 
 # Inheritance
 
-object > BaseModel > AirSegment
+object > [PydanticModel](PydanticModel.md) > AirSegment

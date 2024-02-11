@@ -29,4 +29,5 @@ refund that should be updated.
 
 # Inheritance
 
-object > BaseModel > SettledRefundUpdateDetails
+object > [PydanticModel](PydanticModel.md) >
+SettledRefundUpdateDetails
