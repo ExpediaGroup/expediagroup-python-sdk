@@ -30,4 +30,4 @@ pydantic model TransactionDetails
 
 # Inheritance
 
-object > BaseModel > TransactionDetails
+object > [PydanticModel](PydanticModel.md) > TransactionDetails

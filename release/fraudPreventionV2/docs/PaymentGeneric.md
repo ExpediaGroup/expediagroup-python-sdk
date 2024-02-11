@@ -48,4 +48,4 @@ discriminator, with the following mapping:
 
 # Inheritance
 
-object > BaseModel > PaymentGeneric
+object > [PydanticModel](PydanticModel.md) > PaymentGeneric

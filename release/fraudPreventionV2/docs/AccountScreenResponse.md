@@ -23,4 +23,4 @@ transaction provided by Expedia’s Fraud Prevention Service.
 
 # Inheritance
 
-object > BaseModel > AccountScreenResponse
+object > [PydanticModel](PydanticModel.md) > AccountScreenResponse

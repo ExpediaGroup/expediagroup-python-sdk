@@ -28,4 +28,4 @@ pydantic model RailwayStationDetails
 
 # Inheritance
 
-object > BaseModel > RailwayStationDetails
+object > [PydanticModel](PydanticModel.md) > RailwayStationDetails

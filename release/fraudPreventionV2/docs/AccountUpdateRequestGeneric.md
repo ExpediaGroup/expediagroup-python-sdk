@@ -27,4 +27,5 @@ discriminator, with the following mapping:
 
 # Inheritance
 
-object > BaseModel > AccountUpdateRequestGeneric
+object > [PydanticModel](PydanticModel.md) >
+AccountUpdateRequestGeneric

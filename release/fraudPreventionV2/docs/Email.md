@@ -21,4 +21,4 @@ about email address associated with the transaction.
 
 # Inheritance
 
-object > BaseModel > Email
+object > [PydanticModel](PydanticModel.md) > Email

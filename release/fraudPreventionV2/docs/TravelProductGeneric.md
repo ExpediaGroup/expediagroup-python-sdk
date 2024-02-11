@@ -38,4 +38,4 @@ discriminator, with the following mapping:
 
 # Inheritance
 
-object > BaseModel > TravelProductGeneric
+object > [PydanticModel](PydanticModel.md) > TravelProductGeneric
