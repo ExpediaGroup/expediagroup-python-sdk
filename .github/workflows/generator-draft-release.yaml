@@ -16,7 +16,7 @@ jobs:
           latest_tag=$(git show-ref -s "$(./get-latest-tag.sh)")
           echo "LATEST_TAG=$latest_tag" >> $GITHUB_ENV
       - name: Create tag
-        uses: actions/github-script@v5
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_PAT }}
           script: |
