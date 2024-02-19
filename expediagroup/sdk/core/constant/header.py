@@ -45,3 +45,5 @@ API_KEY: str = "APIKey"
 SIGNATURE: str = "Signature"
 
 TIMESTAMP: str = "timestamp"
+
+X_SDK_TITLE = "x-sdk-title"
