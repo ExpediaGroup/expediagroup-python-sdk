@@ -32,26 +32,26 @@ class {{ classname }}:
         self.__user_agent = f'{sdk_metadata} (Python {python_version}; {os_name} {os_version})'
 
     {% for operation in operations %}
-    def {{operation.function_name}}(self, transaction_id: UUID = uuid4(), {{operation.snake_case_arguments}}) -> {{operation.return_type}}:
+    def {{operation.function_name}}(self, {{operation.snake_case_arguments}}) -> {{operation.return_type}}:
         r"""{{ operation.description }}
 Args:
-{% for arguemnt in operation.snake_case_arguments_list %}   {{ arguemnt.name }}({{ arguemnt.type_hint }}{% if not arguemnt.required %}, optional{% endif %}): {{ arguemnt.description.replace("\n", "") }}
+{% for argument in operation.snake_case_arguments_list %}   {{ argument.name }}({{ argument.type_hint }}{% if not argument.required %}, optional{% endif %}): {{ argument.description.replace("\n", "") }}
 {% endfor %}"""
         headers = RequestHeaders(headers={
-            header.TRANSACTION_ID: transaction_id,
+            header.TRANSACTION_ID: uuid4(),
             header.USER_AGENT: self.__user_agent,
             header.X_SDK_TITLE: '{{ namespace }}-sdk',
-        {% for arguemnt in operation.snake_case_arguments_list %}
-            {% if arguemnt.in_.value == 'header' %}
-            '{{ arguemnt.alias }}': {{ arguemnt.name.strip() }},
+        {% for argument in operation.snake_case_arguments_list %}
+            {% if argument.in_.value == 'header' %}
+            '{{ argument.alias }}': {{ argument.name.strip() }},
             {% endif %}
         {% endfor %}
         })
 
         query = {key: value for key, value in {
-        {% for arguemnt in operation.snake_case_arguments_list %}
-            {% if arguemnt.in_.value == 'query' %}
-            '{{ arguemnt.alias }}': json.loads(json.dumps({{ arguemnt.name.strip() }}, default=pydantic.schema.pydantic_encoder)),
+        {% for argument in operation.snake_case_arguments_list %}
+            {% if argument.in_.value == 'query' %}
+            '{{ argument.alias }}': json.loads(json.dumps({{ argument.name.strip() }}, default=pydantic.schema.pydantic_encoder)),
             {% set has_query_params = True %}
             {% endif %}
             {% endfor %}
