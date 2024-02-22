@@ -8,29 +8,18 @@
 Type2()
 ```
 
-pydantic model Type2: The categorized type of device used by a user.
-Possible values are:
-
-- `WEBSITE` - Applicable if the user initiated this event from a web
-  browser on a desktop computer.
-- `PHONE_WEB` - Applicable if the user initiated this event from a web
-  browser on a phone.
-- `TABLET_WEB` - Applicable if the user initiated this event from a web
-  browser on a tablet.
-- `PHONE_APP` - Applicable if the user initiated this event from an app
-  on a phone.
-- `TABLET_APP` - Applicable if the user initiated this event from an app
-  on a tablet.
+pydantic model Type2: Specifies the type of the ticket, such as ADULT,
+CHILD, SENIOR, STUDENT, or OTHER.
 
 ## Attributes
 
-| Name       | Type | Required | Description |
-| ---------- | ---- | -------- | ----------- |
-| PHONE_APP  | Any  | True     | …           |
-| PHONE_WEB  | Any  | True     | …           |
-| TABLET_APP | Any  | True     | …           |
-| TABLET_WEB | Any  | True     | …           |
-| WEBSITE    | Any  | True     | …           |
+| Name    | Type | Required | Description |
+| ------- | ---- | -------- | ----------- |
+| ADULT   | Any  | True     | …           |
+| CHILD   | Any  | True     | …           |
+| OTHER   | Any  | True     | …           |
+| SENIOR  | Any  | True     | …           |
+| STUDENT | Any  | True     | …           |
 
 # Inheritance
 

@@ -6,7 +6,7 @@
 
 ```python
 AccountUpdateRequestGeneric(
-    type: Type1,
+    type: Type3,
     risk_id: constr(max_length=200),
 )
 ```
@@ -23,7 +23,7 @@ discriminator, with the following mapping:
 | Name    | Type                   | Required | Description                                                                                  |
 | ------- | ---------------------- | -------- | -------------------------------------------------------------------------------------------- |
 | risk_id | constr(max_length=200) | True     | The `risk_id` provided by Expedia’s Fraud Prevention Service in the `AccountScreenResponse`. |
-| type    | [Type1](Type1.md)      | True     | The categorized type of account update event from the Partner’s system.                      |
+| type    | [Type3](Type3.md)      | True     | The categorized type of account update event from the Partner’s system.                      |
 
 # Inheritance
 

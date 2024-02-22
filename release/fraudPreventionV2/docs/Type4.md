@@ -8,21 +8,29 @@
 Type4()
 ```
 
-pydantic model Type4: The kind of challenge served by the Partner’‘s
-system to a user prior to calling Expedia’’s Fraud Prevention Service.
+pydantic model Type4: The categorized type of device used by a user.
+Possible values are:
 
-- `CAPTCHA` - Applicable if the challenge served by the Partner’’s
-  system was a Captcha challenge.
-- `TWO_FACTOR` - Applicable if the challenge served by the Partner’’s
-  system was a two-factor challenge including (Email verification, One
-  Time Password, Okta, etc).
+- `WEBSITE` - Applicable if the user initiated this event from a web
+  browser on a desktop computer.
+- `PHONE_WEB` - Applicable if the user initiated this event from a web
+  browser on a phone.
+- `TABLET_WEB` - Applicable if the user initiated this event from a web
+  browser on a tablet.
+- `PHONE_APP` - Applicable if the user initiated this event from an app
+  on a phone.
+- `TABLET_APP` - Applicable if the user initiated this event from an app
+  on a tablet.
 
 ## Attributes
 
 | Name       | Type | Required | Description |
 | ---------- | ---- | -------- | ----------- |
-| CAPTCHA    | Any  | True     | …           |
-| TWO_FACTOR | Any  | True     | …           |
+| PHONE_APP  | Any  | True     | …           |
+| PHONE_WEB  | Any  | True     | …           |
+| TABLET_APP | Any  | True     | …           |
+| TABLET_WEB | Any  | True     | …           |
+| WEBSITE    | Any  | True     | …           |
 
 # Inheritance
 
