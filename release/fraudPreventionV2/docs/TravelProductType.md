@@ -14,6 +14,7 @@ pydantic model TravelProductType: Type of product.
 
 | Name      | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| ACTIVITY  | Any  | True     | …           |
 | AIR       | Any  | True     | …           |
 | CAR       | Any  | True     | …           |
 | CRUISE    | Any  | True     | …           |

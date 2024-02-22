@@ -25,6 +25,8 @@ from pydantic import (
     Field,
     SecretBytes,
     SecretStr,
+    confloat,
+    conint,
     constr,
     field_validator,
 )
@@ -480,6 +482,109 @@ class RailwayStationDetails(
     """
 
 
+class Coordinates(
+    PydanticModel,
+):
+    r"""pydantic model Coordinates: This field signifies the precise geographical coordinates denoting the location of the activity."""
+
+    latitude: confloat(ge=-90.0, le=90.0) = None
+    """
+    The latitude in degrees.
+
+    It must be in the range [-90.0, +90.0].
+
+    """
+    longitude: confloat(ge=-180.0, le=180.0) = None
+    """
+    The longitude in degrees.
+
+    It must be in the range [-180.0, +180.0].
+
+    """
+
+
+class Type1(
+    Enum,
+):
+    r"""pydantic model Type1: This field indicates the nature or relationship of the vendor associated with a particular activity.
+    * `THIRD_PARTY`: This value indicates that the partner integrates with a third-party platform via APIs and ingests activities from them.
+    * `DIRECT`: This value signifies that the partner is a direct entity or provider associated with the organization or platform offering the activity.
+
+    """
+
+    THIRD_PARTY: Any = "THIRD_PARTY"
+    DIRECT: Any = "DIRECT"
+
+
+class SupplyProvider(
+    PydanticModel,
+):
+    r"""Pydantic model SupplyProvider."""
+
+    name: constr(max_length=200) = Field(..., example="VIATOR")
+    """This field provides name of the partner involved in offering the activity."""
+    type: Type1 = None
+    """
+    This field indicates the nature or relationship of the vendor associated with a
+    particular activity.
+
+    * `THIRD_PARTY`: This value indicates that the partner integrates with a third-party platform via APIs and ingests activities from them.
+    * `DIRECT`: This value signifies that the partner is a direct entity or provider associated with the organization or platform offering the activity.
+
+    """
+    vendor_name: Optional[constr(max_length=200)] = Field(None, example="SuperShuttle")
+    """This field describes the name of the third-party vendor who provided the supply
+    provider or the operating company with the activity.
+    """
+
+
+class Type2(
+    Enum,
+):
+    r"""pydantic model Type2: Specifies the type of the ticket, such as ADULT, CHILD, SENIOR, STUDENT, or OTHER."""
+
+    ADULT: Any = "ADULT"
+    CHILD: Any = "CHILD"
+    SENIOR: Any = "SENIOR"
+    STUDENT: Any = "STUDENT"
+    OTHER: Any = "OTHER"
+
+
+class Ticket(
+    PydanticModel,
+):
+    r"""Pydantic model Ticket."""
+
+    type: Type2 = None
+    """Specifies the type of the ticket, such as ADULT, CHILD, SENIOR, STUDENT, or
+    OTHER.
+    """
+    quantity: conint(ge=1, le=30) = None
+    """This field represents the count or number of tickets associated with the type."""
+
+
+class DelayedFulfillment(
+    PydanticModel,
+):
+    r"""pydantic model DelayedFulfillment: This field holds details about activity's capabilities and execution details related to inventory hold functionality."""
+
+    is_available: Optional[bool] = None
+    """This field indicates if the fulfillment of an activity is possible or not."""
+    hold_duration_value: Optional[float] = Field(None, example=40)
+    """This field indicates the duration of the hold on an activity."""
+    hold_duration_unit_of_measure: Optional[constr(max_length=100)] = Field(None, example="minutes")
+    """This field indicates the unit of duration of the hold on an activity."""
+    is_delayed_customer_confirmation: Optional[bool] = None
+    """
+    This field indicates whether customer order confirmation can be delayed.
+
+    Customer will receive ticket number, voucher ID or any other type of confirmation
+    until transaction is successfully completed or approved by an analyst during the
+    review process.
+
+    """
+
+
 class FlightType(
     Enum,
 ):
@@ -724,6 +829,7 @@ class TravelProductType(
     INSURANCE: Any = "INSURANCE"
     HOTEL: Any = "HOTEL"
     RAIL: Any = "RAIL"
+    ACTIVITY: Any = "ACTIVITY"
 
 
 class CardType(
@@ -946,10 +1052,10 @@ class AccountTakeoverBadRequestError(
     causes: Optional[list[Cause1]] = None
 
 
-class Type1(
+class Type3(
     Enum,
 ):
-    r"""pydantic model Type1: The categorized type of account update event from the Partner's system."""
+    r"""pydantic model Type3: The categorized type of account update event from the Partner's system."""
 
     MULTI_FACTOR_AUTHENTICATION_UPDATE: Any = "MULTI_FACTOR_AUTHENTICATION_UPDATE"
     REMEDIATION_UPDATE: Any = "REMEDIATION_UPDATE"
@@ -964,7 +1070,7 @@ class AccountUpdateRequestGeneric(
 
     """
 
-    type: Type1 = None
+    type: Type3 = None
     """The categorized type of account update event from the Partner's system."""
     risk_id: constr(max_length=200) = Field(..., example="123456789")
     """The `risk_id` provided by Expedia's Fraud Prevention Service in the
@@ -1116,10 +1222,10 @@ class AccountTakeoverSiteInfo(
     """
 
 
-class Type2(
+class Type4(
     Enum,
 ):
-    r"""pydantic model Type2: The categorized type of device used by a user. Possible values are:
+    r"""pydantic model Type4: The categorized type of device used by a user. Possible values are:
     - `WEBSITE` - Applicable if the user initiated this event from a web browser on a desktop computer.
     - `PHONE_WEB` - Applicable if the user initiated this event from a web browser on a phone.
     - `TABLET_WEB` - Applicable if the user initiated this event from a web browser on a tablet.
@@ -1157,7 +1263,7 @@ class AccountTakeoverDeviceDetails(
     """The application type, operating system, software vendor, or software version of
     the originating request.
     """
-    type: Optional[Type2] = None
+    type: Optional[Type4] = None
     """
     The categorized type of device used by a user. Possible values are:
 
@@ -1218,10 +1324,10 @@ class AccountTakeoverName(
     """
 
 
-class Type3(
+class Type5(
     Enum,
 ):
-    r"""pydantic model Type3: The categorized type of account event related to a user's action."""
+    r"""pydantic model Type5: The categorized type of account event related to a user's action."""
 
     LOGIN: Any = "LOGIN"
 
@@ -1297,10 +1403,10 @@ class FailedLoginReason(
     ACCOUNT_LOCKED: Any = "ACCOUNT_LOCKED"
 
 
-class Type4(
+class Type6(
     Enum,
 ):
-    r"""pydantic model Type4: The kind of challenge served by the Partner''s system to a user prior to calling Expedia''s Fraud Prevention Service.
+    r"""pydantic model Type6: The kind of challenge served by the Partner''s system to a user prior to calling Expedia''s Fraud Prevention Service.
     - `CAPTCHA` - Applicable if the challenge served by the Partner''s system was a Captcha challenge.
     - `TWO_FACTOR` - Applicable if the challenge served by the Partner''s system was a two-factor challenge including (Email verification, One Time Password, Okta, etc).
 
@@ -1332,7 +1438,7 @@ class ChallengeDetail(
     """Indicates that there was a challenge initiated by the Partner's system to a user
     before calling Expedia's Fraud Prevention Service.
     """
-    type: Type4 = None
+    type: Type6 = None
     """
     The kind of challenge served by the Partner''s system to a user prior to calling
     Expedia''s Fraud Prevention Service.
@@ -1564,6 +1670,7 @@ class TravelProductGeneric(
     * `INSURANCE`: `Insurance`
     * `HOTEL`: `Hotel`
     * `RAIL`: `Rail`
+    * `ACTIVITY`: `Activity`
 
     """
 
@@ -1582,7 +1689,8 @@ class TravelProductGeneric(
     *  `Car`                          : `CAR`
     *  `Insurance`                    : `INSURANCE`
     *  `Hotel`                        : `HOTEL`
-    *  `Rail`                         :  `RAIL`
+    *  `Rail`                         : `RAIL`
+    *  `Activity`                     : `ACTIVITY`
 
     """
     inventory_source: InventorySource = None
@@ -1625,9 +1733,11 @@ class TravelProductGeneric(
     *   [GUID3]
     * Rail
     *   [GUID2]
+    * Activity
+    *   [GUID1]
     * The example above demonstrates the association of travelers with various products.
     * All three travelers (A, B, and C) are associated with the Air product.
-    * Traveler A is associated with the Hotel.
+    * Traveler A is associated with the Hotel and Activity products.
     * Traveler C is associated with the Car product.
     * Traveler B is associated with the Rail product.
 
@@ -1684,6 +1794,14 @@ class RailSegments(
     bus company.
 
     """
+
+
+class AvailablePolicy(
+    PydanticModel,
+):
+    r"""Pydantic model AvailablePolicy."""
+
+    delayed_fulfillment: Optional[DelayedFulfillment] = None
 
 
 class Air(
@@ -2101,6 +2219,52 @@ class Rail(
     type: Literal["RAIL"] = "RAIL"
 
 
+class Activity(
+    TravelProductGeneric,
+):
+    r"""Pydantic model Activity."""
+
+    category_name: constr(max_length=200) = Field(..., example="Tours & Sightseeing")
+    """
+    This field categorizes various types of activities available within the product. It
+    allows API consumers to assign descriptive labels or keywords representing the
+    nature of each activity.
+
+    Possible category name values include:
+    * `Adventures`: This category includes activities such as hiking, zip-lining, rock climbing, bungee jumping, and other adventurous pursuits.
+    * `Air, Balloon & Helicopter Tours`: This category offers activities like hot air balloon rides, helicopter tours, and aerial sightseeing experiences.
+    * `Cruises & Water Tours`: This includes options such as boat cruises, yacht tours, river rafting, snorkeling, and diving expeditions.
+    * `Nightlife`: This category encompasses activities like clubbing, pub crawls, live music events, and cultural performances. These activities predominantly occur during the evening or nighttime.
+
+    """
+    activity_description: constr(max_length=200) = Field(..., example="06:40 AM, Tour from Marbella in English, includes Food Only")
+    """This field provides additional details or a brief explanation of the specific
+    activity.
+    """
+    supply_provider: SupplyProvider = None
+    tickets: list[Ticket] = Field(..., maxItems=40, minItems=1)
+    coordinates: Coordinates = None
+    start_date_time: Optional[datetime] = Field(None, example="2024-02-21T02:14:00.000-0800")
+    """The field represents the start time of an activity, using the ISO-8601 date and
+    time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+    """
+    end_date_time: Optional[datetime] = Field(None, example="2024-02-21T02:14:00.000-0800")
+    """The field represents the end time of an activity, using the ISO-8601 date and
+    time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+    """
+    is_passbook: Optional[bool] = None
+    """
+    Indicates whether a QR code is required for an activity, serving as proof of
+    reservation or purchase.
+
+    This includes digital tickets saved on mobile applications such as Google Pay, Apple
+    Wallet, or similar services provided by activity organizers.
+
+    """
+    available_policy: Optional[AvailablePolicy] = None
+    type: Literal["ACTIVITY"] = "ACTIVITY"
+
+
 class PaymentOperation(
     PydanticModel,
 ):
@@ -2129,7 +2293,7 @@ class AccountTakeoverTransactionDetailsGeneric(
 
     """
 
-    type: Type3 = None
+    type: Type5 = None
     """The categorized type of account event related to a user's action."""
     transaction_date_time: datetime = None
     """The local date and time the transaction occured in the Partner's system, in
@@ -2660,7 +2824,7 @@ RefundUpdate = Union[IssuedRefundUpdate, SettledRefundUpdate, RefundUpdateGeneri
 
 OrderPurchaseUpdateRequest = Union[OrderUpdate, ChargebackFeedback, InsultFeedback, RefundUpdate, PaymentUpdate, OrderPurchaseUpdateRequestGeneric]
 
-TravelProduct = Union[Rail, Air, Cruise, Car, Hotel, Insurance, TravelProductGeneric]
+TravelProduct = Union[Rail, Activity, Air, Cruise, Car, Hotel, Insurance, TravelProductGeneric]
 
 Payment = Union[CreditCard, PayPal, Points, GiftCard, InternetBankPayment, DirectDebit, PaymentGeneric]
 
@@ -2712,6 +2876,18 @@ OperatingCompany.model_rebuild()
 
 
 RailwayStationDetails.model_rebuild()
+
+
+Coordinates.model_rebuild()
+
+
+SupplyProvider.model_rebuild()
+
+
+Ticket.model_rebuild()
+
+
+DelayedFulfillment.model_rebuild()
 
 
 AirSegment.model_rebuild()
@@ -2810,6 +2986,9 @@ OrderPurchaseScreenResponse.model_rebuild()
 RailSegments.model_rebuild()
 
 
+AvailablePolicy.model_rebuild()
+
+
 Air.model_rebuild()
 
 
@@ -2862,6 +3041,9 @@ Traveler.model_rebuild()
 
 
 Rail.model_rebuild()
+
+
+Activity.model_rebuild()
 
 
 PaymentOperation.model_rebuild()
@@ -2924,13 +3106,43 @@ OrderPurchaseTransaction.model_rebuild()
 OrderPurchaseScreenRequest.model_rebuild()
 
 
-class ExpediaGroupRetryableOrderPurchaseScreenFailureException(ExpediaGroupApiException):
-    r"""Exception wrapping a RetryableOrderPurchaseScreenFailure object."""
+class ExpediaGroupUnauthorizedErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a UnauthorizedError object."""
     pass
 
 
 class ExpediaGroupGatewayTimeoutErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a GatewayTimeoutError object."""
+    pass
+
+
+class ExpediaGroupInternalServerErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a InternalServerError object."""
+    pass
+
+
+class ExpediaGroupTooManyRequestsErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a TooManyRequestsError object."""
+    pass
+
+
+class ExpediaGroupForbiddenErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a ForbiddenError object."""
+    pass
+
+
+class ExpediaGroupNotFoundErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a NotFoundError object."""
+    pass
+
+
+class ExpediaGroupRetryableOrderPurchaseUpdateFailureException(ExpediaGroupApiException):
+    r"""Exception wrapping a RetryableOrderPurchaseUpdateFailure object."""
+    pass
+
+
+class ExpediaGroupOrderPurchaseUpdateNotFoundErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a OrderPurchaseUpdateNotFoundError object."""
     pass
 
 
@@ -2944,48 +3156,8 @@ class ExpediaGroupBadGatewayErrorException(ExpediaGroupApiException):
     pass
 
 
-class ExpediaGroupAccountTakeoverBadRequestErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a AccountTakeoverBadRequestError object."""
-    pass
-
-
-class ExpediaGroupInternalServerErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a InternalServerError object."""
-    pass
-
-
 class ExpediaGroupServiceUnavailableErrorException(ExpediaGroupApiException):
     r"""Exception wrapping a ServiceUnavailableError object."""
-    pass
-
-
-class ExpediaGroupUnauthorizedErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a UnauthorizedError object."""
-    pass
-
-
-class ExpediaGroupNotFoundErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a NotFoundError object."""
-    pass
-
-
-class ExpediaGroupOrderPurchaseUpdateNotFoundErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a OrderPurchaseUpdateNotFoundError object."""
-    pass
-
-
-class ExpediaGroupAccountUpdateNotFoundErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a AccountUpdateNotFoundError object."""
-    pass
-
-
-class ExpediaGroupRetryableOrderPurchaseUpdateFailureException(ExpediaGroupApiException):
-    r"""Exception wrapping a RetryableOrderPurchaseUpdateFailure object."""
-    pass
-
-
-class ExpediaGroupTooManyRequestsErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a TooManyRequestsError object."""
     pass
 
 
@@ -2994,21 +3166,67 @@ class ExpediaGroupAccountTakeoverUnauthorizedErrorException(ExpediaGroupApiExcep
     pass
 
 
-class ExpediaGroupForbiddenErrorException(ExpediaGroupApiException):
-    r"""Exception wrapping a ForbiddenError object."""
+class ExpediaGroupAccountTakeoverBadRequestErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a AccountTakeoverBadRequestError object."""
+    pass
+
+
+class ExpediaGroupRetryableOrderPurchaseScreenFailureException(ExpediaGroupApiException):
+    r"""Exception wrapping a RetryableOrderPurchaseScreenFailure object."""
+    pass
+
+
+class ExpediaGroupAccountUpdateNotFoundErrorException(ExpediaGroupApiException):
+    r"""Exception wrapping a AccountUpdateNotFoundError object."""
     pass
 
 
 @dataclass
-class RetryableOrderPurchaseScreenFailureDeserializationContract:
-    exception: type = ExpediaGroupRetryableOrderPurchaseScreenFailureException
-    model: type = RetryableOrderPurchaseScreenFailure
+class UnauthorizedErrorDeserializationContract:
+    exception: type = ExpediaGroupUnauthorizedErrorException
+    model: type = UnauthorizedError
 
 
 @dataclass
 class GatewayTimeoutErrorDeserializationContract:
     exception: type = ExpediaGroupGatewayTimeoutErrorException
     model: type = GatewayTimeoutError
+
+
+@dataclass
+class InternalServerErrorDeserializationContract:
+    exception: type = ExpediaGroupInternalServerErrorException
+    model: type = InternalServerError
+
+
+@dataclass
+class TooManyRequestsErrorDeserializationContract:
+    exception: type = ExpediaGroupTooManyRequestsErrorException
+    model: type = TooManyRequestsError
+
+
+@dataclass
+class ForbiddenErrorDeserializationContract:
+    exception: type = ExpediaGroupForbiddenErrorException
+    model: type = ForbiddenError
+
+
+@dataclass
+class NotFoundErrorDeserializationContract:
+    exception: type = ExpediaGroupNotFoundErrorException
+    model: type = NotFoundError
+
+
+@dataclass
+class RetryableOrderPurchaseUpdateFailureDeserializationContract:
+    exception: type = ExpediaGroupRetryableOrderPurchaseUpdateFailureException
+    model: type = RetryableOrderPurchaseUpdateFailure
+
+
+@dataclass
+class OrderPurchaseUpdateNotFoundErrorDeserializationContract:
+    exception: type = ExpediaGroupOrderPurchaseUpdateNotFoundErrorException
+    model: type = OrderPurchaseUpdateNotFoundError
 
 
 @dataclass
@@ -3024,57 +3242,9 @@ class BadGatewayErrorDeserializationContract:
 
 
 @dataclass
-class AccountTakeoverBadRequestErrorDeserializationContract:
-    exception: type = ExpediaGroupAccountTakeoverBadRequestErrorException
-    model: type = AccountTakeoverBadRequestError
-
-
-@dataclass
-class InternalServerErrorDeserializationContract:
-    exception: type = ExpediaGroupInternalServerErrorException
-    model: type = InternalServerError
-
-
-@dataclass
 class ServiceUnavailableErrorDeserializationContract:
     exception: type = ExpediaGroupServiceUnavailableErrorException
     model: type = ServiceUnavailableError
-
-
-@dataclass
-class UnauthorizedErrorDeserializationContract:
-    exception: type = ExpediaGroupUnauthorizedErrorException
-    model: type = UnauthorizedError
-
-
-@dataclass
-class NotFoundErrorDeserializationContract:
-    exception: type = ExpediaGroupNotFoundErrorException
-    model: type = NotFoundError
-
-
-@dataclass
-class OrderPurchaseUpdateNotFoundErrorDeserializationContract:
-    exception: type = ExpediaGroupOrderPurchaseUpdateNotFoundErrorException
-    model: type = OrderPurchaseUpdateNotFoundError
-
-
-@dataclass
-class AccountUpdateNotFoundErrorDeserializationContract:
-    exception: type = ExpediaGroupAccountUpdateNotFoundErrorException
-    model: type = AccountUpdateNotFoundError
-
-
-@dataclass
-class RetryableOrderPurchaseUpdateFailureDeserializationContract:
-    exception: type = ExpediaGroupRetryableOrderPurchaseUpdateFailureException
-    model: type = RetryableOrderPurchaseUpdateFailure
-
-
-@dataclass
-class TooManyRequestsErrorDeserializationContract:
-    exception: type = ExpediaGroupTooManyRequestsErrorException
-    model: type = TooManyRequestsError
 
 
 @dataclass
@@ -3084,6 +3254,18 @@ class AccountTakeoverUnauthorizedErrorDeserializationContract:
 
 
 @dataclass
-class ForbiddenErrorDeserializationContract:
-    exception: type = ExpediaGroupForbiddenErrorException
-    model: type = ForbiddenError
+class AccountTakeoverBadRequestErrorDeserializationContract:
+    exception: type = ExpediaGroupAccountTakeoverBadRequestErrorException
+    model: type = AccountTakeoverBadRequestError
+
+
+@dataclass
+class RetryableOrderPurchaseScreenFailureDeserializationContract:
+    exception: type = ExpediaGroupRetryableOrderPurchaseScreenFailureException
+    model: type = RetryableOrderPurchaseScreenFailure
+
+
+@dataclass
+class AccountUpdateNotFoundErrorDeserializationContract:
+    exception: type = ExpediaGroupAccountUpdateNotFoundErrorException
+    model: type = AccountUpdateNotFoundError

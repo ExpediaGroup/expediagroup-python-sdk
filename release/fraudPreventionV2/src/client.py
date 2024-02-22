@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import platform
 from typing import Union
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 from furl import furl
 
@@ -81,14 +81,14 @@ class FraudPreventionV2Client:
         """
         python_version = platform.python_version()
         os_name, os_version, *_ = platform.platform().split("-")
-        sdk_metadata = "expediagroup-fraudpreventionv2-python-sdk/3.4.0"
+        sdk_metadata = "expediagroup-python-sdk-fraudpreventionv2/4.0.0"
 
         self.__api_client = ApiClient(client_config, _ExpediaGroupAuthClient)
 
         self.__user_agent = f"{sdk_metadata} (Python {python_version}; {os_name} {os_version})"
 
     def screen_account(
-        self, transaction_id: UUID = uuid4(), body: AccountScreenRequest = None
+        self, body: AccountScreenRequest = None
     ) -> Union[
         AccountScreenResponse,
         AccountTakeoverBadRequestError,
@@ -111,8 +111,9 @@ class FraudPreventionV2Client:
         """
         headers = RequestHeaders(
             headers={
-                header.TRANSACTION_ID: transaction_id,
+                header.TRANSACTION_ID: uuid4(),
                 header.USER_AGENT: self.__user_agent,
+                header.X_SDK_TITLE: "fraudpreventionv2-sdk",
             }
         )
 
@@ -156,7 +157,7 @@ class FraudPreventionV2Client:
         )
 
     def notify_with_account_update(
-        self, transaction_id: UUID = uuid4(), body: AccountUpdateRequest = None
+        self, body: AccountUpdateRequest = None
     ) -> Union[
         AccountUpdateResponse,
         AccountTakeoverBadRequestError,
@@ -181,8 +182,9 @@ class FraudPreventionV2Client:
         """
         headers = RequestHeaders(
             headers={
-                header.TRANSACTION_ID: transaction_id,
+                header.TRANSACTION_ID: uuid4(),
                 header.USER_AGENT: self.__user_agent,
+                header.X_SDK_TITLE: "fraudpreventionv2-sdk",
             }
         )
 
@@ -226,7 +228,7 @@ class FraudPreventionV2Client:
         )
 
     def screen_order(
-        self, transaction_id: UUID = uuid4(), body: OrderPurchaseScreenRequest = None
+        self, body: OrderPurchaseScreenRequest = None
     ) -> Union[
         OrderPurchaseScreenResponse,
         BadRequestError,
@@ -249,8 +251,9 @@ class FraudPreventionV2Client:
         """
         headers = RequestHeaders(
             headers={
-                header.TRANSACTION_ID: transaction_id,
+                header.TRANSACTION_ID: uuid4(),
                 header.USER_AGENT: self.__user_agent,
+                header.X_SDK_TITLE: "fraudpreventionv2-sdk",
             }
         )
 
@@ -294,7 +297,7 @@ class FraudPreventionV2Client:
         )
 
     def notify_with_order_update(
-        self, transaction_id: UUID = uuid4(), body: OrderPurchaseUpdateRequest = None
+        self, body: OrderPurchaseUpdateRequest = None
     ) -> Union[
         OrderPurchaseUpdateResponse,
         BadRequestError,
@@ -321,8 +324,9 @@ class FraudPreventionV2Client:
         """
         headers = RequestHeaders(
             headers={
-                header.TRANSACTION_ID: transaction_id,
+                header.TRANSACTION_ID: uuid4(),
                 header.USER_AGENT: self.__user_agent,
+                header.X_SDK_TITLE: "fraudpreventionv2-sdk",
             }
         )
 

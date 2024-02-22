@@ -7,7 +7,7 @@
 ```python
 ChallengeDetail(
     displayed_flag: bool,
-    type: Type4,
+    type: Type6,
     status: Status3,
 )
 ```
@@ -22,7 +22,7 @@ Fraud Prevention Service.
 | -------------- | --------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | displayed_flag | bool                  | True     | Indicates that there was a challenge initiated by the Partner’s system to a user before calling Expedia’s Fraud Prevention Service.                                                                                                                                                                                                                                                                    |
 | status         | [Status3](Status3.md) | True     | The status of the challenge served by the Partner’‘s system to a user before calling Expedia’’s Fraud Prevention Service.<br/>- `SUCCESS` - Applicable if the user successfully passed the challenge.<br/>- `FAILED` - Applicable if the user failed the challenge.                                                                                                                                    |
-| type           | [Type4](Type4.md)     | True     | The kind of challenge served by the Partner’‘s system to a user prior to calling Expedia’‘s Fraud Prevention Service.<br/>- `CAPTCHA` - Applicable if the challenge served by the Partner’‘s system was a Captcha challenge.<br/>- `TWO_FACTOR` - Applicable if the challenge served by the Partner’’s system was a two-factor challenge including (Email verification, One Time Password, Okta, etc). |
+| type           | [Type6](Type6.md)     | True     | The kind of challenge served by the Partner’‘s system to a user prior to calling Expedia’‘s Fraud Prevention Service.<br/>- `CAPTCHA` - Applicable if the challenge served by the Partner’‘s system was a Captcha challenge.<br/>- `TWO_FACTOR` - Applicable if the challenge served by the Partner’’s system was a two-factor challenge including (Email verification, One Time Password, Okta, etc). |
 
 # Inheritance
 

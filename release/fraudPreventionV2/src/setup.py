@@ -17,7 +17,7 @@ from setuptools import setup
 
 setup(
     name="expediagroup-fraudpreventionv2-sdk",
-    version="3.4.0",
+    version="4.0.0",
     packages=["expediagroup.sdk.fraudpreventionv2"],
     package_dir={"expediagroup-fraudpreventionv2-sdk": "."},
     license="Apache License, Version 2.0",

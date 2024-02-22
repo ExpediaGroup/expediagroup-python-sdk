@@ -1211,6 +1211,8 @@ components:
         * `HOTEL`: `Hotel`
 
         * `RAIL`: `Rail`
+
+        * `ACTIVITY`: `Activity`
       required:
         - price
         - type
@@ -1226,6 +1228,7 @@ components:
           INSURANCE: "#/components/schemas/Insurance"
           HOTEL: "#/components/schemas/Hotel"
           RAIL: "#/components/schemas/Rail"
+          ACTIVITY: "#/components/schemas/Activity"
       properties:
         price:
           $ref: "#/components/schemas/Amount"
@@ -1253,7 +1256,9 @@ components:
 
             *  `Hotel`                        : `HOTEL`
 
-            *  `Rail`                         :  `RAIL`
+            *  `Rail`                         : `RAIL`
+
+            *  `Activity`                     : `ACTIVITY`
           type: string
           maxLength: 30
         inventory_source:
@@ -1325,11 +1330,15 @@ components:
 
             *   [GUID2]
 
+            * Activity
+
+            *   [GUID1]
+
             * The example above demonstrates the association of travelers with various products.
 
             * All three travelers (A, B, and C) are associated with the Air product.
 
-            * Traveler A is associated with the Hotel.
+            * Traveler A is associated with the Hotel and Activity products.
 
             * Traveler C is associated with the Car product.
 
@@ -1486,6 +1495,183 @@ components:
           type: string
           maxLength: 200
           example: America/New_York
+    Activity:
+      title: Activity
+      allOf:
+        - $ref: "#/components/schemas/TravelProduct"
+        - type: object
+          required:
+            - category_name
+            - activity_description
+            - supply_provider
+            - tickets
+            - coordinates
+          properties:
+            category_name:
+              description: >
+                This field categorizes various types of activities available
+                within the product. It allows API consumers to assign
+                descriptive labels or keywords representing the nature of each
+                activity.
+
+                Possible category name values include:
+
+                * `Adventures`: This category includes activities such as hiking, zip-lining, rock climbing, bungee jumping, and other adventurous pursuits.
+
+                * `Air, Balloon & Helicopter Tours`: This category offers activities like hot air balloon rides, helicopter tours, and aerial sightseeing experiences.
+
+                * `Cruises & Water Tours`: This includes options such as boat cruises, yacht tours, river rafting, snorkeling, and diving expeditions. 
+
+                * `Nightlife`: This category encompasses activities like clubbing, pub crawls, live music events, and cultural performances. These activities predominantly occur during the evening or nighttime.
+              type: string
+              maxLength: 200
+              example: Tours & Sightseeing
+            activity_description:
+              description: This field provides additional details or a brief explanation of
+                the specific activity.
+              type: string
+              maxLength: 200
+              example: 06:40 AM, Tour from Marbella in English, includes Food Only
+            supply_provider:
+              $ref: "#/components/schemas/SupplyProvider"
+            tickets:
+              type: array
+              minItems: 1
+              maxItems: 40
+              items:
+                $ref: "#/components/schemas/Ticket"
+            coordinates:
+              $ref: "#/components/schemas/Coordinates"
+            start_date_time:
+              description: The field represents the start time of an activity, using the
+                ISO-8601 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+              type: string
+              format: date-time
+              example: 2024-02-21T02:14:00.000-0800
+            end_date_time:
+              description: The field represents the end time of an activity, using the
+                ISO-8601 date and time format `yyyy-MM-ddTHH:mm:ss.SSSZ`.
+              type: string
+              format: date-time
+              example: 2024-02-21T02:14:00.000-0800
+            is_passbook:
+              description: >
+                Indicates whether a QR code is required for an activity, serving
+                as proof of reservation or purchase. This includes digital
+                tickets saved on mobile applications such as Google Pay, Apple
+                Wallet, or similar services provided by activity organizers.
+              type: boolean
+            available_policy:
+              $ref: "#/components/schemas/AvailablePolicy"
+    Coordinates:
+      type: object
+      description: This field signifies the precise geographical coordinates denoting
+        the location of the activity.
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          description: The latitude in degrees. It must be in the range [-90.0, +90.0].
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+        longitude:
+          description: The longitude in degrees. It must be in the range [-180.0, +180.0].
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+    SupplyProvider:
+      title: SupplyProvider
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          description: This field provides name of the partner involved in offering the
+            activity.
+          type: string
+          maxLength: 200
+          example: VIATOR
+        type:
+          description: >
+            This field indicates the nature or relationship of the vendor
+            associated with a particular activity.
+
+            * `THIRD_PARTY`: This value indicates that the partner integrates with a third-party platform via APIs and ingests activities from them.
+
+            * `DIRECT`: This value signifies that the partner is a direct entity or provider associated with the organization or platform offering the activity.
+          type: string
+          enum:
+            - THIRD_PARTY
+            - DIRECT
+        vendor_name:
+          description: This field describes the name of the third-party vendor who
+            provided the supply provider or the operating company with the
+            activity.
+          type: string
+          maxLength: 200
+          example: SuperShuttle
+    Ticket:
+      title: Ticket
+      type: object
+      required:
+        - type
+        - quantity
+      properties:
+        type:
+          description: Specifies the type of the ticket, such as ADULT, CHILD, SENIOR,
+            STUDENT, or OTHER.
+          type: string
+          enum:
+            - ADULT
+            - CHILD
+            - SENIOR
+            - STUDENT
+            - OTHER
+        quantity:
+          description: This field represents the count or number of tickets associated
+            with the type.
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 30
+    AvailablePolicy:
+      title: AvailablePolicy
+      type: object
+      properties:
+        delayed_fulfillment:
+          $ref: "#/components/schemas/DelayedFulfillment"
+    DelayedFulfillment:
+      title: DelayedFulfillment
+      description: This field holds details about activity's capabilities and
+        execution details related to inventory hold functionality.
+      type: object
+      properties:
+        is_available:
+          description: This field indicates if the fulfillment of an activity is possible
+            or not.
+          type: boolean
+        hold_duration_value:
+          description: This field indicates the duration of the hold on an activity.
+          type: number
+          format: int32
+          example: 40
+        hold_duration_unit_of_measure:
+          description: This field indicates the unit of duration of the hold on an activity.
+          type: string
+          maxLength: 100
+          example: minutes
+        is_delayed_customer_confirmation:
+          description: >
+            This field indicates whether customer order confirmation can be
+            delayed. Customer will receive ticket number, voucher ID or any
+            other type of confirmation until transaction is successfully
+            completed or approved by an analyst during the review process.
+          type: boolean
     Air:
       title: Air
       allOf:
@@ -2128,6 +2314,7 @@ components:
         - INSURANCE
         - HOTEL
         - RAIL
+        - ACTIVITY
     Insurance:
       title: Insurance
       allOf:

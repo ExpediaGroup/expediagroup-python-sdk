@@ -8,14 +8,15 @@
 Type3()
 ```
 
-pydantic model Type3: The categorized type of account event related to a
-user’s action.
+pydantic model Type3: The categorized type of account update event from
+the Partner’s system.
 
 ## Attributes
 
-| Name  | Type | Required | Description |
-| ----- | ---- | -------- | ----------- |
-| LOGIN | Any  | True     | …           |
+| Name                               | Type | Required | Description |
+| ---------------------------------- | ---- | -------- | ----------- |
+| MULTI_FACTOR_AUTHENTICATION_UPDATE | Any  | True     | …           |
+| REMEDIATION_UPDATE                 | Any  | True     | …           |
 
 # Inheritance
 
