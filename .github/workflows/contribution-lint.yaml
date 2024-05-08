@@ -38,4 +38,4 @@ jobs:
       - name: Run Pull Request Title Validation
         run: echo "${{ github.event.pull_request.title }}" | npx commitlint --config commitlint.config.js --verbose
       - name: Run Latest Commit Message Validation
-        run: git log -1 --pretty=format:"%s" | npx commitlint --config commitlint.config.js --verbose
+        run: git log -1 --no-merges --pretty=format:"%s" | npx commitlint --config commitlint.config.js --verbose
