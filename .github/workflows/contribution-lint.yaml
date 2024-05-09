@@ -22,8 +22,6 @@ on:
       - ready_for_review
       - review_requested
       - auto_merge_enabled
-  push:
-    branches: '*'
 jobs:
   contribution-lint:
     name: Contribution Details Validation
