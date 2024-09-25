@@ -49,7 +49,7 @@ jobs:
           docformatter --check --config pyproject.toml release || true
           docformatter --in-place --config pyproject.toml release || true
       - name: Create PR
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           branch: "${{github.event.inputs.name}}-${{github.event.inputs.version}}"
           commit-message: "chore: Publish ${{github.event.inputs.name}} [${{github.event.inputs.version}}] SDK"
