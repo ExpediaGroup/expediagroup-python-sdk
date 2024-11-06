@@ -34,6 +34,8 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Run Pull Request Title Validation
-        run: echo "${{ github.event.pull_request.title }}" | npx commitlint --config commitlint.config.js --verbose
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: npx commitlint --config commitlint.config.js --verbose <<< "$PR_TITLE"
       - name: Run Latest Commit Message Validation
         run: git log -1 --no-merges --pretty=format:"%s" | npx commitlint --config commitlint.config.js --verbose
