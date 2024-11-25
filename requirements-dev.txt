@@ -1,6 +1,6 @@
 autoflake==2.3.1
 build==1.2.2.post1
-setuptools==75.5.0
+setuptools==75.6.0
 fastapi-code-generator==0.5.1
 flake8==7.1.1
 flake8-black==0.3.6
