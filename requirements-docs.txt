@@ -8,4 +8,4 @@ mdformat-gfm==0.3.7
 mdformat-footnote==0.1.1
 mdformat-black==0.1.1
 mdformat-tables==1.0.0
-mdformat_deflist==0.1.2
+mdformat_deflist==0.1.3
