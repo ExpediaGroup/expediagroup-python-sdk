@@ -4,7 +4,7 @@ docspec-python==2.2.1
 typer
 docstring_parser
 jinja2
-mdformat-gfm==0.3.7
+mdformat-gfm==0.4.1
 mdformat-footnote==0.1.1
 mdformat-black==0.1.1
 mdformat-tables==1.0.0
