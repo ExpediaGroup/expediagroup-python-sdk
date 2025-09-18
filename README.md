@@ -1,5 +1,10 @@
 # Expedia Group SDK for Python
 
+> [!CAUTION]
+> #### ⚠️ Deprecated – No Longer Maintained
+> This repository is **deprecated** and will not receive any further updates or bug fixes.  
+> We **do not recommend** using it in production or new projects.
+
 The Expedia Group SDK for Python allows Expedia Group partners to easily build Python applications that leverage the Expedia Group platform.
 
 ## Contributing
