@@ -1,5 +1,5 @@
 pydoc-markdown==4.8.2
-docspec==2.2.1
+docspec==2.2.2
 docspec-python==2.2.1
 typer
 docstring_parser
